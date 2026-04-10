@@ -1,0 +1,81 @@
+name: Update Headcount Dashboard
+
+on:
+  schedule:
+    - cron: '0 12 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Download live timesheets
+        run: |
+          mkdir -p data/live
+
+          echo "→ Alex W (main crew)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv" \
+            -o "data/live/Alex Timesheet(December 31, 9999).csv"
+
+          echo "→ Alex Weber – Subs"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv" \
+            -o "data/live/Alex Weber - Subs Timesheet(December 31, 9999).csv"
+
+          echo "→ Carlisle (Alex & Sam crew)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv" \
+            -o "data/live/Carlisle Timesheet(December 31, 9999).csv"
+
+          echo "→ Chad Hjemeland – Subs"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv" \
+            -o "data/live/Chad Hjemeland Timesheet(December 31, 9999).csv"
+
+          echo "→ Chad We Panel (prefab)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlHN1sQRdBulLg54rAM92L-MskUTY42VzPw-3X2QDyFI3o-GxDz9II2E16PCTWugtE4wlq3FjzT5Id/pub?output=csv" \
+            -o "data/live/Chad Timesheet(December 31, 9999).csv"
+
+          echo "→ Cory (formerly Rob's crew)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLyfku8YLaXk7POu-hI4M2qMlWhbDsicEbBI_IhEln1XsRLCP4sx3lMAH5y_sAAdDxprYl0aNCsSrQ/pub?output=csv" \
+            -o "data/live/Cory Timesheet(December 31, 9999).csv"
+
+          echo "→ Dave"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv" \
+            -o "data/live/Dave Timesheet(December 31, 9999).csv"
+
+          echo "→ Devon Mcinroy – Subs"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv" \
+            -o "data/live/Devon Mcinroy Timesheet(December 31, 9999).csv"
+
+          echo "→ Hayden & Devon"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv" \
+            -o "data/live/Hayden Timesheet(December 31, 9999).csv"
+
+          echo "→ Sam Brent – Subs"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv" \
+            -o "data/live/Sam Brent Timesheet(December 31, 9999).csv"
+
+          echo "→ Vadym"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv" \
+            -o "data/live/Vadym Timesheet(December 31, 9999).csv"
+
+          echo "✅ All timesheets downloaded"
+
+      - name: Generate dashboard HTML
+        run: python update_dashboard.py
+
+      - name: Copy dashboard to index.html
+        run: cp headcount-dashboard.html index.html
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html data/live/
+          git diff --staged --quiet \
+            && echo "No changes to commit" \
+            || (git commit -m "Dashboard auto-update $(date +'%Y-%m-%d')" && git push)
