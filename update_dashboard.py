@@ -331,8 +331,8 @@ def parse_sheet_for_history(path):
 
                 # Split hours evenly across all valid projects
                 n_projs       = max(len(valid_projs), 1)
-                split_regular = regular / n_projs
-                split_ot      = ot      / n_projs
+                split_regular = round(regular / n_projs, 2)
+                split_ot      = round(ot      / n_projs, 2)
 
                 for proj in valid_projs:
                     if (col, proj) not in seen_assignments:
