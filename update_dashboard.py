@@ -403,7 +403,12 @@ def collect_history():
     daily = defaultdict(lambda: defaultdict(lambda: {'direct': 0, 'subs': 0}))
     seen  = set()   # (date_iso, crew_id) already contributed
 
-    for (crew_id, _), f in best_files.items():
+    # Process in original insertion order (historical files first).
+    # Historical files claim dates where they have real hours, protecting past data
+    # from being overridden by live sheet edits.  Dates with zero hours in a
+    # historical file are NOT claimed, so the live download can fill them in.
+    for (crew_id, period_key), f in best_files.items():
+        is_live = period_key.year > 9000   # live files use datetime(9999,12,31)
         name = os.path.basename(f)
         try:
             day_entries = parse_sheet_for_history(f)
@@ -416,6 +421,20 @@ def collect_history():
             key = (date_iso, crew_id)
             if key in seen:
                 continue
+
+            # For historical files, skip dates where nobody has any hours yet
+            # (pre-printed future rows).  This lets live data override blank slots
+            # without touching dates that already have real recorded hours.
+            if not is_live:
+                total_hrs = sum(
+                    emp.get('regular', 0) + emp.get('ot', 0)
+                    for emp_data in detail_out.values()
+                    for emp_list in emp_data.values()
+                    for emp in (emp_list if isinstance(emp_list, list) else [])
+                )
+                if total_hrs == 0:
+                    continue   # don't claim — let live data fill this date
+
             seen.add(key)
             daily[date_iso]['__label__'] = date_label   # type: ignore
             for proj, counts in proj_counts.items():
