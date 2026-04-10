@@ -105,6 +105,7 @@ JOB_CODE_MAP = {
     "covenant health":   "covenant",
     "cantiro":           "cantiro",
     "terrace":           "covenant",
+    "terrce":            "covenant",   # typo found in timesheets
     "covenant terrace":  "covenant",
     "lewis 19":          "ls19",
     "lewis estates 19":  "ls19",
@@ -171,6 +172,7 @@ IGNORED_JOBS = {
     "llmp",                 # admin/meetings, not project-attributable
     "leston",               # upcoming job — revisit when active
     "monarch",              # subcontracted out; headcount not a useful metric
+    "stoneshire",           # completed project; occasional clean-up visits
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -211,6 +213,8 @@ SKIP_VALS = {
     'injured', 'at school', 'meetings', 'ehs orientation', 'hso',
     '/','*moved to graham', 'use this timesheet going forward',
     'last day 02', 'last day 2026-03-13', 'fired 02',
+    'good friday',  # statutory holiday
+    'please use this timesheet going forward for yourself.',  # admin note in job cell
 }
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
@@ -576,9 +580,9 @@ def _extract_file_date(filename):
             except ValueError:
                 pass
 
-    # Date-based suffix: e.g. "Mar 30" or "Apr 7" appearing after the closing paren
+    # Date-based suffix: e.g. "Mar 30", ") Apr 7", or ") - Apr 8" after the closing paren
     m_date = re.search(
-        r'\)\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})\b',
+        r'\)\s*(?:-\s*)?(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})\b',
         filename, re.I
     )
     if m_date:
@@ -588,6 +592,24 @@ def _extract_file_date(filename):
                 f"{m_date.group(1)} {m_date.group(2)} {year}", "%b %d %Y"
             )
             updated_bonus = 200 + upd_dt.timetuple().tm_yday  # e.g. Mar 30 → 289
+            return (d, updated_bonus)
+        except ValueError:
+            pass
+
+    # Trailing abbreviated-date suffix for non-paren filenames:
+    # e.g. "Devon Mcinroy - S - April 15, 2026 - Apr 8.csv"
+    # Matches 3-letter month + day at the very end (no year = it's an update marker, not period)
+    m_trail = re.search(
+        r'[-\s](Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})\s*\.csv$',
+        filename, re.I
+    )
+    if m_trail:
+        try:
+            year = d.year if d != datetime.min else datetime.now().year
+            upd_dt = datetime.strptime(
+                f"{m_trail.group(1)} {m_trail.group(2)} {year}", "%b %d %Y"
+            )
+            updated_bonus = 200 + upd_dt.timetuple().tm_yday
             return (d, updated_bonus)
         except ValueError:
             pass
