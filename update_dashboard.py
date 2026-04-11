@@ -45,7 +45,7 @@ BUDGETS = {
 PROJECT_SCHEDULE = {
     "kaskitew": {"budget_days": 85,  "budget_start": "2026-04-01"}, # 85-day budget starts with full crew April 1
     "mt2":      {"budget_days": 55,  "budget_start": "2026-03-02"}, # 55 days from full-crew start March 2
-    "covenant": {"budget_days": 144, "budget_start": "2026-03-30"}, # full crew started March 30
+    "covenant": {"budget_days": 130, "budget_start": "2026-04-02"}, # full crew started April 2
     # MT1 and Cantiro excluded — historical timesheets pre-Jan 15 not yet loaded;
     # re-add once full data is available:
     # "mt1":    {"budget_days": 69,  "budget_start": "2025-10-27"},
@@ -186,6 +186,10 @@ BUDGET_PHASES = {
     "mt2": [
         {"from": "2000-01-01", "budget": 7},    # mobilization skeleton crew
         {"from": "2026-03-02", "budget": 19},   # full crew from Mar 2
+    ],
+    "covenant": [
+        {"from": "2026-03-16", "budget": 9},    # mobilization crew from Mar 16
+        {"from": "2026-04-02", "budget": 19},   # full crew from Apr 2
     ],
 }
 
