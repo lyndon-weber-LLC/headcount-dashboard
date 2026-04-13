@@ -1337,9 +1337,9 @@ body {{
 }}
 .modal-table td {{ padding: 7px 12px; border-bottom: 1px solid #f5f5f5; }}
 .modal-table tr:last-child td {{ border-bottom: none; }}
-.modal-table .t-ok    {{ color: #38a169; font-weight: 600; }}
-.modal-table .t-under {{ color: #d69e2e; font-weight: 600; }}
-.modal-table .t-over  {{ color: #e53e3e; font-weight: 600; }}
+.modal-table .t-ok    {{ color: #3182ce; font-weight: 600; }}  /* blue  – on budget */
+.modal-table .t-under {{ color: #38a169; font-weight: 600; }}  /* green – under budget */
+.modal-table .t-over  {{ color: #e53e3e; font-weight: 600; }}  /* red   – over budget */
 .modal-empty {{ text-align: center; padding: 40px 0; color: #a0aec0; font-size: 0.85rem; }}
 .modal-note  {{ font-size: 0.62rem; color: #a0aec0; margin-top: 12px; text-align: center; }}
 .modal-back {{
@@ -1590,7 +1590,7 @@ function showProjectView() {{
   const rows = [...entries].reverse().map((e, ri) => {{
     const bud = budgets[entries.length - 1 - ri];
     const gap = e.direct - bud;
-    const cls = gap > 0 ? 't-over' : 't-ok';
+    const cls = gap > 0 ? 't-over' : gap < 0 ? 't-under' : 't-ok';
     const gapTxt = gap === 0 ? '✅ On budget' : gap > 0 ? '🔴 +'+gap+' over' : '🟢 '+Math.abs(gap)+' under';
     const subTxt = e.subs ? '+'+e.subs+' sub'+(e.subs>1?'s':'') : '—';
     const fwd = entries.length - 1 - ri;
