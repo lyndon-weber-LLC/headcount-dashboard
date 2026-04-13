@@ -48,6 +48,7 @@ PROJECT_SCHEDULE = {
     "covenant": {"budget_days": 130, "budget_start": "2026-04-02"}, # full crew started April 2
     "ls17":     {"budget_days": 29,  "budget_start": "2026-03-18"}, # Mar 18 – Apr 29
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
+    "ls19":     {"budget_days": 20,  "budget_start": "2026-03-02"}, # Mar 2 – Mar 27 (completed)
     # MT1 and Cantiro excluded — historical timesheets pre-Jan 15 not yet loaded;
     # re-add once full data is available:
     # "mt1":    {"budget_days": 69,  "budget_start": "2025-10-27"},
@@ -149,7 +150,7 @@ JOB_CODE_MAP = {
 }
 
 # Projects whose completion date is past (shown as "complete" in dashboard)
-COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18"}
+COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19"}
 
 # Job codes that appear in timesheets but should be silently ignored
 # (completed projects, personal jobs, misc entries we don't want to track)
@@ -893,7 +894,7 @@ def generate_html(headcount, history, history_detail, timestamp):
     lewis_buildings = [
         ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   False),
         ('ls17', 'Building #17 ⚡',"Alex W's Crew", 'Mar 18 – Apr 29',  False),
-        ('ls19', 'Building #19 ⚡',"Hayden's Crew", 'Mar 2 – Mar 27',   False),
+        ('ls19', 'Building #19 ⚡',"Hayden's Crew", 'Mar 2 – Mar 27',   True),
         ('ls2',  'Building #2',    "Hayden's Crew", 'Jan 26 – Feb 27',  True),
         ('ls3',  'Building #3',    "Alex W's Crew",'Nov 21 – Jan 16',  True),
         ('ls4',  'Building #4',    "Vadym's Crew", 'Nov 20 – Jan 23',  True),
