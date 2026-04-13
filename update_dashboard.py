@@ -230,6 +230,13 @@ SKIP_VALS = {
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
 
+# Matches MOD / Modified / Modified duty / Modified duties (and common typos)
+MOD_RE = re.compile(r'^mod(?:i(?:f(?:i?ed?)|died?)?)?\s*(?:dut(?:y|ies))?$', re.I)
+
+def is_mod_entry(raw):
+    """Return True if this job-cell value indicates modified / WCB duty."""
+    return bool(MOD_RE.match(raw.strip()))
+
 
 # Collects unrecognized job codes encountered during a run (for flagging in output)
 _unknown_jobs = set()
@@ -297,24 +304,37 @@ def parse_sheet_for_history(path):
         proj_counts  = defaultdict(lambda: {'direct': 0, 'subs': 0})
         # detail: proj -> {col -> {'name', 'is_sub', 'regular', 'ot'}}
         proj_detail  = defaultdict(dict)
+        # injured: name -> {'regular', 'ot'} for this day
+        injured_day  = {}
 
         for row in date_rows[date_iso]:
             for col, name, is_sub in employees:
                 if col >= len(row):
                     continue
                 raw_job = row[col].strip()
-                if not raw_job or raw_job.lower() in SKIP_VALS:
+                if not raw_job:
                     continue
 
                 # Hours are at fixed offsets from the job column
-                def _hrs(offset):
-                    idx = col + offset
-                    if idx < len(row):
+                def _hrs(offset, _row=row, _col=col):
+                    idx = _col + offset
+                    if idx < len(_row):
                         try:
-                            return float(row[idx].strip())
+                            return float(_row[idx].strip())
                         except (ValueError, AttributeError):
                             pass
                     return 0.0
+
+                # ── MOD / WCB check (before SKIP_VALS) ──
+                if is_mod_entry(raw_job):
+                    if name not in injured_day:
+                        injured_day[name] = {'regular': 0.0, 'ot': 0.0}
+                    injured_day[name]['regular'] += _hrs(3)
+                    injured_day[name]['ot']      += _hrs(4)
+                    continue
+
+                if raw_job.lower() in SKIP_VALS:
+                    continue
 
                 regular = _hrs(3)
                 ot      = _hrs(4)
@@ -365,7 +385,7 @@ def parse_sheet_for_history(path):
                     if is_prefab:
                         proj_detail[proj][col]['prefab'] = True
 
-        if proj_counts:
+        if proj_counts or injured_day:
             # Convert detail dicts to sorted lists
             detail_out = {}
             for proj, emp_map in proj_detail.items():
@@ -374,7 +394,7 @@ def parse_sheet_for_history(path):
                     'direct': [e for e in rows_sorted if not e['is_sub']],
                     'subs':   [e for e in rows_sorted if e['is_sub']],
                 }
-            day_entries.append((date_iso, date_labels[date_iso], dict(proj_counts), detail_out))
+            day_entries.append((date_iso, date_labels[date_iso], dict(proj_counts), detail_out, injured_day))
 
     return day_entries
 
@@ -428,7 +448,7 @@ def collect_history():
             continue
 
         for entry in day_entries:
-            date_iso, date_label, proj_counts, detail_out = entry
+            date_iso, date_label, proj_counts, detail_out, injured_day = entry
             key = (date_iso, crew_id)
             if key in seen:
                 continue
@@ -442,6 +462,10 @@ def collect_history():
                     for emp_data in detail_out.values()
                     for emp_list in emp_data.values()
                     for emp in (emp_list if isinstance(emp_list, list) else [])
+                )
+                # Also count injured hours toward "real data" threshold
+                total_hrs += sum(
+                    v['regular'] + v['ot'] for v in injured_day.values()
                 )
                 if total_hrs == 0:
                     continue   # don't claim — let live data fill this date
@@ -458,11 +482,22 @@ def collect_history():
                     daily[date_iso][key2] = {'direct': [], 'subs': []}   # type: ignore
                 daily[date_iso][key2]['direct'].extend(emp_data.get('direct', []))  # type: ignore
                 daily[date_iso][key2]['subs'].extend(emp_data.get('subs', []))      # type: ignore
+            # Merge injured workers for this date (accumulate hours by name)
+            inj_key = '__injured__'
+            if inj_key not in daily[date_iso]:
+                daily[date_iso][inj_key] = {}   # type: ignore
+            for wname, hrs in injured_day.items():
+                if wname not in daily[date_iso][inj_key]:
+                    daily[date_iso][inj_key][wname] = {'regular': 0.0, 'ot': 0.0}   # type: ignore
+                daily[date_iso][inj_key][wname]['regular'] += hrs['regular']   # type: ignore
+                daily[date_iso][inj_key][wname]['ot']      += hrs['ot']        # type: ignore
 
     today_iso = datetime.now().strftime('%Y-%m-%d')
 
-    history        = defaultdict(list)
-    history_detail = defaultdict(dict)   # proj -> {date_iso -> {direct:[...], subs:[...]}}
+    history          = defaultdict(list)
+    history_detail   = defaultdict(dict)   # proj -> {date_iso -> {direct:[...], subs:[...]}}
+    # injured_history: name -> [{date, label, regular, ot}] sorted by date
+    injured_history_raw = defaultdict(list)  # name -> list of {date, label, regular, ot}
 
     for date_iso in sorted(daily.keys()):
         if date_iso >= today_iso:
@@ -482,7 +517,16 @@ def collect_history():
             if detail_key in daily[date_iso]:
                 history_detail[proj][date_iso] = daily[date_iso][detail_key]
 
-    return dict(history), dict(history_detail)
+        # Collect injured worker history for this date
+        for wname, hrs in daily[date_iso].get('__injured__', {}).items():
+            injured_history_raw[wname].append({
+                'date':    date_iso,
+                'label':   label,
+                'regular': round(hrs['regular'], 2),
+                'ot':      round(hrs['ot'], 2),
+            })
+
+    return dict(history), dict(history_detail), dict(injured_history_raw)
 
 
 def parse_sheet(path):
@@ -515,6 +559,8 @@ def parse_sheet(path):
     # Find date rows and track most recent job per employee
     # Some timesheets put the date in col 0, others in col 1 — check both
     last_job = {}
+    injured_workers = {}  # col -> {'name', 'is_sub', 'regular', 'ot'}
+
     for row in rows[5:]:
         if not row:
             continue
@@ -527,6 +573,24 @@ def parse_sheet(path):
                 continue
             raw_job = row[col].strip()
             jl = raw_job.lower()
+
+            # ── MOD / WCB injured check (before SKIP_VALS) ──
+            if raw_job and is_mod_entry(raw_job):
+                def _hrs_mod(offset, _row=row, _col=col):
+                    idx = _col + offset
+                    if idx < len(_row):
+                        try:
+                            return float(_row[idx].strip())
+                        except (ValueError, AttributeError):
+                            pass
+                    return 0.0
+                if col not in injured_workers:
+                    injured_workers[col] = {'name': name, 'is_sub': is_sub,
+                                            'regular': 0.0, 'ot': 0.0}
+                injured_workers[col]['regular'] += _hrs_mod(3)
+                injured_workers[col]['ot']      += _hrs_mod(4)
+                continue
+
             if (raw_job
                     and jl not in SKIP_VALS
                     and not NUMERIC.match(raw_job)
@@ -550,7 +614,7 @@ def parse_sheet(path):
                         last_job[col] = proj
                         break
 
-    return employees, last_job
+    return employees, last_job, injured_workers
 
 
 def tally(employees, last_job, roster_only=False):
@@ -729,13 +793,23 @@ def collect_headcount():
     # project_key -> {direct, subs, roster}
     totals = defaultdict(lambda: {'direct': 0, 'subs': 0, 'roster': False})
     roster_data = {}  # crew_id -> (employees, last_job) for roster-only crews
+    # Injured workers merged by name across all sheets
+    injured_by_name = {}  # name -> {'name', 'regular', 'ot'}
 
     for crew_id, path in crew_files.items():
         try:
-            employees, last_job = parse_sheet(path)
+            employees, last_job, crew_injured = parse_sheet(path)
         except Exception as e:
             print(f"  ERROR parsing {crew_id}: {e}")
             continue
+
+        # Merge injured workers (accumulate hours by employee name)
+        for data in crew_injured.values():
+            n = data['name']
+            if n not in injured_by_name:
+                injured_by_name[n] = {'name': n, 'regular': 0.0, 'ot': 0.0}
+            injured_by_name[n]['regular'] += data['regular']
+            injured_by_name[n]['ot']      += data['ot']
 
         is_roster_only = crew_id in ROSTER_ONLY_CREWS or not last_job
         result = tally(employees, last_job, roster_only=is_roster_only)
@@ -769,7 +843,8 @@ def collect_headcount():
         if not had_prior:
             totals[proj]['roster'] = True
 
-    return dict(totals)
+    injured_workers = sorted(injured_by_name.values(), key=lambda e: e['name'])
+    return dict(totals), injured_workers
 
 
 # ─────────────────────────────────────────────────────────
@@ -902,7 +977,7 @@ def calc_schedule_progress(proj_key, history_detail, budget_headcount):
     }
 
 
-def generate_html(headcount, history, history_detail, timestamp):
+def generate_html(headcount, history, history_detail, timestamp, injured_workers=None, injured_history=None):
     # Helper: get counts for a project
     def get(proj):
         d = headcount.get(proj, {})
@@ -1112,6 +1187,36 @@ def generate_html(headcount, history, history_detail, timestamp):
     lewis_sub_note = f'<div style="font-size:0.65rem;color:#6b46c1;margin-top:2px;">+ {active_lewis_subs} subs</div>' if active_lewis_subs else ''
     lewis_direct_str = str(active_lewis_direct) if active_lewis_direct else '—'
 
+    # ── Injured workers section HTML ──
+    if not injured_workers:
+        injured_workers = []
+    if not injured_history:
+        injured_history = {}
+    inj_count = len(injured_workers)
+    inj_workers_json  = json.dumps(injured_workers,  ensure_ascii=False)
+    inj_history_json  = json.dumps(injured_history,  ensure_ascii=False)
+
+    if inj_count:
+        inj_names = ', '.join(w['name'] for w in injured_workers)
+        inj_section_html = f'''
+  <div class="section-title">Injured Workers — WCB / Modified Duty</div>
+  <div class="injured-card" onclick="openInjuredModal()" title="Click to view details">
+    <div class="injured-header">
+      <div>
+        <div class="injured-label">Current Period — All Crews</div>
+        <div class="injured-count">🩹 {inj_count} worker{'s' if inj_count != 1 else ''} on modified duty</div>
+      </div>
+      <span class="injured-badge">WCB</span>
+    </div>
+    <div class="injured-names">{inj_names}</div>
+  </div>'''
+    else:
+        inj_section_html = '''
+  <div class="section-title">Injured Workers — WCB / Modified Duty</div>
+  <div class="injured-card injured-none">
+    <div class="injured-count" style="color:#38a169">✅ No injured workers this period</div>
+  </div>'''
+
     # ── Prep JSON data for JS ──
     history_json        = json.dumps(history, ensure_ascii=False)
     history_detail_json = json.dumps(history_detail, ensure_ascii=False)
@@ -1293,6 +1398,20 @@ body {{
 .dot-ok {{ background:#38a169; }} .dot-under {{ background:#d69e2e; }}
 .dot-over {{ background:#e53e3e; }} .dot-roster {{ background:#805ad5; }}
 .dot-pending {{ background:#a0aec0; }}
+/* ── Injured workers card ── */
+.injured-card {{
+  background: white; border-radius: 12px; padding: 18px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-left: 4px solid #ed8936;
+  cursor: pointer; transition: box-shadow 0.2s; margin-top: 0;
+}}
+.injured-card:hover {{ box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-1px); }}
+.injured-none {{ cursor: default; }}
+.injured-none:hover {{ box-shadow: 0 1px 4px rgba(0,0,0,0.08); transform: none; }}
+.injured-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }}
+.injured-label {{ font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #718096; }}
+.injured-count {{ font-size: 1rem; font-weight: 700; color: #c05621; margin-top: 3px; }}
+.injured-badge {{ background: #fff3e0; color: #c05621; border-radius: 8px; padding: 4px 10px; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; }}
+.injured-names {{ font-size: 0.75rem; color: #718096; }}
 @media (max-width:600px) {{
   .main {{ padding: 12px 14px; }}
   .summary-bar {{ gap: 16px; padding: 12px 14px; }}
@@ -1420,6 +1539,8 @@ body {{
     </div>
   </div>
 
+  {inj_section_html}
+
   <div class="legend">
     <strong style="font-size:0.65rem;color:#4a5568;">Legend:</strong>
     <div class="legend-item"><div class="dot dot-ok"></div> On budget (≥95%)</div>
@@ -1469,16 +1590,30 @@ body {{
       <div class="modal-note">Hours pulled directly from timesheet entries</div>
     </div>
 
+    <!-- Injured workers view -->
+    <div id="modal-injured-view" style="display:none">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">🩹 Injured Workers — Modified Duty</div>
+          <div class="modal-meta">WCB / On modified duty this period · Hours are totals across all timesheets</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div id="injured-view-body" class="modal-table-wrap"></div>
+    </div>
+
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-const HISTORY        = {history_json};
-const HISTORY_DETAIL = {history_detail_json};
-const BUDGETS        = {budgets_json};
-const BUDGET_PHASES  = {budget_phases_json};
-const PROJ_LABELS    = {proj_labels_json};
+const HISTORY          = {history_json};
+const HISTORY_DETAIL   = {history_detail_json};
+const BUDGETS          = {budgets_json};
+const BUDGET_PHASES    = {budget_phases_json};
+const PROJ_LABELS      = {proj_labels_json};
+const INJURED_WORKERS  = {inj_workers_json};
+const INJURED_HISTORY  = {inj_history_json};  // {{name: [{{date,label,regular,ot}}, ...]}}
 
 let chartInstance = null;
 let currentProjKey = null;
@@ -1674,8 +1809,74 @@ function openDayView(entryIndex) {{
   `;
 }}
 
+// ── Injured workers modal ──────────────────────────────────
+function openInjuredModal() {{
+  document.getElementById('modal-project-view').style.display = 'none';
+  document.getElementById('modal-day-view').style.display     = 'none';
+  document.getElementById('modal-injured-view').style.display = 'block';
+  document.getElementById('modal-overlay').style.display      = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  function fmtH(h) {{ return parseFloat((h||0).toFixed(2)); }}
+  function fmtDate(iso) {{
+    const d = new Date(iso + 'T12:00:00');
+    return d.toLocaleDateString('en-CA', {{month:'short', day:'numeric', weekday:'short'}});
+  }}
+
+  // Build merged set of all worker names (current + history)
+  const allNames = new Set([
+    ...INJURED_WORKERS.map(w => w.name),
+    ...Object.keys(INJURED_HISTORY)
+  ]);
+
+  if (!allNames.size) {{
+    document.getElementById('injured-view-body').innerHTML =
+      '<div class="modal-empty">No injured workers recorded.</div>';
+    return;
+  }}
+
+  const sections = [...allNames].sort().map(name => {{
+    const hist    = (INJURED_HISTORY[name] || []).slice().sort((a,b) => a.date.localeCompare(b.date));
+    const curr    = INJURED_WORKERS.find(w => w.name === name);
+    const totalReg = hist.reduce((s,e) => s+(e.regular||0), 0) + (curr && !hist.length ? (curr.regular||0) : 0);
+    const totalOt  = hist.reduce((s,e) => s+(e.ot||0),      0) + (curr && !hist.length ? (curr.ot||0)      : 0);
+    const totalHrs = fmtH(totalReg + totalOt);
+    const days     = hist.length || (curr ? 1 : 0);
+    const firstDate= hist.length ? fmtDate(hist[0].date) : (curr ? 'This period' : '—');
+    const onNow    = curr ? ' <span style="background:#fff3e0;color:#c05621;border-radius:6px;padding:1px 7px;font-size:0.68rem;font-weight:700">ON MOD NOW</span>' : '';
+
+    const dateRows = hist.map(e => {{
+      const dayHrs = fmtH((e.regular||0)+(e.ot||0));
+      const otBit  = e.ot ? ` <span style="color:#d69e2e;font-size:0.68rem">(+${{fmtH(e.ot)}}h OT)</span>` : '';
+      return `<tr>
+        <td style="color:#718096;font-size:0.78rem">${{fmtDate(e.date)}}</td>
+        <td style="font-size:0.78rem">${{fmtH(e.regular||0)}}h reg${{otBit}}</td>
+        <td style="font-size:0.78rem"><strong>${{dayHrs}}h</strong></td>
+      </tr>`;
+    }}).join('');
+
+    return `
+      <div style="margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #f0f0f0">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+          <div>
+            <span style="font-size:0.95rem;font-weight:700">${{name}}</span>${{onNow}}
+          </div>
+          <div style="text-align:right;font-size:0.72rem;color:#718096">
+            On MOD since <strong style="color:#c05621">${{firstDate}}</strong>
+            &nbsp;·&nbsp; ${{days}} day${{days!==1?'s':''}} recorded
+            &nbsp;·&nbsp; <strong>${{totalHrs}}h total</strong>
+          </div>
+        </div>
+        ${{dateRows ? `<table class="modal-table" style="width:100%"><tbody>${{dateRows}}</tbody></table>` : '<div style="font-size:0.75rem;color:#a0aec0;font-style:italic">No historical entries found — current period only.</div>'}}
+      </div>`;
+  }}).join('');
+
+  document.getElementById('injured-view-body').innerHTML = sections;
+}}
+
 function closeModal() {{
-  document.getElementById('modal-overlay').style.display = 'none';
+  document.getElementById('modal-overlay').style.display      = 'none';
+  document.getElementById('modal-injured-view').style.display = 'none';
   document.body.style.overflow = '';
   if (chartInstance) {{ chartInstance.destroy(); chartInstance = null; }}
 }}
@@ -1706,17 +1907,24 @@ if __name__ == '__main__':
     print(f"Headcount Dashboard Update — {timestamp}")
     print('='*50)
 
-    headcount               = collect_headcount()
-    history, history_detail = collect_history()
+    headcount, injured_workers          = collect_headcount()
+    history, history_detail, injured_history = collect_history()
 
     print("\nHeadcount summary:")
     for proj, counts in headcount.items():
         roster_flag = ' [ROSTER]' if counts.get('roster') else ''
         print(f"  {proj}: {counts.get('direct','?')} direct + {counts.get('subs',0)} subs{roster_flag}")
 
+    if injured_workers:
+        print(f"\n🩹 Injured / Modified duty ({len(injured_workers)} workers):")
+        for w in injured_workers:
+            print(f"  {w['name']}: {w['regular']}h reg + {w['ot']}h OT")
+    else:
+        print("\n✅ No injured workers this period.")
+
     print(f"\nHistory loaded: {sum(len(v) for v in history.values())} data points across {len(history)} projects")
 
-    html = generate_html(headcount, history, history_detail, timestamp)
+    html = generate_html(headcount, history, history_detail, timestamp, injured_workers, injured_history)
     out_path = os.path.join(DASHBOARD_DIR, 'headcount-dashboard.html')
     with open(out_path, 'w', encoding='utf-8') as f:
         f.write(html)
