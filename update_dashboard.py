@@ -18,7 +18,7 @@ DASHBOARD_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Budget headcount for each project (direct crew only, no subs)
 BUDGETS = {
-    "mt1":       2,   # Deveraux MacTaggart Bldg 1 (close-out / window install crew)
+    "mt1":      21,   # Deveraux MacTaggart Bldg 1
     "mt2":      19,   # Deveraux MacTaggart Bldg 2
     "kaskitew": 20,   # Graham Kaskitew
     "covenant": 19,   # Terrace Covenant Health
@@ -186,6 +186,10 @@ ROSTER_ONLY_CREWS = set()
 # List phases in chronological order; each phase applies from 'from' date onward.
 # Projects not listed here use their single BUDGETS value for all dates.
 BUDGET_PHASES = {
+    "mt1": [
+        {"from": "2000-01-01", "budget": 21},   # full crew
+        {"from": "2026-03-01", "budget": 2},    # close-out / window install crew from Mar 1
+    ],
     "mt2": [
         {"from": "2000-01-01", "budget": 7},    # mobilization skeleton crew
         {"from": "2026-03-02", "budget": 19},   # full crew from Mar 2
@@ -792,9 +796,29 @@ def bar_pct(actual, budget):
 #  SCHEDULE / FTE HELPERS
 # ─────────────────────────────────────────────────────────
 
+# Alberta statutory holidays — excluded from elapsed business-day counts.
+# Saturdays that fall on a stat are already worth 0.5 so no special handling needed.
+ALBERTA_STAT_HOLIDAYS: set = {
+    # 2025
+    date(2025, 12, 25),   # Christmas Day
+    date(2025, 12, 26),   # Boxing Day (observed)
+    # 2026
+    date(2026,  1,  1),   # New Year's Day
+    date(2026,  2, 16),   # Family Day        (3rd Monday Feb)
+    date(2026,  4,  3),   # Good Friday
+    date(2026,  5, 18),   # Victoria Day      (Mon before May 25)
+    date(2026,  7,  1),   # Canada Day
+    date(2026,  9,  7),   # Labour Day        (1st Monday Sep)
+    date(2026, 10, 12),   # Thanksgiving      (2nd Monday Oct)
+    date(2026, 11, 11),   # Remembrance Day
+    date(2026, 12, 25),   # Christmas Day
+    date(2026, 12, 28),   # Boxing Day observed (Dec 26 is Sat → Mon Dec 28)
+}
+
 def _business_days_elapsed(start: date, through: date) -> float:
     """Count business days from start through through (inclusive).
     Weekdays = 1.0 each, Saturdays = 0.5 each, Sundays = 0.
+    Alberta statutory holidays on weekdays are skipped (0.0).
     """
     if through < start:
         return 0.0
@@ -802,7 +826,9 @@ def _business_days_elapsed(start: date, through: date) -> float:
     cur = start
     while cur <= through:
         wd = cur.weekday()  # 0=Mon … 6=Sun
-        if wd < 5:          # Mon–Fri
+        if cur in ALBERTA_STAT_HOLIDAYS:
+            pass            # stat holiday — nobody works, don't count
+        elif wd < 5:        # Mon–Fri
             total += 1.0
         elif wd == 5:       # Saturday
             total += 0.5
