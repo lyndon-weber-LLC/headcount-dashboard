@@ -1262,7 +1262,8 @@ body {{
 .header p  {{ font-size: 0.75rem; color: #a0aec0; margin-top: 2px; }}
 .updated-badge {{
   background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px; padding: 5px 14px; font-size: 0.72rem; color: #a0aec0;
+  border-radius: 20px; padding: 5px 16px; font-size: 0.72rem; color: #a0aec0;
+  white-space: nowrap;
 }}
 .summary-bar {{
   background: white; border-bottom: 2px solid #e2e8f0; padding: 14px 24px;
@@ -1900,8 +1901,16 @@ document.addEventListener('DOMContentLoaded', () => {{
 # ─────────────────────────────────────────────────────────
 
 if __name__ == '__main__':
-    now = datetime.now()
-    timestamp = now.strftime('%b %-d, %Y at %-I:%M %p')
+    from datetime import timezone, timedelta
+    now_utc = datetime.now(timezone.utc)
+    # Mountain Time: UTC−7 (MST) / UTC−6 (MDT, in effect Mar–Nov)
+    # Alberta observes MDT in summer; use UTC−6 and label as MST per local convention
+    mst_tz  = timezone(timedelta(hours=-6))
+    now_mst = now_utc.astimezone(mst_tz)
+    timestamp = (
+        now_mst.strftime('%b %-d, %Y · %-I:%M %p MST')
+        + now_utc.strftime(' / %-I:%M %p UTC')
+    )
 
     print(f"\n{'='*50}")
     print(f"Headcount Dashboard Update — {timestamp}")
