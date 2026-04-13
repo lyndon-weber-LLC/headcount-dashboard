@@ -18,7 +18,7 @@ DASHBOARD_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Budget headcount for each project (direct crew only, no subs)
 BUDGETS = {
-    "mt1":      21,   # Deveraux MacTaggart Bldg 1
+    "mt1":       2,   # Deveraux MacTaggart Bldg 1 (close-out / window install crew)
     "mt2":      19,   # Deveraux MacTaggart Bldg 2
     "kaskitew": 20,   # Graham Kaskitew
     "covenant": 19,   # Terrace Covenant Health
@@ -942,11 +942,29 @@ def generate_html(headcount, history, history_detail, timestamp):
 
         # badge text
         if direct is None:
-            if status == 'roster':
+            # Fall back to most recent historical day so wind-down crews
+            # don't appear as "Awaiting timesheet data" when the live sheet
+            # has moved those employees to another project code.
+            proj_hist = history_detail.get(proj_key, {})
+            if proj_hist:
+                last_date = max(proj_hist.keys())
+                last_day  = proj_hist[last_date]
+                direct    = len(last_day.get('direct', []))
+                status    = status_class(direct, budget, roster=roster)
+                gap       = direct - budget
+                if gap == 0:   badge_txt, badge_cls = 'On budget ✓ (last recorded)',          'badge-ok'
+                elif gap > 0:  badge_txt, badge_cls = f'+{gap} over budget (last recorded)',   'badge-over'
+                else:          badge_txt, badge_cls = f'{abs(gap)} under budget (last recorded)', 'badge-under'
+                actual_str  = str(direct)
+                color_class = {'ok':'green','under':'yellow','over':'red'}.get(status,'gray')
+                bar_w       = bar_pct(direct, budget)
+                bar_cls     = {'ok':'fill-ok','under':'fill-under','over':'fill-over'}.get(status,'fill-pending')
+            elif status == 'roster':
                 badge_txt = f'Roster count — {abs(direct - budget) if direct else "?"} under budget'
+                badge_cls = 'badge-roster'
             else:
                 badge_txt = 'Awaiting timesheet data'
-            badge_cls = 'badge-pending' if status not in ('roster',) else 'badge-roster'
+                badge_cls = 'badge-pending'
         else:
             gap = direct - budget
             if gap == 0:   badge_txt, badge_cls = 'On budget ✓',         'badge-ok'
