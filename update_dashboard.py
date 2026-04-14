@@ -443,11 +443,14 @@ def collect_history():
     daily = defaultdict(lambda: defaultdict(lambda: {'direct': 0, 'subs': 0}))
     seen  = set()   # (date_iso, crew_id) already contributed
 
-    # Process in original insertion order (historical files first).
-    # Historical files claim dates where they have real hours, protecting past data
-    # from being overridden by live sheet edits.  Dates with zero hours in a
-    # historical file are NOT claimed, so the live download can fill them in.
-    for (crew_id, period_key), f in best_files.items():
+    # Process live files FIRST so they always win on recent dates, then let
+    # historical files fill in older dates that live data doesn't cover.
+    # Within each group, sort by period date so newest historical file wins.
+    sorted_files = sorted(
+        best_files.items(),
+        key=lambda x: (0 if x[0][1].year > 9000 else 1, x[0][1])
+    )
+    for (crew_id, period_key), f in sorted_files:
         is_live = period_key.year > 9000   # live files use datetime(9999,12,31)
         name = os.path.basename(f)
         try:
