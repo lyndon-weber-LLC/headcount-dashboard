@@ -120,10 +120,19 @@ JOB_CODE_MAP = {
     "cove b 6":          "ls6",
     "cove building 6":   "ls6",
     "cove b6,":          "ls6",
+    "ls#6":              "ls6",
+    "ls# 6":             "ls6",
+    "ls 6":              "ls6",
+    "ls#19":             "ls19",
+    "ls# 19":            "ls19",
+    "ls 19":             "ls19",
     "cove b17":          "ls17",
     "cove b 17":         "ls17",
     "cove building 17":  "ls17",
     "cove b17,":         "ls17",
+    "ls#17":             "ls17",
+    "ls# 17":            "ls17",
+    "ls 17":             "ls17",
     "cove b2":           "ls2",
     "cove building 2":   "ls2",
     "cove 2":            "ls2",
@@ -1498,7 +1507,7 @@ body {{
 
 <div class="summary-bar">
   <div class="stat">
-    <div class="val">{known_actual}*</div>
+    <div class="val">{known_actual}</div>
     <div class="lbl">Direct Crew On Site</div>
   </div>
   <div class="divider"></div>
@@ -1508,7 +1517,7 @@ body {{
   </div>
   <div class="divider"></div>
   <div class="stat">
-    <div class="val {diff_color}">{diff_str}*</div>
+    <div class="val {diff_color}">{diff_str}</div>
     <div class="lbl">Variance</div>
   </div>
   <div class="divider"></div>
@@ -1520,9 +1529,6 @@ body {{
   <div class="stat">
     <div class="val gray">5</div>
     <div class="lbl">Active Projects</div>
-  </div>
-  <div style="flex-basis:100%;font-size:0.62rem;color:#a0aec0;margin-top:-4px;">
-    * Kaskitew, Covenant Health, and LS #19 awaiting timesheet data — excluded from totals until entries appear
   </div>
 </div>
 
