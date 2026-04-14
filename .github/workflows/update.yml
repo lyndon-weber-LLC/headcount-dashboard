@@ -2,19 +2,22 @@ name: Update Headcount Dashboard
 
 on:
   schedule:
+    # Runs Mon–Fri at 12:00 UTC = 6:00 AM MDT (UTC-6)
     - cron: '0 12 * * 1-5'
-  workflow_dispatch:
+  workflow_dispatch:   # ← also allows a manual "Run workflow" button in GitHub UI
 
 jobs:
   update:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write   # allows the job to commit & push back to the repo
 
     steps:
+      # ── 1. Check out the repo ────────────────────────────────────────────────
       - name: Check out repo
         uses: actions/checkout@v4
 
+      # ── 2. Download fresh timesheets from Google Sheets ──────────────────────
       - name: Download live timesheets
         run: |
           mkdir -p data/live
@@ -51,7 +54,7 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv" \
             -o "data/live/Devon Mcinroy Timesheet(December 31, 9999).csv"
 
-          echo "→ Hayden & Devon"
+          echo "→ Hayden & Devon (main crew)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv" \
             -o "data/live/Hayden Timesheet(December 31, 9999).csv"
 
@@ -65,17 +68,16 @@ jobs:
 
           echo "✅ All timesheets downloaded"
 
+      # ── 3. Run the Python script ─────────────────────────────────────────────
       - name: Generate dashboard HTML
         run: python update_dashboard.py
 
-      - name: Copy dashboard to index.html
-        run: cp headcount-dashboard.html index.html
-
+      # ── 4. Commit updated files back to the repo ─────────────────────────────
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html data/live/
+          git add index.html update_dashboard.py data/live/
           git diff --staged --quiet \
             && echo "No changes to commit" \
             || (git commit -m "Dashboard auto-update $(date +'%Y-%m-%d')" && git push)
