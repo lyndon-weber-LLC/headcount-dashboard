@@ -1294,7 +1294,7 @@ body {{
   transition: box-shadow 0.2s;
 }}
 .card:hover {{ box-shadow: 0 4px 16px rgba(0,0,0,0.12); }}
-.card.ok      { border-left-color: #c9a84c; }
+.card.ok      {{ border-left-color: #c9a84c; }}
 .card.under   {{ border-left-color: #d69e2e; }}
 .card.over    {{ border-left-color: #e53e3e; }}
 .card.pending {{ border-left-color: #a0aec0; }}
@@ -1374,7 +1374,7 @@ body {{
   background: #f7fafc; border-radius: 9px; padding: 12px 14px;
   border-left: 3px solid #cbd5e0;
 }}
-.bldg.ok    { border-left-color: #c9a84c; }
+.bldg.ok    {{ border-left-color: #c9a84c; }}
 .bldg.under {{ border-left-color: #d69e2e; }}
 .bldg.over  {{ border-left-color: #e53e3e; }}
 .bldg.done  {{ border-left-color: #e2e8f0; opacity: 0.6; }}
@@ -1392,7 +1392,7 @@ body {{
 .mini-bar-wrap {{ height: 4px; background: #e2e8f0; border-radius: 2px; margin-top: 6px; overflow: hidden; }}
 .mini-bar-fill {{ height: 100%; border-radius: 2px; }}
 .bldg-status {{ font-size: 0.63rem; margin-top: 5px; font-weight: 600; }}
-.bldg-status.ok    { color: #c9a84c; }
+.bldg-status.ok    {{ color: #c9a84c; }}
 .bldg-status.under {{ color: #d69e2e; }}
 .bldg-status.over  {{ color: #e53e3e; }}
 .bldg-status.done  {{ color: #a0aec0; }}
@@ -1403,7 +1403,7 @@ body {{
 }}
 .legend-item {{ display: flex; align-items: center; gap: 5px; }}
 .dot {{ width: 10px; height: 10px; border-radius: 50%; }}
-.dot-ok { background:#c9a84c; } .dot-under {{ background:#d69e2e; }}
+.dot-ok {{ background:#c9a84c; }} .dot-under {{ background:#d69e2e; }}
 .dot-over {{ background:#e53e3e; }} .dot-roster {{ background:#805ad5; }}
 .dot-pending {{ background:#a0aec0; }}
 /* ── Injured workers card ── */
@@ -1944,11 +1944,11 @@ if __name__ == '__main__':
     print(f"\nHistory loaded: {sum(len(v) for v in history.values())} data points across {len(history)} projects")
 
     html = generate_html(headcount, history, history_detail, timestamp, injured_workers, injured_history)
-    out_path = os.path.join(DASHBOARD_DIR, 'headcount-dashboard.html')
+    out_path = os.path.join(DASHBOARD_DIR, 'index.html')
     with open(out_path, 'w', encoding='utf-8') as f:
         f.write(html)
 
-    print(f"\n✅ Dashboard written to: {out_path}")
+    print(f"\n✅ Dashboard written to: {out_path} (index.html for GitHub Pages)")
 
     # ── Flag unrecognized job codes ──────────────────────────
     if _unknown_jobs:
