@@ -223,16 +223,23 @@ WE_PANEL_RE = re.compile(r'^w(?:e)?\s+panel$', re.I)
 WE_PANEL_INLINE_RE = re.compile(r'^w(?:e)?\s+panel\s*\((.+)\)$', re.I)
 # Matches job codes with hours embedded, e.g. "cantiro-5h", "gram-4.5h" — strip and normalize
 JOB_HOURS_RE = re.compile(r'^(.+?)-[\d.]+h$', re.I)
+# Entries that terminate an employee — actively remove them from the roster
+# so they no longer count toward any project headcount.
+TERMINATION_VALS = {
+    'quit', 'fired', 'terminated', 'let go', 'no longer with us',
+    'last day', 'last day 02', 'last day 2026-03-13', 'fired 02',
+    'moved to',   # catches "Moved to Cory", "moved to Graham", "*moved to graham", etc.
+    'on leave', 'leave of absence', 'loa',  # temporarily off — removed from count until they return
+}
 SKIP_VALS = {
     '0', '0.0', '', 'regular:', 'ot:', 'total hours:', 'name:', 'summary',
     'in', 'out', 'sick', 'n/a', 'modified', 'overhead', 'stat', 'vacation',
-    'training', 'jury duty', 'bereavement', 'wfh', 'quit', 'off',
+    'training', 'jury duty', 'bereavement', 'wfh', 'off',
     # Additional absence/status entries found in timesheets
     'booked off', 'called in', 'called in sick', 'cold day', 'cold day off',
-    'day off', 'mod', 'modidied', 'no longer with us', 'no show', 'on leave',
+    'day off', 'mod', 'modidied', 'no show',
     'injured', 'at school', 'meetings', 'ehs orientation', 'hso',
     '/','*moved to graham', 'use this timesheet going forward',
-    'last day 02', 'last day 2026-03-13', 'fired 02',
     'good friday',  # statutory holiday
     'please use this timesheet going forward for yourself.',  # admin note in job cell
 }
@@ -340,6 +347,11 @@ def parse_sheet_for_history(path):
                         injured_day[name] = {'regular': 0.0, 'ot': 0.0}
                     injured_day[name]['regular'] += _hrs(3)
                     injured_day[name]['ot']      += _hrs(4)
+                    continue
+
+                # ── Termination — skip this day entry entirely ──
+                jl = raw_job.lower()
+                if any(t in jl for t in TERMINATION_VALS):
                     continue
 
                 if raw_job.lower() in SKIP_VALS:
@@ -601,6 +613,11 @@ def parse_sheet(path):
                                             'regular': 0.0, 'ot': 0.0}
                 injured_workers[col]['regular'] += _hrs_mod(3)
                 injured_workers[col]['ot']      += _hrs_mod(4)
+                continue
+
+            # ── Termination check — remove from roster entirely ──
+            if raw_job and any(t in jl for t in TERMINATION_VALS):
+                last_job.pop(col, None)
                 continue
 
             if (raw_job
