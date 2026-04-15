@@ -231,17 +231,32 @@ TERMINATION_VALS = {
     'moved to',   # catches "Moved to Cory", "moved to Graham", "*moved to graham", etc.
     'on leave', 'leave of absence', 'loa',  # temporarily off — removed from count until they return
 }
+# Absence entries that appear in drilldown with a status badge (no hours counted)
+ABSENCE_STATUSES = {
+    'sick': 'sick', 'called in': 'sick', 'called in sick': 'sick',
+    'off': 'off', 'day off': 'off', 'booked off': 'off', 'vacation': 'off',
+    'cold day': 'off', 'cold day off': 'off', 'wfh': 'off',
+    'training': 'off', 'jury duty': 'off', 'bereavement': 'off',
+    'stat': 'off', 'no show': 'off',
+}
+# All absence keys are also added to SKIP_VALS so normalize_job() doesn't flag them as unknown
+# (the absence logic in parse_sheet / parse_sheet_for_history catches them directly via jl lookup)
 SKIP_VALS = {
     '0', '0.0', '', 'regular:', 'ot:', 'total hours:', 'name:', 'summary',
-    'in', 'out', 'sick', 'n/a', 'modified', 'overhead', 'stat', 'vacation',
-    'training', 'jury duty', 'bereavement', 'wfh', 'off',
-    # Additional absence/status entries found in timesheets
-    'booked off', 'called in', 'called in sick', 'cold day', 'cold day off',
-    'day off', 'mod', 'modidied', 'no show',
+    'in', 'out', 'n/a', 'modified', 'overhead',
+    # Additional non-project entries
+    'mod', 'modidied',
     'injured', 'at school', 'meetings', 'ehs orientation', 'hso',
     '/','*moved to graham', 'use this timesheet going forward',
     'good friday',  # statutory holiday
     'please use this timesheet going forward for yourself.',  # admin note in job cell
+    # Absence/status values — handled by ABSENCE_STATUSES logic; silenced here so they
+    # don't appear in the unknown-jobs report
+    'sick', 'called in', 'called in sick',
+    'off', 'day off', 'booked off', 'vacation',
+    'cold day', 'cold day off', 'wfh',
+    'training', 'jury duty', 'bereavement',
+    'stat', 'no show',
 }
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
@@ -314,11 +329,14 @@ def parse_sheet_for_history(path):
         date_rows.setdefault(date_iso, []).append(row)
         date_labels[date_iso] = date_label
 
+    # Tracks each employee's most recent project across dates (for absence assignment)
+    current_project = {}   # col -> proj_key
+
     day_entries = []
     for date_iso in sorted(date_rows.keys()):
         seen_assignments = set()
         proj_counts  = defaultdict(lambda: {'direct': 0, 'subs': 0})
-        # detail: proj -> {col -> {'name', 'is_sub', 'regular', 'ot'}}
+        # detail: proj -> {col -> {'name', 'is_sub', 'regular', 'ot', 'prefab', 'status'}}
         proj_detail  = defaultdict(dict)
         # injured: name -> {'regular', 'ot'} for this day
         injured_day  = {}
@@ -349,12 +367,26 @@ def parse_sheet_for_history(path):
                     injured_day[name]['ot']      += _hrs(4)
                     continue
 
-                # ── Termination — skip this day entry entirely ──
                 jl = raw_job.lower()
+
+                # ── Termination — clear from current_project and skip ──
                 if any(t in jl for t in TERMINATION_VALS):
+                    current_project.pop(col, None)
                     continue
 
-                if raw_job.lower() in SKIP_VALS:
+                # ── Absence — show in drilldown with status badge, no hours counted ──
+                absence_status = ABSENCE_STATUSES.get(jl)
+                if absence_status and col in current_project:
+                    proj = current_project[col]
+                    if col not in proj_detail[proj]:
+                        proj_detail[proj][col] = {
+                            'name': name, 'is_sub': is_sub,
+                            'regular': 0.0, 'ot': 0.0,
+                            'prefab': False, 'status': absence_status,
+                        }
+                    continue
+
+                if jl in SKIP_VALS:
                     continue
 
                 regular = _hrs(3)
@@ -381,6 +413,10 @@ def parse_sheet_for_history(path):
                     if proj:
                         valid_projs.append(proj)
 
+                # Update current_project for the first valid project found
+                if valid_projs and not is_sub:
+                    current_project[col] = valid_projs[0]
+
                 # Split hours evenly across all valid projects
                 n_projs       = max(len(valid_projs), 1)
                 split_regular = round(regular / n_projs, 2)
@@ -398,7 +434,7 @@ def parse_sheet_for_history(path):
                         proj_detail[proj][col] = {
                             'name': name, 'is_sub': is_sub,
                             'regular': 0.0, 'ot': 0.0,
-                            'prefab': is_prefab,
+                            'prefab': is_prefab, 'status': None,
                         }
                     proj_detail[proj][col]['regular'] += split_regular
                     proj_detail[proj][col]['ot']      += split_ot
@@ -1810,9 +1846,25 @@ function openDayView(entryIndex) {{
     return hdr + body;
   }}
 
-  const onSite  = detail.direct.filter(e => !e.prefab);
-  const prefabs = detail.direct.filter(e =>  e.prefab);
-  const dirTotal    = fmtH(detail.direct.reduce((s,e) => s + (e.regular||0) + (e.ot||0), 0));
+  function absentRows(list) {{
+    const statusStyle = {{
+      sick: 'background:#fff5f5;color:#c53030;border:1px solid #fed7d7',
+      off:  'background:#f7fafc;color:#4a5568;border:1px solid #e2e8f0',
+    }};
+    return list.map(emp => {{
+      const st = emp.status || 'off';
+      const badge = `<span style="font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;${{statusStyle[st] || statusStyle.off}}">${{st}}</span>`;
+      return `<tr>
+        <td style="color:#4a5568">${{emp.name}}</td>
+        <td colspan="3">${{badge}}</td>
+      </tr>`;
+    }}).join('');
+  }}
+
+  const onSite  = detail.direct.filter(e => !e.prefab && !e.status);
+  const prefabs = detail.direct.filter(e =>  e.prefab && !e.status);
+  const absent  = detail.direct.filter(e =>  e.status);
+  const dirTotal    = fmtH(detail.direct.filter(e => !e.status).reduce((s,e) => s + (e.regular||0) + (e.ot||0), 0));
   const subTotal    = fmtH(detail.subs.reduce((s,e)   => s + (e.regular||0) + (e.ot||0), 0));
   const prefabTotal = fmtH(prefabs.reduce((s,e)        => s + (e.regular||0) + (e.ot||0), 0));
   const onSiteTotal = fmtH(dirTotal - prefabTotal);
@@ -1824,6 +1876,15 @@ function openDayView(entryIndex) {{
         <span class="day-section-count">${{prefabs.length}} people · ${{prefabTotal}}h total</span>
       </div>
       <table class="modal-table">${{empRows(prefabs)}}</table>
+    </div>` : '';
+
+  const absentSection = absent.length ? `
+    <div class="day-section" style="margin-top:14px">
+      <div class="day-section-hdr" style="color:#718096">
+        🏠 Not On Site
+        <span class="day-section-count">${{absent.length}} ${{absent.length === 1 ? 'person' : 'people'}}</span>
+      </div>
+      <table class="modal-table"><tr><th>Name</th><th colspan="3">Status</th></tr>${{absentRows(absent)}}</table>
     </div>` : '';
 
   document.getElementById('day-view-body').innerHTML = `
@@ -1843,6 +1904,7 @@ function openDayView(entryIndex) {{
       </div>
       <table class="modal-table">${{empRows(detail.subs)}}</table>
     </div>` : ''}}
+    ${{absentSection}}
   `;
 }}
 
