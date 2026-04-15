@@ -423,6 +423,13 @@ def parse_sheet_for_history(path):
                             'regular': 0.0, 'ot': 0.0,
                             'prefab': False, 'status': absence_status,
                         }
+                        # Count absent employees toward the day's headcount
+                        if (col, proj) not in seen_assignments:
+                            seen_assignments.add((col, proj))
+                            if is_sub:
+                                proj_counts[proj]['subs'] += 1
+                            else:
+                                proj_counts[proj]['direct'] += 1
                     continue
 
                 if jl in SKIP_VALS:
