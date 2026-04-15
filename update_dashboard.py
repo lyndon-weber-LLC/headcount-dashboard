@@ -233,8 +233,11 @@ TERMINATION_VALS = {
 }
 # Absence entries that appear in drilldown with a status badge (no hours counted)
 ABSENCE_STATUSES = {
-    'sick': 'sick', 'called in': 'sick', 'called in sick': 'sick',
-    'off': 'off', 'day off': 'off', 'booked off': 'off', 'vacation': 'off',
+    'sick': 'sick', 'sick day': 'sick', 'sick days': 'sick',
+    'called in': 'sick', 'called in sick': 'sick',
+    'covid': 'sick', 'flu': 'sick',
+    'off': 'off', 'day off': 'off', 'days off': 'off',
+    'booked off': 'off', 'vacation': 'off',
     'cold day': 'off', 'cold day off': 'off', 'wfh': 'off',
     'training': 'off', 'jury duty': 'off', 'bereavement': 'off',
     'stat': 'off', 'no show': 'off',
@@ -252,8 +255,8 @@ SKIP_VALS = {
     'please use this timesheet going forward for yourself.',  # admin note in job cell
     # Absence/status values — handled by ABSENCE_STATUSES logic; silenced here so they
     # don't appear in the unknown-jobs report
-    'sick', 'called in', 'called in sick',
-    'off', 'day off', 'booked off', 'vacation',
+    'sick', 'sick day', 'sick days', 'called in', 'called in sick', 'covid', 'flu',
+    'off', 'day off', 'days off', 'booked off', 'vacation',
     'cold day', 'cold day off', 'wfh',
     'training', 'jury duty', 'bereavement',
     'stat', 'no show',
@@ -329,8 +332,37 @@ def parse_sheet_for_history(path):
         date_rows.setdefault(date_iso, []).append(row)
         date_labels[date_iso] = date_label
 
-    # Tracks each employee's most recent project across dates (for absence assignment)
-    current_project = {}   # col -> proj_key
+    # Pre-scan: seed current_project with the last valid project seen for each employee
+    # in this file.  This handles employees who are sick for the entire current pay period
+    # — without this, col would never appear in current_project and the absence would be
+    # silently dropped.  The main loop below still updates current_project as it runs, so
+    # project switches mid-period are tracked correctly.
+    current_project = {}
+    for _date_pre in sorted(date_rows.keys()):
+        for _row_pre in date_rows[_date_pre]:
+            for _col, _name, _is_sub in employees:
+                if _col >= len(_row_pre) or _is_sub:
+                    continue
+                _raw = _row_pre[_col].strip()
+                if not _raw:
+                    continue
+                _jl = _raw.lower()
+                if (_jl in SKIP_VALS
+                        or is_mod_entry(_raw)
+                        or ABSENCE_STATUSES.get(_jl)
+                        or any(t in _jl for t in TERMINATION_VALS)):
+                    continue
+                for _part in [p.strip() for p in _raw.split('/')]:
+                    _pl = _part.lower()
+                    if (not _part or _pl in SKIP_VALS
+                            or NUMERIC.match(_part) or TIME_RE.match(_part)
+                            or WE_PANEL_RE.match(_part)):
+                        continue
+                    _m = WE_PANEL_INLINE_RE.match(_part)
+                    _pkey = normalize_job(_m.group(1).strip() if _m else _part)
+                    if _pkey:
+                        current_project[_col] = _pkey
+                        break
 
     day_entries = []
     for date_iso in sorted(date_rows.keys()):
@@ -346,6 +378,13 @@ def parse_sheet_for_history(path):
                 if col >= len(row):
                     continue
                 raw_job = row[col].strip()
+                if not raw_job:
+                    # Fallback: some employees write absence status one cell to the right
+                    # of the job column instead of in it — check col+1 for absence entries only.
+                    if col + 1 < len(row):
+                        adj = row[col + 1].strip()
+                        if adj and ABSENCE_STATUSES.get(adj.lower()):
+                            raw_job = adj
                 if not raw_job:
                     continue
 
