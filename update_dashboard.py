@@ -79,6 +79,21 @@ FILE_CREW_MAP = {
     "Dave":       "dave",
 }
 
+# Human-readable crew labels used in drilldown "Crew" column
+CREW_DISPLAY_NAMES = {
+    'carlisle':      'Alex & Sam',
+    'hayden':        'Hayden & Devon',
+    'alex':          'Alex W',
+    'vadym':         'Vadym',
+    'dave':          'Dave',
+    'rob':           'Cory',
+    'chad':          'Chad',
+    'alex_subs':     'Alex W',
+    'chad_subs':     'Chad',
+    'samantha_subs': 'Sam',
+    'devon_subs':    'Devon',
+}
+
 # ── Google Sheets integration ──────────────────────────────
 # Sheet IDs for sub crew timesheets hosted in Google Sheets.
 # Drop a credentials JSON (service account) into DASHBOARD_DIR and these
@@ -120,9 +135,24 @@ JOB_CODE_MAP = {
     "cove b 6":          "ls6",
     "cove building 6":   "ls6",
     "cove b6,":          "ls6",
+    "ls#2":              "ls2",
+    "ls# 2":             "ls2",
+    "ls 2":              "ls2",
+    "ls#3":              "ls3",
+    "ls# 3":             "ls3",
+    "ls 3":              "ls3",
+    "ls#4":              "ls4",
+    "ls# 4":             "ls4",
+    "ls 4":              "ls4",
+    "ls#5":              "ls5",
+    "ls# 5":             "ls5",
+    "ls 5":              "ls5",
     "ls#6":              "ls6",
     "ls# 6":             "ls6",
     "ls 6":              "ls6",
+    "ls#18":             "ls18",
+    "ls# 18":            "ls18",
+    "ls 18":             "ls18",
     "ls#19":             "ls19",
     "ls# 19":            "ls19",
     "ls 19":             "ls19",
@@ -582,12 +612,15 @@ def collect_history():
                 daily[date_iso][proj]['direct'] += counts['direct']
                 daily[date_iso][proj]['subs']   += counts['subs']
             # Merge detail (per-employee hours) — crew-keyed to avoid dups
+            crew_label = CREW_DISPLAY_NAMES.get(crew_id, crew_id)
             for proj, emp_data in detail_out.items():
                 key2 = f'__detail__{proj}'
                 if key2 not in daily[date_iso]:
                     daily[date_iso][key2] = {'direct': [], 'subs': []}   # type: ignore
-                daily[date_iso][key2]['direct'].extend(emp_data.get('direct', []))  # type: ignore
-                daily[date_iso][key2]['subs'].extend(emp_data.get('subs', []))      # type: ignore
+                for emp in emp_data.get('direct', []):
+                    daily[date_iso][key2]['direct'].append(dict(emp, crew=crew_label))  # type: ignore
+                for emp in emp_data.get('subs', []):
+                    daily[date_iso][key2]['subs'].append(dict(emp, crew=crew_label))    # type: ignore
             # Merge injured workers for this date (accumulate hours by name)
             inj_key = '__injured__'
             if inj_key not in daily[date_iso]:
@@ -1877,13 +1910,19 @@ function openDayView(entryIndex) {{
 
   function empRows(list) {{
     if (!list.length) return '<tr><td colspan="4" style="color:#a0aec0;font-style:italic;padding:8px 12px">None recorded</td></tr>';
-    let hdr = `<tr><th>Name</th><th>Regular</th><th>OT</th><th>Total</th></tr>`;
+    const crews = new Set(list.map(e => e.crew).filter(Boolean));
+    const showCrew = crews.size > 1;
+    let hdr = showCrew
+      ? `<tr><th>Name</th><th>Crew</th><th>Regular</th><th>OT</th><th>Total</th></tr>`
+      : `<tr><th>Name</th><th>Regular</th><th>OT</th><th>Total</th></tr>`;
     let body = list.map(emp => {{
       const tot = fmtH((emp.regular||0) + (emp.ot||0));
       const otTxt = emp.ot ? '<span style="color:#d69e2e;font-weight:600">'+fmtH(emp.ot)+'h OT</span>' : '—';
       const prefabBadge = emp.prefab ? ' <span style="font-size:0.6rem;background:#ebf8ff;color:#2b6cb0;padding:1px 5px;border-radius:8px;font-weight:600">PREFAB</span>' : '';
+      const crewCell = showCrew ? `<td style="color:#718096;font-size:0.8rem">${{emp.crew||'—'}}</td>` : '';
       return `<tr>
         <td>${{emp.name}}${{prefabBadge}}</td>
+        ${{crewCell}}
         <td>${{fmtH(emp.regular||0)}}h</td>
         <td>${{otTxt}}</td>
         <td><strong>${{tot}}h</strong></td>
@@ -1892,7 +1931,7 @@ function openDayView(entryIndex) {{
     return hdr + body;
   }}
 
-  function absentRows(list) {{
+  function absentRows(list, showCrew) {{
     const statusStyle = {{
       sick: 'background:#fff5f5;color:#c53030;border:1px solid #fed7d7',
       off:  'background:#f7fafc;color:#4a5568;border:1px solid #e2e8f0',
@@ -1900,9 +1939,11 @@ function openDayView(entryIndex) {{
     return list.map(emp => {{
       const st = emp.status || 'off';
       const badge = `<span style="font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;${{statusStyle[st] || statusStyle.off}}">${{st}}</span>`;
+      const crewCell = showCrew ? `<td style="color:#718096;font-size:0.8rem">${{emp.crew||'—'}}</td>` : '';
       return `<tr>
         <td style="color:#4a5568">${{emp.name}}</td>
-        <td colspan="3">${{badge}}</td>
+        ${{crewCell}}
+        <td colspan="${{showCrew ? 2 : 3}}">${{badge}}</td>
       </tr>`;
     }}).join('');
   }}
@@ -1915,6 +1956,11 @@ function openDayView(entryIndex) {{
   const prefabTotal = fmtH(prefabs.reduce((s,e)        => s + (e.regular||0) + (e.ot||0), 0));
   const onSiteTotal = fmtH(dirTotal - prefabTotal);
 
+  // Show crew column only when multiple crews contributed to this day
+  const allDirect = detail.direct.concat(detail.subs);
+  const crewsPresent = new Set(allDirect.map(e => e.crew).filter(Boolean));
+  const showCrew = crewsPresent.size > 1;
+
   const prefabSection = prefabs.length ? `
     <div class="day-section" style="margin-top:14px">
       <div class="day-section-hdr" style="color:#2b6cb0">
@@ -1924,13 +1970,16 @@ function openDayView(entryIndex) {{
       <table class="modal-table">${{empRows(prefabs)}}</table>
     </div>` : '';
 
+  const absentHdr = showCrew
+    ? `<tr><th>Name</th><th>Crew</th><th colspan="2">Status</th></tr>`
+    : `<tr><th>Name</th><th colspan="3">Status</th></tr>`;
   const absentSection = absent.length ? `
     <div class="day-section" style="margin-top:14px">
       <div class="day-section-hdr" style="color:#718096">
         🏠 Not On Site
         <span class="day-section-count">${{absent.length}} ${{absent.length === 1 ? 'person' : 'people'}}</span>
       </div>
-      <table class="modal-table"><tr><th>Name</th><th colspan="3">Status</th></tr>${{absentRows(absent)}}</table>
+      <table class="modal-table">${{absentHdr}}${{absentRows(absent, showCrew)}}</table>
     </div>` : '';
 
   document.getElementById('day-view-body').innerHTML = `
