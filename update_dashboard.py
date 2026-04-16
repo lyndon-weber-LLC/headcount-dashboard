@@ -294,6 +294,20 @@ SKIP_VALS = {
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
 
+# Matches "Cove Building 19/5" or "Cove B 19/5/3" — bare numbers after the first
+# building reference are expanded to the full prefix so they normalize correctly.
+# e.g. "Cove Building 19/5" → "Cove Building 19/Cove Building 5"
+_MULTI_BLDG_RE = re.compile(r'^(Cove\s+B(?:uilding)?\s+)(\d+)((?:/\d+)+)$', re.I)
+
+def expand_multi_building(raw):
+    """Expand shorthand like 'Cove Building 19/5' into full slash-separated codes."""
+    m = _MULTI_BLDG_RE.match(raw.strip())
+    if m:
+        prefix, first, rest = m.group(1), m.group(2), m.group(3).lstrip('/')
+        extras = '/'.join(f'{prefix}{p}' for p in rest.split('/'))
+        return f'{prefix}{first}/{extras}'
+    return raw
+
 # Matches MOD / Modified / Modified duty / Modified duties (and common typos)
 MOD_RE = re.compile(r'^mod(?:i(?:f(?:i?ed?)|died?)?)?\s*(?:dut(?:y|ies))?$', re.I)
 
@@ -382,7 +396,7 @@ def parse_sheet_for_history(path):
                         or ABSENCE_STATUSES.get(_jl)
                         or any(t in _jl for t in TERMINATION_VALS)):
                     continue
-                for _part in [p.strip() for p in _raw.split('/')]:
+                for _part in [p.strip() for p in expand_multi_building(_raw).split('/')]:
                     _pl = _part.lower()
                     if (not _part or _pl in SKIP_VALS
                             or NUMERIC.match(_part) or TIME_RE.match(_part)
@@ -469,7 +483,7 @@ def parse_sheet_for_history(path):
                 ot      = _hrs(4)
 
                 # Check if any part is "We Panel" — marks this as prefab work
-                parts = [p.strip() for p in raw_job.split('/')]
+                parts = [p.strip() for p in expand_multi_building(raw_job).split('/')]
                 is_prefab = any(WE_PANEL_RE.match(p) or WE_PANEL_INLINE_RE.match(p) for p in parts)
 
                 # First pass: collect all valid projects so we can split hours evenly
@@ -741,7 +755,7 @@ def parse_sheet(path):
                     and not TIME_RE.match(raw_job)):
                 # Handle slash-separated multi-project entries — take first valid project
                 # "We Panel" is a work-type modifier, not a project — skip it
-                for part in raw_job.split('/'):
+                for part in expand_multi_building(raw_job).split('/'):
                     part = part.strip()
                     pl   = part.lower()
                     if not part or pl in SKIP_VALS or NUMERIC.match(part) or TIME_RE.match(part):
