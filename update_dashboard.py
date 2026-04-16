@@ -1104,7 +1104,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     ]
 
     lewis_buildings = [
-        ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   False),
+        ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   True),
         ('ls17', 'Building #17 ⚡',"Alex W's Crew", 'Mar 18 – Apr 29',  False),
         ('ls19', 'Building #19 ⚡',"Hayden's Crew", 'Mar 2 – Mar 27',   True),
         ('ls2',  'Building #2',    "Hayden's Crew", 'Jan 26 – Feb 27',  True),
