@@ -3,7 +3,7 @@
 ,,,,,,
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
-,"Thursday, April 16, 2026",,,,,
+,"Thursday, April 16, 2026",terrace,630,530,10.5,
 ,"Friday, April 17, 2026",,,,,
 ,"Saturday, April 18, 2026",,,,,
 ,,,,,,
@@ -28,7 +28,17 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,0,OT:,0
+,,Total Hours:,Regular:,10.5,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,0,0,1,,
+,Devon McInroy - S,10.5,0,1,Cove,0
+,,,,,Lewis 2,0
+,,,,,Lewis 4/2,0
+,,,,,Lewis 4,0
+,,,,,terrace,10.5
+,,,,,MT1,0
+,,,,,MT2,0
+,,,,,Cantiro,0
+,,,,,LLMP,0
+,,,,,,10.5
+,,,,,,0
