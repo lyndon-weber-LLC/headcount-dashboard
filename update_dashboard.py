@@ -60,6 +60,7 @@ PROJECT_SCHEDULE = {
 FILE_CREW_MAP = {
     # Sub sheets — more specific names first so they match before shorter keywords
     "Alex Weber - Subs": "alex_subs",
+    "Alex Weber - S":    "alex_subs",   # shortened filename variant
     "Chad Hjemeland":    "chad_subs",    # CSV export naming
     "Chad Hjelmeland":   "chad_subs",    # alternate spelling
     "Chad - Subs":       "chad_subs",

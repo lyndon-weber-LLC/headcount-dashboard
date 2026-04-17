@@ -18,6 +18,16 @@ jobs:
         uses: actions/checkout@v4
 
       # ── 2. Download fresh timesheets from Google Sheets ──────────────────────
+      # Naming convention for live files:
+      #   (December 31, 9999) — current pay period tab (always wins on date conflicts)
+      #   (December 30, 9999) — previous pay period tab (fills gap before current period)
+      # Both year-9999 dates are treated as "live" by _extract_file_date() so they
+      # skip the zero-hours guard that applies to historical CSVs.
+      #
+      # !! PAY PERIOD ROLLOVER — UPDATE THESE GIDS !!
+      # Subs:      1st–15th  /  16th–last day   → update Previous tab gids each month
+      # Employees: 9th–23rd  /  24th–8th        → update Previous tab gids each cycle
+      # To find a gid: open the sheet, click the tab, copy the #gid= value from the URL.
       - name: Download live timesheets
         run: |
           mkdir -p data/live
@@ -26,17 +36,23 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv" \
             -o "data/live/Alex Timesheet(December 31, 9999).csv"
 
-          echo "→ Alex Weber – Subs"
+          echo "→ Alex Weber – Subs (current tab: Apr 16–30)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv" \
             -o "data/live/Alex Weber - Subs Timesheet(December 31, 9999).csv"
+          echo "→ Alex Weber – Subs (previous tab: Apr 1–15, gid=1624528773)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv&gid=1624528773" \
+            -o "data/live/Alex Weber - Subs Timesheet(December 30, 9999).csv"
 
           echo "→ Carlisle (Alex & Sam crew)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv" \
             -o "data/live/Carlisle Timesheet(December 31, 9999).csv"
 
-          echo "→ Chad Hjemeland – Subs"
+          echo "→ Chad Hjemeland – Subs (current tab: Apr 16–30)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv" \
             -o "data/live/Chad Hjemeland Timesheet(December 31, 9999).csv"
+          echo "→ Chad Hjemeland – Subs (previous tab: Apr 1–15, gid=1948975825)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv&gid=1948975825" \
+            -o "data/live/Chad Hjemeland Timesheet(December 30, 9999).csv"
 
           echo "→ Chad We Panel (prefab)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlHN1sQRdBulLg54rAM92L-MskUTY42VzPw-3X2QDyFI3o-GxDz9II2E16PCTWugtE4wlq3FjzT5Id/pub?output=csv" \
@@ -50,25 +66,33 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv" \
             -o "data/live/Dave Timesheet(December 31, 9999).csv"
 
-          echo "→ Devon Mcinroy – Subs"
+          echo "→ Devon Mcinroy – Subs (current tab: Apr 16–30)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv" \
             -o "data/live/Devon Mcinroy Timesheet(December 31, 9999).csv"
+          echo "→ Devon Mcinroy – Subs (previous tab: Apr 1–15, gid=1948975825)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv&gid=1948975825" \
+            -o "data/live/Devon Mcinroy Timesheet(December 30, 9999).csv"
 
           echo "→ Hayden & Devon (main crew)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv" \
             -o "data/live/Hayden Timesheet(December 31, 9999).csv"
 
-          echo "→ Sam Brent – Subs"
+          echo "→ Sam Brent – Subs (current tab: Apr 16–30)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv" \
             -o "data/live/Sam Brent Timesheet(December 31, 9999).csv"
+          echo "→ Sam Brent – Subs (previous tab: Apr 1–15, gid=1948975825)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv&gid=1948975825" \
+            -o "data/live/Sam Brent Timesheet(December 30, 9999).csv"
 
           echo "→ Vadym"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv" \
             -o "data/live/Vadym Timesheet(December 31, 9999).csv"
 
+          # Alvin (URL 4) — intentionally skipped (not tracked)
           echo "✅ All timesheets downloaded"
 
       # ── 3. Run the Python script ─────────────────────────────────────────────
+      # No extra pip installs needed — script uses Python stdlib only.
       - name: Generate dashboard HTML
         run: python update_dashboard.py
 
@@ -77,7 +101,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html update_dashboard.py data/live/
+          git add index.html update_dashboard.py data/live/ _unknown_jobs.txt
           git diff --staged --quiet \
             && echo "No changes to commit" \
             || (git commit -m "Dashboard auto-update $(date +'%Y-%m-%d')" && git push)
