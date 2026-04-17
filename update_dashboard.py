@@ -1138,7 +1138,7 @@ def calc_schedule_progress(proj_key, history_detail, budget_headcount):
     }
 
 
-def generate_html(headcount, history, history_detail, timestamp, injured_workers=None, injured_history=None):
+def generate_html(headcount, history, history_detail, timestamp, injured_workers=None, injured_history=None, unknown_jobs=None):
     # Helper: get counts for a project
     def get(proj):
         d = headcount.get(proj, {})
@@ -1399,6 +1399,25 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'ls5':      'Lewis Estates — Building #5',
         'ls18':     'Lewis Estates — Building #18',
     })
+
+    # ── Unknown-jobs warning banner ──
+    if unknown_jobs:
+        items_html = ''.join(
+            f'<span style="display:inline-block;background:#7b2d00;color:#fff;'
+            f'border-radius:4px;padding:2px 8px;margin:2px 4px;font-size:0.82rem;'
+            f'font-family:monospace;">{j}</span>'
+            for j in sorted(unknown_jobs)
+        )
+        unknown_banner_html = (
+            f'<div style="background:#c0392b;color:#fff;padding:12px 20px;'
+            f'border-radius:8px;margin:12px 0 4px;font-size:0.9rem;line-height:1.6;">'
+            f'<strong>⚠️ Unrecognized job codes detected</strong> — these entries appear in '
+            f'timesheets but are not mapped to any project. Add them to '
+            f'<code>JOB_CODE_MAP</code> or <code>IGNORED_JOBS</code>:<br>'
+            f'{items_html}</div>'
+        )
+    else:
+        unknown_banner_html = ''
 
     # ── Assemble final HTML ──
     html = f'''<!DOCTYPE html>
@@ -1684,6 +1703,7 @@ body {{
   </div>
 </div>
 
+{unknown_banner_html}
 <div class="main">
   <div class="section-title">Active Projects</div>
   <div class="cards-grid">
@@ -2143,7 +2163,8 @@ if __name__ == '__main__':
 
     print(f"\nHistory loaded: {sum(len(v) for v in history.values())} data points across {len(history)} projects")
 
-    html = generate_html(headcount, history, history_detail, timestamp, injured_workers, injured_history)
+    html = generate_html(headcount, history, history_detail, timestamp, injured_workers, injured_history,
+                         unknown_jobs=_unknown_jobs)
     out_path = os.path.join(DASHBOARD_DIR, 'index.html')
     with open(out_path, 'w', encoding='utf-8') as f:
         f.write(html)
