@@ -745,9 +745,10 @@ def parse_sheet(path):
                 injured_workers[col]['ot']      += _hrs_mod(4)
                 continue
 
-            # ── Termination check — remove from roster entirely ──
+            # ── Termination check — remove from roster and injured list entirely ──
             if raw_job and any(t in jl for t in TERMINATION_VALS):
                 last_job.pop(col, None)
+                injured_workers.pop(col, None)
                 continue
 
             if (raw_job
