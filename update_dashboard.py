@@ -326,11 +326,13 @@ _unknown_jobs = set()
 
 def normalize_job(raw):
     cleaned = raw.strip()
-    # Strip embedded hours suffix like "cantiro-5h", "gram-4.5h"
+    # Strip embedded hours suffix like "cantiro-5h", "gram-4.5h", "monarch-1.5"
     m_hrs = JOB_HOURS_RE.match(cleaned)
     if m_hrs:
         cleaned = m_hrs.group(1).strip()
-    key = cleaned.lower()
+    # Normalize all whitespace (handles non-breaking spaces, double spaces, etc.)
+    # so timesheet encoding quirks don't produce false unknowns
+    key = ' '.join(cleaned.lower().split())
     proj = JOB_CODE_MAP.get(key)
     if (proj is None and key not in IGNORED_JOBS and key not in SKIP_VALS
             and key not in ABSENCE_STATUSES and len(key) > 1):
