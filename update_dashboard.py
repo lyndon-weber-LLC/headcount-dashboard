@@ -124,6 +124,7 @@ JOB_CODE_MAP = {
     "cantiro":           "cantiro",
     "terrace":           "covenant",
     "terrce":            "covenant",   # typo found in timesheets
+    "terrase":           "covenant",   # typo found in Vadym's timesheet
     "covenant terrace":  "covenant",
     "lewis 19":          "ls19",
     "lewis estates 19":  "ls19",
