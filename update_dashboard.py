@@ -126,6 +126,8 @@ JOB_CODE_MAP = {
     "terrace":           "covenant",
     "terrce":            "covenant",   # typo found in timesheets
     "terrase":           "covenant",   # typo found in Vadym's timesheet
+    "cove 19":           "ls19",        # shorthand for Cove Building 19
+    "m2t":               "mt2",         # transposition typo for MT2
     "covenant terrace":  "covenant",
     "lewis 19":          "ls19",
     "lewis estates 19":  "ls19",
@@ -253,8 +255,9 @@ DATE_RE = re.compile(
 WE_PANEL_RE = re.compile(r'^w(?:e)?\s+panel$', re.I)
 # Matches "We Panel (PROJECT)" — prefab for a specific project, e.g. "We Panel (MT2)"
 WE_PANEL_INLINE_RE = re.compile(r'^w(?:e)?\s+panel\s*\((.+)\)$', re.I)
-# Matches job codes with hours embedded, e.g. "cantiro-5h", "gram-4.5h" — strip and normalize
-JOB_HOURS_RE = re.compile(r'^(.+?)-[\d.]+h$', re.I)
+# Matches job codes with hours embedded, e.g. "cantiro-5h", "gram-4.5h", "graham-5", "monarch-1.5"
+# The trailing 'h' is optional so bare-number suffixes are also stripped.
+JOB_HOURS_RE = re.compile(r'^(.+?)-[\d.]+h?$', re.I)
 # Entries that terminate an employee — actively remove them from the roster
 # so they no longer count toward any project headcount.
 TERMINATION_VALS = {
@@ -329,7 +332,8 @@ def normalize_job(raw):
         cleaned = m_hrs.group(1).strip()
     key = cleaned.lower()
     proj = JOB_CODE_MAP.get(key)
-    if proj is None and key not in IGNORED_JOBS and key not in SKIP_VALS and len(key) > 1:
+    if (proj is None and key not in IGNORED_JOBS and key not in SKIP_VALS
+            and key not in ABSENCE_STATUSES and len(key) > 1):
         _unknown_jobs.add(cleaned)
     return proj
 
