@@ -299,18 +299,23 @@ SKIP_VALS = {
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
 
-# Matches "Cove Building 19/5" or "Cove B 19/5/3" — bare numbers after the first
-# building reference are expanded to the full prefix so they normalize correctly.
-# e.g. "Cove Building 19/5" → "Cove Building 19/Cove Building 5"
-_MULTI_BLDG_RE = re.compile(r'^(Cove\s+B(?:uilding)?\s+)(\d+)((?:/\d+)+)$', re.I)
+# Matches multi-building shorthands — both formats:
+#   "Cove Building 19/5"   → bare numbers after first (original format)
+#   "Cove b4/b5/b6"        → each part keeps the 'b' prefix (new format)
+# \s* (not \s+) so "Cove b4" (no space between b and digit) is captured correctly.
+# Each subsequent slash part may optionally have a leading 'b'/'B'.
+_MULTI_BLDG_RE = re.compile(r'^(Cove\s+B(?:uilding)?\s*)(\d+)((?:/b?\d+)+)$', re.I)
 
 def expand_multi_building(raw):
-    """Expand shorthand like 'Cove Building 19/5' into full slash-separated codes."""
+    """Expand shorthand like 'Cove Building 19/5' or 'Cove b4/b5/b6' into full codes."""
     m = _MULTI_BLDG_RE.match(raw.strip())
     if m:
         prefix, first, rest = m.group(1), m.group(2), m.group(3).lstrip('/')
-        extras = '/'.join(f'{prefix}{p}' for p in rest.split('/'))
-        return f'{prefix}{first}/{extras}'
+        parts = []
+        for p in rest.split('/'):
+            num = re.sub(r'^b', '', p.strip(), flags=re.I)  # strip leading b/B if present
+            parts.append(f'{prefix}{num}')
+        return f'{prefix}{first}/' + '/'.join(parts)
     return raw
 
 # Matches MOD / Modified / Modified duty / Modified duties (and common typos)
