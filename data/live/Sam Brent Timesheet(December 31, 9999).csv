@@ -4,10 +4,10 @@
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
 ,"Thursday, April 16, 2026",Graham,6:30,5:30,10,
-,"Friday, April 17, 2026",Graham,,,,
+,"Friday, April 17, 2026",Graham,6:30,5:30,10,
 ,"Saturday, April 18, 2026",,,,,
 ,,,,,,
-,"Monday, April 20, 2026",,,,,
+,"Monday, April 20, 2026",Graham,6:30,5:30,10,
 ,"Tuesday, April 21, 2026",,,,,
 ,"Wednesday, April 22, 2026",,,,,
 ,"Thursday, April 23, 2026",,,,,
@@ -28,15 +28,15 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,10,OT:,0
+,,Total Hours:,Regular:,30,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Sam Brent (Broad Const.) - S ,10,0,1,Cantiro,0
-,,,,,Graham,10
+,Sam Brent (Broad Const.) - S ,30,0,1,Cantiro,0
+,,,,,Graham,30
 ,,,,,Salvi 13 & 14,0
 ,,,,,SGSLL,0
 ,,,,,LLMP,0
 ,,,,,Fall Pro,0
 ,,,,,MT1/Fall Pro,0
-,,,,,,10
-,,,,,,-10
+,,,,,,30
+,,,,,,-30

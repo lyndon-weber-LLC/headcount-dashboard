@@ -4,10 +4,10 @@
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
 ,"Thursday, April 16, 2026",terrace,630,530,10.5,
-,"Friday, April 17, 2026",,,,,
-,"Saturday, April 18, 2026",,,,,
+,"Friday, April 17, 2026",terrace,630,530,10.5,
+,"Saturday, April 18, 2026",terrace,630,5,10.5,
 ,,,,,,
-,"Monday, April 20, 2026",,,,,
+,"Monday, April 20, 2026",terrace,630,530,10.5,
 ,"Tuesday, April 21, 2026",,,,,
 ,"Wednesday, April 22, 2026",,,,,
 ,"Thursday, April 23, 2026",,,,,
@@ -28,17 +28,17 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,10.5,OT:,0
+,,Total Hours:,Regular:,42,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,10.5,0,1,Cove,0
+,Devon McInroy - S,42,0,1,Cove,0
 ,,,,,Lewis 2,0
 ,,,,,Lewis 4/2,0
 ,,,,,Lewis 4,0
-,,,,,terrace,10.5
+,,,,,terrace,42
 ,,,,,MT1,0
 ,,,,,MT2,0
 ,,,,,Cantiro,0
 ,,,,,LLMP,0
-,,,,,,10.5
+,,,,,,42
 ,,,,,,0
