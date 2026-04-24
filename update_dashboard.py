@@ -207,6 +207,10 @@ JOB_CODE_MAP = {
 # Projects whose completion date is past (shown as "complete" in dashboard)
 COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19"}
 
+# Main projects where all crew have left site — suppress the historical fallback
+# and show 0 / "Site closed" instead of stale last-recorded counts.
+CLOSED_PROJECTS = {"mt1", "cantiro"}
+
 # Job codes that appear in timesheets but should be silently ignored
 # (completed projects, personal jobs, misc entries we don't want to track)
 IGNORED_JOBS = {
@@ -1198,6 +1202,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     total_budget = sum(BUDGETS[k] for k in ['mt2','kaskitew','covenant','cantiro','ls6','ls17','ls19'])
 
     for proj_key, *_ in projects:
+        if proj_key in CLOSED_PROJECTS:
+            continue   # exclude closed sites from summary bar totals
         direct, subs, roster = get(proj_key)
         total_subs += subs
         if direct is not None:
@@ -1216,7 +1222,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     diff_color = 'green' if diff >= 0 else 'yellow'
 
     # ── Build project cards HTML ──
-    cards_html = ''
+    cards_html        = ''
+    closed_cards_html = ''
     for proj_key, company, name, crew, meta in projects:
         budget  = BUDGETS[proj_key]
         direct, subs, roster = get(proj_key)
@@ -1230,7 +1237,17 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         bar_cls = {'ok':'fill-ok','under':'fill-under','over':'fill-over','roster':'fill-roster','pending':'fill-pending','done':'fill-pending'}.get(status,'fill-pending')
 
         # badge text
-        if direct is None:
+        if proj_key in CLOSED_PROJECTS:
+            # Project wound down — force 0, suppress historical fallback
+            direct      = 0
+            actual_str  = '0'
+            status      = 'done'
+            color_class = 'gray'
+            bar_w       = 0
+            bar_cls     = 'fill-pending'
+            badge_txt   = 'Site closed ✓'
+            badge_cls   = 'badge-ok'
+        elif direct is None:
             # Fall back to most recent historical day so wind-down crews
             # don't appear as "Awaiting timesheet data" when the live sheet
             # has moved those employees to another project code.
@@ -1282,7 +1299,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
             bar_color      = '#48bb78' if lean else '#ed8936'
             elapsed_pct    = min(100, sched['pct_elapsed'])
             consumed_pct   = min(100, sched['pct_consumed'])
-            pace_lbl       = '✅ Lean on labor' if lean else '⚠️ Over budget pace'
+            pace_lbl       = '✅ Lean on labor' if lean else '⚡ Ahead of pace'
             pace_color     = '#7a5c0a'            if lean else '#975a16'
             sched_html = f'''
       <div class="sched-section">
@@ -1300,7 +1317,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         else:
             sched_html = ''
 
-        cards_html += f'''
+        card_html = f'''
     <div class="card {status}" data-project="{proj_key}" title="Click to view history">
       <div class="card-company">{company}</div>
       <div class="card-name">{name}</div>
@@ -1320,6 +1337,10 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
       {roster_note}
       {sched_html}
     </div>'''
+        if proj_key in CLOSED_PROJECTS:
+            closed_cards_html += card_html
+        else:
+            cards_html += card_html
 
     # ── Build Lewis Estates buildings HTML ──
     active_lewis_direct = 0
@@ -1736,6 +1757,11 @@ body {{
   <div class="section-title">Active Projects</div>
   <div class="cards-grid">
     {cards_html}
+  </div>
+
+  <div class="section-title">Completed Projects</div>
+  <div class="cards-grid" style="opacity:0.55;filter:grayscale(30%)">
+    {closed_cards_html}
   </div>
 
   <div class="section-title">Lewis Estates — By Building (Cove Developments)</div>
