@@ -8,8 +8,8 @@
 ,"Saturday, April 18, 2026",,,,,,,
 ,,,,,,,,
 ,"Monday, April 20, 2026",Terrace/Graham,7:00,5:30,10,,,
-,"Tuesday, April 21, 2026",,,,,,,
-,"Wednesday, April 22, 2026",,,,,,,
+,"Tuesday, April 21, 2026",Terrace/Graham/Launch,7:00,5:30,10,,,
+,"Wednesday, April 22, 2026",Terrace/Graham,7:00,5:30,10,,,
 ,"Thursday, April 23, 2026",,,,,,,
 ,"Friday, April 24, 2026",,,,,,,
 ,"Saturday, April 25, 2026",,,,,,,
@@ -28,21 +28,16 @@
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
-,,Total Hours:,Regular:,30,OT:,0,,
+,,Total Hours:,Regular:,50,OT:,0,,
 ,,,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,,,
-,Chad Hjemeland - S,30,0,1,,,Cantiro,0
-,,,,,,,Terrace/Graham,20
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
-,,,,,,,,0
+,Chad Hjemeland - S,50,0,1,,,Cantiro,0
+,,,,,,,Terrace/Graham,30
+,,,,,,,Terrace/Graham/Cantiro,10
 ,,,,,,,Salvi 13 & 14,0
 ,,,,,,,SGSLL,0
 ,,,,,,,LLMP,0
 ,,,,,,,Fall Pro,0
 ,,,,,,,MT1/Fall Pro,0
-,,,,,,,,20
+,,,,,,,,40
 ,,,,,,,,10
