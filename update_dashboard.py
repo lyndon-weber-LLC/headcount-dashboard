@@ -184,6 +184,9 @@ JOB_CODE_MAP = {
     "cove b18":          "ls18",
     "cove building 18":  "ls18",
     "cove 18":           "ls18",
+    # Bare building shorthand — appear as sub-parts after slash splits (e.g. "Cove b4/b5/b6")
+    "b2":  "ls2", "b3":  "ls3", "b4":  "ls4",  "b5":  "ls5",
+    "b6":  "ls6", "b17": "ls17","b18": "ls18",  "b19": "ls19",
     # Additional Lewis Estates aliases found in older timesheets
     "lewis 2":           "ls2",
     "lewis 4":           "ls4",
@@ -308,7 +311,10 @@ _MULTI_BLDG_RE = re.compile(r'^(Cove\s+B(?:uilding)?\s*)(\d+)((?:/b?\d+)+)$', re
 
 def expand_multi_building(raw):
     """Expand shorthand like 'Cove Building 19/5' or 'Cove b4/b5/b6' into full codes."""
-    m = _MULTI_BLDG_RE.match(raw.strip())
+    # Normalize spaces around slashes first so "Cove b4 / b5 / b6" matches the same as
+    # "Cove b4/b5/b6" — without this, the regex fails and bare "b5"/"b6" go unresolved.
+    normalized = re.sub(r'\s*/\s*', '/', raw.strip())
+    m = _MULTI_BLDG_RE.match(normalized)
     if m:
         prefix, first, rest = m.group(1), m.group(2), m.group(3).lstrip('/')
         parts = []
