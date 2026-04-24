@@ -24,6 +24,7 @@ BUDGETS = {
     "covenant": 19,   # Terrace Covenant Health
     "cantiro":  17,   # Cantiro West Block 200
     "ls6":       8,   # Lewis Estates Bldg #6
+    "ls16":      5,   # Lewis Estates Bldg #16
     "ls17":      5,   # Lewis Estates Bldg #17
     "ls19":      8,   # Lewis Estates Bldg #19
     # Completed Lewis Estates buildings (kept for reference)
@@ -46,6 +47,7 @@ PROJECT_SCHEDULE = {
     "kaskitew": {"budget_days": 85,  "budget_start": "2026-04-01"}, # 85-day budget starts with full crew April 1
     "mt2":      {"budget_days": 55,  "budget_start": "2026-03-02"}, # 55 days from full-crew start March 2
     "covenant": {"budget_days": 130, "budget_start": "2026-04-02"}, # full crew started April 2
+    "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
     "ls17":     {"budget_days": 29,  "budget_start": "2026-03-18"}, # Mar 18 – Apr 29
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
     "ls19":     {"budget_days": 20,  "budget_start": "2026-03-02"}, # Mar 2 – Mar 27 (completed)
@@ -160,6 +162,13 @@ JOB_CODE_MAP = {
     "ls#19":             "ls19",
     "ls# 19":            "ls19",
     "ls 19":             "ls19",
+    "cove b16":          "ls16",
+    "cove b 16":         "ls16",
+    "cove building 16":  "ls16",
+    "ls#16":             "ls16",
+    "ls# 16":            "ls16",
+    "ls 16":             "ls16",
+    "b16":               "ls16",
     "cove b17":          "ls17",
     "cove b 17":         "ls17",
     "cove building 17":  "ls17",
@@ -1172,6 +1181,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
 
     lewis_buildings = [
         ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   True),
+        ('ls16', 'Building #16 ⚡',"Alex W's Crew", 'Apr 23 – Jun 5',   False),
         ('ls17', 'Building #17 ⚡',"Alex W's Crew", 'Mar 18 – Apr 29',  False),
         ('ls19', 'Building #19 ⚡',"Hayden's Crew", 'Mar 2 – Mar 27',   True),
         ('ls2',  'Building #2',    "Hayden's Crew", 'Jan 26 – Feb 27',  True),
@@ -1408,6 +1418,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'covenant': 'Terrace — Covenant Health',
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
+        'ls16':     'Lewis Estates — Building #16',
         'ls17':     'Lewis Estates — Building #17',
         'ls19':     'Lewis Estates — Building #19',
         'ls2':      'Lewis Estates — Building #2',
