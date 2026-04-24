@@ -251,12 +251,12 @@ body {
       <div class="subtitle">Living Legends Construction Inc. — Active Projects</div>
     </div>
   </div>
-  <div class="updated-badge">Updated: Apr 24, 2026 · 9:10 AM MST / 3:10 PM UTC</div>
+  <div class="updated-badge">Updated: Apr 24, 2026 · 9:54 AM MST / 3:54 PM UTC</div>
 </div>
 
 <div class="summary-bar">
   <div class="stat">
-    <div class="val">54</div>
+    <div class="val">0</div>
     <div class="lbl">Direct Crew On Site</div>
   </div>
   <div class="divider"></div>
@@ -266,12 +266,12 @@ body {
   </div>
   <div class="divider"></div>
   <div class="stat">
-    <div class="val yellow">-9</div>
+    <div class="val yellow">-44</div>
     <div class="lbl">Variance</div>
   </div>
   <div class="divider"></div>
   <div class="stat">
-    <div class="val">11</div>
+    <div class="val">7</div>
     <div class="lbl">Hourly Subs</div>
   </div>
   <div class="divider"></div>
@@ -286,20 +286,20 @@ body {
   <div class="section-title">Active Projects</div>
   <div class="cards-grid">
     
-    <div class="card over" data-project="mt2" title="Click to view history">
+    <div class="card ok" data-project="mt2" title="Click to view history">
       <div class="card-company">Deveraux Developments</div>
       <div class="card-name">MacTaggart Bldg 2</div>
       <div class="card-meta">Alex & Sam Crew &nbsp;·&nbsp; Started Jan 19, 2026</div>
       <div class="hc-label">Direct Crew / Budgeted</div>
       <div class="hc-row">
-        <span class="hc-actual red">20</span>
+        <span class="hc-actual green">19</span>
         <span class="hc-slash">/</span>
         <span class="hc-budget">19</span>
       </div>
       
-      <div class="bar-wrap"><div class="bar-fill fill-over" style="width:100%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill fill-ok" style="width:100%"></div></div>
       <div class="card-footer">
-        <span class="badge badge-over">+1 over budget</span>
+        <span class="badge badge-ok">On budget ✓ (last recorded)</span>
         <span class="card-budget-lbl">Budget: 19</span>
       </div>
       
@@ -317,20 +317,20 @@ body {
         </div>
       </div>
     </div>
-    <div class="card over" data-project="kaskitew" title="Click to view history">
+    <div class="card under" data-project="kaskitew" title="Click to view history">
       <div class="card-company">Graham</div>
       <div class="card-name">Kaskitew</div>
       <div class="card-meta">Chad / Corey Crew &nbsp;·&nbsp; Until Jul 10, 2026</div>
       <div class="hc-label">Direct Crew / Budgeted</div>
       <div class="hc-row">
-        <span class="hc-actual red">23</span>
+        <span class="hc-actual yellow">0</span>
         <span class="hc-slash">/</span>
         <span class="hc-budget">20</span>
       </div>
-      <div class="subs-pill">+ 5 subs</div>
-      <div class="bar-wrap"><div class="bar-fill fill-over" style="width:100%"></div></div>
+      <div class="subs-pill">+ 1 sub</div>
+      <div class="bar-wrap"><div class="bar-fill fill-under" style="width:0%"></div></div>
       <div class="card-footer">
-        <span class="badge badge-over">+3 over budget</span>
+        <span class="badge badge-under">20 under budget</span>
         <span class="card-budget-lbl">Budget: 20</span>
       </div>
       
@@ -354,14 +354,14 @@ body {
       <div class="card-meta">Hayden & Devon Crew &nbsp;·&nbsp; Started Mar 16, 2026</div>
       <div class="hc-label">Direct Crew / Budgeted</div>
       <div class="hc-row">
-        <span class="hc-actual yellow">11</span>
+        <span class="hc-actual yellow">0</span>
         <span class="hc-slash">/</span>
         <span class="hc-budget">19</span>
       </div>
       <div class="subs-pill">+ 2 subs</div>
-      <div class="bar-wrap"><div class="bar-fill fill-under" style="width:58%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill fill-under" style="width:0%"></div></div>
       <div class="card-footer">
-        <span class="badge badge-under">8 under budget</span>
+        <span class="badge badge-under">19 under budget</span>
         <span class="card-budget-lbl">Budget: 19</span>
       </div>
       
@@ -413,13 +413,13 @@ body {
         <span class="hc-slash">/</span>
         <span class="hc-budget">17</span>
       </div>
-      
+      <div class="subs-pill">+ 4 subs</div>
       <div class="bar-wrap"><div class="bar-fill fill-pending" style="width:0%"></div></div>
       <div class="card-footer">
         <span class="badge badge-ok">Site closed ✓</span>
         <span class="card-budget-lbl">Budget: 17</span>
       </div>
-      
+      <div class="roster-note">⚠️ No time entries yet this period — showing roster headcount</div>
       
     </div>
   </div>
@@ -552,15 +552,8 @@ body {
 
   
   <div class="section-title">Injured Workers — WCB / Modified Duty</div>
-  <div class="injured-card" onclick="openInjuredModal()" title="Click to view details">
-    <div class="injured-header">
-      <div>
-        <div class="injured-label">Current Period — All Crews</div>
-        <div class="injured-count">🩹 1 worker on modified duty</div>
-      </div>
-      <span class="injured-badge">WCB</span>
-    </div>
-    <div class="injured-names">Steve Johnston</div>
+  <div class="injured-card injured-none">
+    <div class="injured-count" style="color:#c9a84c">✅ No injured workers this period</div>
   </div>
 
   <div class="legend">
@@ -634,7 +627,7 @@ const HISTORY_DETAIL   = {"mt1": {"2025-12-24": {"direct": [{"name": "Alex Schne
 const BUDGETS          = {"mt1": 21, "mt2": 19, "kaskitew": 20, "covenant": 19, "cantiro": 17, "ls6": 8, "ls16": 5, "ls17": 5, "ls19": 8, "ls2": 10, "ls3": 4, "ls4": 7.5, "ls5": 10, "ls18": 9};
 const BUDGET_PHASES    = {"mt1": [{"from": "2000-01-01", "budget": 21}, {"from": "2026-03-01", "budget": 2}], "mt2": [{"from": "2000-01-01", "budget": 7}, {"from": "2026-03-02", "budget": 19}], "covenant": [{"from": "2026-03-16", "budget": 9}, {"from": "2026-04-02", "budget": 19}]};
 const PROJ_LABELS      = {"mt1": "Deveraux \u2014 MacTaggart Bldg 1", "mt2": "Deveraux \u2014 MacTaggart Bldg 2", "kaskitew": "Graham \u2014 Kaskitew", "covenant": "Terrace \u2014 Covenant Health", "cantiro": "Cantiro \u2014 West Block 200", "ls6": "Lewis Estates \u2014 Building #6", "ls16": "Lewis Estates \u2014 Building #16", "ls17": "Lewis Estates \u2014 Building #17", "ls19": "Lewis Estates \u2014 Building #19", "ls2": "Lewis Estates \u2014 Building #2", "ls3": "Lewis Estates \u2014 Building #3", "ls4": "Lewis Estates \u2014 Building #4", "ls5": "Lewis Estates \u2014 Building #5", "ls18": "Lewis Estates \u2014 Building #18"};
-const INJURED_WORKERS  = [{"name": "Steve Johnston", "regular": 88.0, "ot": 16.5}];
+const INJURED_WORKERS  = [];
 const INJURED_HISTORY  = {"Marc Smith": [{"date": "2026-01-27", "label": "Jan 27", "regular": 8.0, "ot": 1.5}, {"date": "2026-01-28", "label": "Jan 28", "regular": 8.0, "ot": 1.5}, {"date": "2026-01-29", "label": "Jan 29", "regular": 8.0, "ot": 0.75}, {"date": "2026-01-30", "label": "Jan 30", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-03", "label": "Feb 3", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-04", "label": "Feb 4", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-05", "label": "Feb 5", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-06", "label": "Feb 6", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-09", "label": "Feb 9", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-10", "label": "Feb 10", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-11", "label": "Feb 11", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-12", "label": "Feb 12", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-13", "label": "Feb 13", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-14", "label": "Feb 14", "regular": 0.0, "ot": 0.0}], "Steven Johnston": [{"date": "2026-02-02", "label": "Feb 2", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-03", "label": "Feb 3", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-04", "label": "Feb 4", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-05", "label": "Feb 5", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-06", "label": "Feb 6", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-24", "label": "Feb 24", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-25", "label": "Feb 25", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-26", "label": "Feb 26", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-27", "label": "Feb 27", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-02", "label": "Mar 2", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-03", "label": "Mar 3", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-04", "label": "Mar 4", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-05", "label": "Mar 5", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-06", "label": "Mar 6", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-09", "label": "Mar 9", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-10", "label": "Mar 10", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-11", "label": "Mar 11", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-12", "label": "Mar 12", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-13", "label": "Mar 13", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-16", "label": "Mar 16", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-17", "label": "Mar 17", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-18", "label": "Mar 18", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-19", "label": "Mar 19", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-20", "label": "Mar 20", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-23", "label": "Mar 23", "regular": 8.0, "ot": 1.5}], "Steven Johnston (On WCB)": [{"date": "2026-02-09", "label": "Feb 9", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-10", "label": "Feb 10", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-11", "label": "Feb 11", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-12", "label": "Feb 12", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-13", "label": "Feb 13", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-17", "label": "Feb 17", "regular": 8.0, "ot": 0.0}, {"date": "2026-02-23", "label": "Feb 23", "regular": 8.0, "ot": 1.5}], "Liam Rode": [{"date": "2026-02-09", "label": "Feb 9", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-10", "label": "Feb 10", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-11", "label": "Feb 11", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-12", "label": "Feb 12", "regular": 7.0, "ot": 1.5}, {"date": "2026-02-13", "label": "Feb 13", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-16", "label": "Feb 16", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-17", "label": "Feb 17", "regular": 5.0, "ot": 1.5}, {"date": "2026-02-23", "label": "Feb 23", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-24", "label": "Feb 24", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-25", "label": "Feb 25", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-26", "label": "Feb 26", "regular": 8.0, "ot": 1.5}, {"date": "2026-02-27", "label": "Feb 27", "regular": 8.0, "ot": 1.5}], "Steve Johnston": [{"date": "2026-03-24", "label": "Mar 24", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-25", "label": "Mar 25", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-26", "label": "Mar 26", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-27", "label": "Mar 27", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-30", "label": "Mar 30", "regular": 8.0, "ot": 1.5}, {"date": "2026-03-31", "label": "Mar 31", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-01", "label": "Apr 1", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-02", "label": "Apr 2", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-06", "label": "Apr 6", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-07", "label": "Apr 7", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-08", "label": "Apr 8", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-09", "label": "Apr 9", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-10", "label": "Apr 10", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-13", "label": "Apr 13", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-14", "label": "Apr 14", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-15", "label": "Apr 15", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-16", "label": "Apr 16", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-17", "label": "Apr 17", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-20", "label": "Apr 20", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-21", "label": "Apr 21", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-22", "label": "Apr 22", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-23", "label": "Apr 23", "regular": 8.0, "ot": 1.5}], "Andrew Derasp": [{"date": "2026-03-27", "label": "Mar 27", "regular": 8.0, "ot": 1.5}], "Jason Paul": [{"date": "2026-04-10", "label": "Apr 10", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-13", "label": "Apr 13", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-14", "label": "Apr 14", "regular": 8.0, "ot": 1.5}, {"date": "2026-04-15", "label": "Apr 15", "regular": 5.0, "ot": 0.0}]};  // {name: [{date,label,regular,ot}, ...]}
 
 let chartInstance = null;
