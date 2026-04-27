@@ -48,7 +48,7 @@ PROJECT_SCHEDULE = {
     "kaskitew": {"budget_days": 85,  "budget_start": "2026-04-01"}, # 85-day budget starts with full crew April 1
     "mt2":      {"budget_days": 55,  "budget_start": "2026-03-02"}, # 55 days from full-crew start March 2
     "covenant":    {"budget_days": 70,  "budget_start": "2026-04-02"}, # Phase 1: full crew Apr 2, completion Jul 14
-    "covenant_p2": {"budget_days": 60,  "budget_start": "2026-07-15"}, # Phase 2: expected start Jul 15, completion Oct 9
+    # covenant_p2 intentionally excluded — stop/start mobilization; re-add once schedule is fluid
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
     "ls17":     {"budget_days": 29,  "budget_start": "2026-03-18"}, # Mar 18 – Apr 29
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
@@ -792,10 +792,9 @@ def parse_sheet(path):
     # Some timesheets put the date in col 0, others in col 1 — check both
     last_job = {}
     injured_workers = {}  # col -> {'name', 'is_sub', 'regular', 'ot'}
-    # Track employees whose only entries so far are absences (no project in last_job yet).
-    # Used at the end to attribute them to the crew's dominant project — handles the case
-    # where a new pay-period tab has "OFF" for an employee before any work entry exists.
-    absent_only_cols = set()
+    # Track employees who have explicitly left (terminated/quit/moved).
+    # Used below to avoid re-adding them when seeding blank-cell absences.
+    terminated_cols = set()
 
     for row in rows[5:]:
         if not row:
@@ -831,13 +830,11 @@ def parse_sheet(path):
             if raw_job and any(t in jl for t in TERMINATION_VALS):
                 last_job.pop(col, None)
                 injured_workers.pop(col, None)
-                absent_only_cols.discard(col)
+                terminated_cols.add(col)
                 continue
 
-            # ── Absence check — note column as absent if no project known yet ──
+            # ── Absence check — skip; employee stays unassigned until a project entry ──
             if raw_job and ABSENCE_STATUSES.get(jl):
-                if col not in last_job:
-                    absent_only_cols.add(col)
                 continue   # don't update last_job for absence entries
 
             if (raw_job
@@ -861,16 +858,20 @@ def parse_sheet(path):
                         proj = normalize_job(part)
                     if proj:
                         last_job[col] = proj
-                        absent_only_cols.discard(col)   # employee now has a real project
                         break
 
-    # Seed absent-only employees from the crew's dominant project so they're counted
-    # on the card even when no work entry precedes their absence on a new pay-period tab.
-    if absent_only_cols and last_job:
+    # Seed any crew member with no entry this period to the dominant project.
+    # This handles both (a) employees with explicit "OFF"/"sick" entries and
+    # (b) employees with completely blank cells — both occur on the first day of a
+    # new pay-period tab when the foreman only fills in whoever showed up.
+    # Terminated employees (tracked in terminated_cols) are intentionally excluded.
+    if last_job:
         from collections import Counter
         dominant_proj = Counter(last_job.values()).most_common(1)[0][0]
-        for col in absent_only_cols:
-            if col not in last_job:
+        for col, name, is_sub in employees:
+            if (col not in last_job
+                    and col not in terminated_cols
+                    and not re.match(r'^(New \d+|0)$', name.strip())):
                 last_job[col] = dominant_proj
 
     return employees, last_job, injured_workers
