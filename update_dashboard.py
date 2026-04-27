@@ -781,6 +781,10 @@ def parse_sheet(path):
     # Some timesheets put the date in col 0, others in col 1 — check both
     last_job = {}
     injured_workers = {}  # col -> {'name', 'is_sub', 'regular', 'ot'}
+    # Track employees whose only entries so far are absences (no project in last_job yet).
+    # Used at the end to attribute them to the crew's dominant project — handles the case
+    # where a new pay-period tab has "OFF" for an employee before any work entry exists.
+    absent_only_cols = set()
 
     for row in rows[5:]:
         if not row:
@@ -816,7 +820,14 @@ def parse_sheet(path):
             if raw_job and any(t in jl for t in TERMINATION_VALS):
                 last_job.pop(col, None)
                 injured_workers.pop(col, None)
+                absent_only_cols.discard(col)
                 continue
+
+            # ── Absence check — note column as absent if no project known yet ──
+            if raw_job and ABSENCE_STATUSES.get(jl):
+                if col not in last_job:
+                    absent_only_cols.add(col)
+                continue   # don't update last_job for absence entries
 
             if (raw_job
                     and jl not in SKIP_VALS
@@ -839,7 +850,17 @@ def parse_sheet(path):
                         proj = normalize_job(part)
                     if proj:
                         last_job[col] = proj
+                        absent_only_cols.discard(col)   # employee now has a real project
                         break
+
+    # Seed absent-only employees from the crew's dominant project so they're counted
+    # on the card even when no work entry precedes their absence on a new pay-period tab.
+    if absent_only_cols and last_job:
+        from collections import Counter
+        dominant_proj = Counter(last_job.values()).most_common(1)[0][0]
+        for col in absent_only_cols:
+            if col not in last_job:
+                last_job[col] = dominant_proj
 
     return employees, last_job, injured_workers
 
