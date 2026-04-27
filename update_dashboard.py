@@ -449,6 +449,37 @@ def parse_sheet_for_history(path):
         # injured: name -> {'regular', 'ot'} for this day
         injured_day  = {}
 
+        # Per-day fallback: find the most common project assigned to direct employees
+        # today (from non-absence entries). Used when an absent employee has no prior
+        # project in current_project — e.g. on the very first day of a new pay-period
+        # tab when only absences have been recorded so far.
+        _day_proj_tally = defaultdict(int)
+        for _row_d in date_rows[date_iso]:
+            for _col_d, _name_d, _is_sub_d in employees:
+                if _is_sub_d or _col_d >= len(_row_d):
+                    continue
+                _raw_d = _row_d[_col_d].strip()
+                if not _raw_d:
+                    continue
+                _jl_d = _raw_d.lower()
+                if (_jl_d in SKIP_VALS or is_mod_entry(_raw_d)
+                        or ABSENCE_STATUSES.get(_jl_d)
+                        or any(t in _jl_d for t in TERMINATION_VALS)):
+                    continue
+                for _part_d in [p.strip() for p in expand_multi_building(_raw_d).split('/')]:
+                    _pl_d = _part_d.lower()
+                    if (not _part_d or _pl_d in SKIP_VALS
+                            or NUMERIC.match(_part_d) or TIME_RE.match(_part_d)
+                            or WE_PANEL_RE.match(_part_d)):
+                        continue
+                    _m_d = WE_PANEL_INLINE_RE.match(_part_d)
+                    _pkey_d = normalize_job(_m_d.group(1).strip() if _m_d else _part_d)
+                    if _pkey_d:
+                        _day_proj_tally[_pkey_d] += 1
+                        break
+        day_default_proj = (max(_day_proj_tally, key=_day_proj_tally.get)
+                            if _day_proj_tally else None)
+
         for row in date_rows[date_iso]:
             for col, name, is_sub in employees:
                 if col >= len(row):
@@ -491,8 +522,13 @@ def parse_sheet_for_history(path):
 
                 # ── Absence — show in drilldown with status badge, no hours counted ──
                 absence_status = ABSENCE_STATUSES.get(jl)
-                if absence_status and col in current_project:
-                    proj = current_project[col]
+                # Resolve project: prefer known assignment, then fall back to the
+                # day's dominant project (handles absent employees on the first day
+                # of a new pay-period tab when no prior work entry exists yet).
+                _absence_proj = current_project.get(col) or (
+                    day_default_proj if not is_sub else None)
+                if absence_status and _absence_proj:
+                    proj = _absence_proj
                     if col not in proj_detail[proj]:
                         proj_detail[proj][col] = {
                             'name': name, 'is_sub': is_sub,
