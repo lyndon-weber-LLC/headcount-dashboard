@@ -21,7 +21,8 @@ BUDGETS = {
     "mt1":      21,   # Deveraux MacTaggart Bldg 1
     "mt2":      19,   # Deveraux MacTaggart Bldg 2
     "kaskitew": 20,   # Graham Kaskitew
-    "covenant": 19,   # Terrace Covenant Health
+    "covenant":    19,   # Terrace Covenant Health — Phase 1
+    "covenant_p2": 19,   # Terrace Covenant Health — Phase 2
     "cantiro":  17,   # Cantiro West Block 200
     "ls6":       8,   # Lewis Estates Bldg #6
     "ls16":      5,   # Lewis Estates Bldg #16
@@ -46,7 +47,8 @@ BUDGETS = {
 PROJECT_SCHEDULE = {
     "kaskitew": {"budget_days": 85,  "budget_start": "2026-04-01"}, # 85-day budget starts with full crew April 1
     "mt2":      {"budget_days": 55,  "budget_start": "2026-03-02"}, # 55 days from full-crew start March 2
-    "covenant": {"budget_days": 130, "budget_start": "2026-04-02"}, # full crew started April 2
+    "covenant":    {"budget_days": 70,  "budget_start": "2026-04-02"}, # Phase 1: full crew Apr 2, completion Jul 14
+    "covenant_p2": {"budget_days": 60,  "budget_start": "2026-07-15"}, # Phase 2: expected start Jul 15, completion Oct 9
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
     "ls17":     {"budget_days": 29,  "budget_start": "2026-03-18"}, # Mar 18 – Apr 29
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
@@ -122,15 +124,21 @@ JOB_CODE_MAP = {
     "gram":              "kaskitew", # shorthand for Graham
     "graham":            "kaskitew",
     "kaskitew":          "kaskitew",
-    "covenant":          "covenant",
-    "covenant health":   "covenant",
-    "cantiro":           "cantiro",
-    "terrace":           "covenant",
-    "terrce":            "covenant",   # typo found in timesheets
-    "terrase":           "covenant",   # typo found in Vadym's timesheet
+    "covenant":            "covenant",
+    "covenant health":     "covenant",
+    "cantiro":             "cantiro",
+    "terrace":             "covenant",
+    "terrce":              "covenant",   # typo found in timesheets
+    "terrase":             "covenant",   # typo found in Vadym's timesheet
+    "covenant terrace":    "covenant",
+    # Terrace Covenant Health — Phase 2 (job codes to use once Phase 2 begins)
+    "covenant p2":         "covenant_p2",
+    "covenant phase 2":    "covenant_p2",
+    "covenant health p2":  "covenant_p2",
+    "terrace p2":          "covenant_p2",
+    "terrace phase 2":     "covenant_p2",
     "cove 19":           "ls19",        # shorthand for Cove Building 19
     "m2t":               "mt2",         # transposition typo for MT2
-    "covenant terrace":  "covenant",
     "lewis 19":          "ls19",
     "lewis estates 19":  "ls19",
     "lewis b19":         "ls19",
@@ -256,6 +264,9 @@ BUDGET_PHASES = {
     "covenant": [
         {"from": "2026-03-16", "budget": 9},    # mobilization crew from Mar 16
         {"from": "2026-04-02", "budget": 19},   # full crew from Apr 2
+    ],
+    "covenant_p2": [
+        {"from": "2000-01-01", "budget": 19},   # full crew from start of Phase 2
     ],
 }
 
@@ -1236,7 +1247,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('mt1',      'Deveraux Developments', 'MacTaggart Bldg 1',   'Alex & Sam Crew',      'Started Oct 27, 2025'),
         ('mt2',      'Deveraux Developments', 'MacTaggart Bldg 2',   'Alex & Sam Crew',      'Started Jan 19, 2026'),
         ('kaskitew', 'Graham',                'Kaskitew',             'Chad / Corey Crew',    'Until Jul 10, 2026'),
-        ('covenant', 'Terrace',               'Covenant Health',      "Hayden & Devon Crew",  'Started Mar 16, 2026'),
+        ('covenant',    'Terrace', 'Covenant Health — Phase 1', "Hayden & Devon Crew", 'Until Jul 14, 2026'),
+        ('covenant_p2', 'Terrace', 'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Oct 9, 2026'),
         ('cantiro',  'Cantiro',               'West Block 200',       "Cory's Crew",          'Started Nov 10, 2025'),
     ]
 
@@ -1256,7 +1268,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     known_actual = 0
     known_budget = 0
     total_subs   = 0
-    total_budget = sum(BUDGETS[k] for k in ['mt2','kaskitew','covenant','cantiro','ls6','ls17','ls19'])
+    total_budget = sum(BUDGETS[k] for k in ['mt2','kaskitew','covenant','covenant_p2','cantiro','ls6','ls17','ls19'])
 
     for proj_key, *_ in projects:
         if proj_key in CLOSED_PROJECTS:
