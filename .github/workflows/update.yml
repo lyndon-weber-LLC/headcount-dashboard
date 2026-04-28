@@ -2,7 +2,7 @@ name: Update Headcount Dashboard
 
 on:
   schedule:
-    # Runs Mon–Fri at 12:00 UTC = 6:00 AM MDT (UTC-6)
+    # Runs Mon–Fri at 12:00 UTC = 7:00 AM MDT (UTC-6)
     - cron: '0 12 * * 1-5'
   workflow_dispatch:   # ← also allows a manual "Run workflow" button in GitHub UI
 
@@ -120,7 +120,9 @@ jobs:
       # ── 3. Run the Python script ─────────────────────────────────────────────
       # No extra pip installs needed — script uses Python stdlib only.
       - name: Generate dashboard HTML
-        run: python update_dashboard.py
+        run: |
+          python update_dashboard.py 2>&1
+          echo "Exit code: $?"
 
       # ── 4. Commit updated files back to the repo ─────────────────────────────
       - name: Commit and push
