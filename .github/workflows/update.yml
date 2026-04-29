@@ -123,6 +123,8 @@ jobs:
         run: |
           python update_dashboard.py 2>&1
           echo "Exit code: $?"
+          ls -la index.html 2>&1 || echo "index.html not found"
+          python -c "import update_dashboard" 2>&1 && echo "Import OK" || echo "Import FAILED"
 
       # ── 4. Commit updated files back to the repo ─────────────────────────────
       - name: Commit and push
