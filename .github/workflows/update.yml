@@ -2,7 +2,7 @@ name: Update Headcount Dashboard
 
 on:
   schedule:
-    # Runs Mon–Fri at 12:00 UTC = 7:00 AM MDT (UTC-6)
+    # Runs Mon–Fri at 12:00 UTC = 6:00 AM MDT (UTC-6)
     - cron: '0 12 * * 1-5'
   workflow_dispatch:   # ← also allows a manual "Run workflow" button in GitHub UI
 
@@ -121,13 +121,18 @@ jobs:
       # No extra pip installs needed — script uses Python stdlib only.
       - name: Generate dashboard HTML
         run: |
-          echo "--- Last 15 lines of script ---"
-          tail -15 update_dashboard.py
+          # Guard: fail immediately if script is empty or corrupt
+          lines=$(wc -l < update_dashboard.py)
+          echo "Script size: $lines lines"
+          if [ "$lines" -lt 100 ]; then
+            echo "❌ ERROR: update_dashboard.py is empty or too short ($lines lines) — aborting."
+            exit 1
+          fi
           python -u update_dashboard.py 2>&1
           echo "Exit code: $?"
-          grep -o 'Updated:.*UTC' index.html || echo "No timestamp found"
-          echo "--- Git status ---"
-          git status --short
+          # Verify a fresh timestamp was written to the output file
+          grep -o 'Updated:.*UTC' index.html \
+            || { echo "❌ ERROR: No timestamp found in index.html — dashboard may not have been written."; exit 1; }
 
       # ── 4. Commit updated files back to the repo ─────────────────────────────
       - name: Commit and push
