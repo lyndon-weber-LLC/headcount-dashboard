@@ -121,10 +121,13 @@ jobs:
       # No extra pip installs needed — script uses Python stdlib only.
       - name: Generate dashboard HTML
         run: |
-          python update_dashboard.py 2>&1
+          python -u update_dashboard.py 2>&1
           echo "Exit code: $?"
-          ls -la index.html 2>&1 || echo "index.html not found"
-          python -c "import update_dashboard" 2>&1 && echo "Import OK" || echo "Import FAILED"
+          ls -la index.html
+          echo "--- Timestamp in file ---"
+          grep -o 'Updated:.*UTC' index.html || echo "No timestamp found"
+          echo "--- Git status ---"
+          git status --short
 
       # ── 4. Commit updated files back to the repo ─────────────────────────────
       - name: Commit and push
