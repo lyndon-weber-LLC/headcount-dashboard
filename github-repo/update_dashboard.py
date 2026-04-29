@@ -50,7 +50,7 @@ PROJECT_SCHEDULE = {
     "covenant":    {"budget_days": 70,  "budget_start": "2026-04-02"}, # Phase 1: full crew Apr 2, completion Jul 14
     # covenant_p2 intentionally excluded — stop/start mobilization; re-add once schedule is fluid
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
-    "ls17":     {"budget_days": 29,  "budget_start": "2026-03-18"}, # Mar 18 – Apr 29
+    # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
     "ls19":     {"budget_days": 20,  "budget_start": "2026-03-02"}, # Mar 2 – Mar 27 (completed)
     # MT1 and Cantiro excluded — historical timesheets pre-Jan 15 not yet loaded;
@@ -213,7 +213,7 @@ JOB_CODE_MAP = {
 }
 
 # Projects whose completion date is past (shown as "complete" in dashboard)
-COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19"}
+COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17"}
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
