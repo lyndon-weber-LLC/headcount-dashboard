@@ -50,7 +50,7 @@ PROJECT_SCHEDULE = {
     "covenant":    {"budget_days": 70,  "budget_start": "2026-04-02"}, # Phase 1: full crew Apr 2, completion Jul 14
     # covenant_p2 intentionally excluded — stop/start mobilization; re-add once schedule is fluid
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
-    "ls17":     {"budget_days": 29,  "budget_start": "2026-03-18"}, # Mar 18 – Apr 29
+    # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
     "ls19":     {"budget_days": 20,  "budget_start": "2026-03-02"}, # Mar 2 – Mar 27 (completed)
     # MT1 and Cantiro excluded — historical timesheets pre-Jan 15 not yet loaded;
@@ -184,6 +184,7 @@ JOB_CODE_MAP = {
     "ls#17":             "ls17",
     "ls# 17":            "ls17",
     "ls 17":             "ls17",
+    "cove 17":           "ls17",   # deficiency crew shorthand
     "cove b2":           "ls2",
     "cove building 2":   "ls2",
     "cove 2":            "ls2",
@@ -213,7 +214,7 @@ JOB_CODE_MAP = {
 }
 
 # Projects whose completion date is past (shown as "complete" in dashboard)
-COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19"}
+COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17"}
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
@@ -243,6 +244,10 @@ IGNORED_JOBS = {
     "leston",               # upcoming job — revisit when active
     "monarch",              # subcontracted out; headcount not a useful metric
     "stoneshire",           # completed project; occasional clean-up visits
+    "binder",               # old job from last summer — not tracked
+    "launch",               # event/meeting entry — not a project
+    "metis hope village",   # not a tracked project
+    "missing from 4",       # foreman note in job cell — not a project
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -1286,7 +1291,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     lewis_buildings = [
         ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   True),
         ('ls16', 'Building #16 ⚡',"Alex W's Crew", 'Apr 23 – Jun 5',   False),
-        ('ls17', 'Building #17 ⚡',"Alex W's Crew", 'Mar 18 – Apr 29',  False),
+        ('ls17', 'Building #17 ⚡',"Alex W's Crew", 'Mar 18 – Apr 29',  True),
         ('ls19', 'Building #19 ⚡',"Hayden's Crew", 'Mar 2 – Mar 27',   True),
         ('ls2',  'Building #2',    "Hayden's Crew", 'Jan 26 – Feb 27',  True),
         ('ls3',  'Building #3',    "Alex W's Crew",'Nov 21 – Jan 16',  True),
@@ -1452,9 +1457,9 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         direct, subs, roster = get(proj_key)
         status = status_class(direct, budget, done=done)
 
-        actual_str  = str(direct) if direct is not None else '—'
+        actual_str  = '—' if done else (str(direct) if direct is not None else '—')
         color_class = {'ok':'green','under':'yellow','over':'red','roster':'purple','pending':'gray','done':'gray'}.get(status,'gray')
-        bar_w   = bar_pct(direct, budget)
+        bar_w   = 0 if done else bar_pct(direct, budget)
         bar_cls = {'ok':'fill-ok','under':'fill-under','over':'fill-over','roster':'fill-roster','pending':'fill-pending','done':'fill-pending'}.get(status,'fill-pending')
 
         if done:
@@ -1470,7 +1475,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
             else:          status_txt, status_color = f'{abs(gap)} direct under budget', 'under'
 
         subs_html = ''
-        if subs:
+        if subs and not done:
             subs_html = f'<span class="bldg-subs-pill">+{subs} sub{"s" if subs!=1 else ""}</span>'
 
         bldgs_html += f'''
@@ -2286,6 +2291,11 @@ document.addEventListener('DOMContentLoaded', () => {{
 
 if __name__ == '__main__':
     from datetime import timezone, timedelta
+    # ── Startup diagnostic — printed immediately so empty-script failures are obvious ──
+    _script_lines = sum(1 for _ in open(__file__))
+    print(f"▶ Script loaded: {__file__} ({_script_lines} lines)", flush=True)
+    if _script_lines < 100:
+        raise SystemExit(f"❌ Script is too short ({_script_lines} lines) — file may be empty or corrupt. Aborting.")
     now_utc = datetime.now(timezone.utc)
     # Mountain Time: UTC−7 (MST) / UTC−6 (MDT, in effect Mar–Nov)
     # Alberta observes MDT in summer; use UTC−6 and label as MST per local convention
