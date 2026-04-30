@@ -184,6 +184,7 @@ JOB_CODE_MAP = {
     "ls#17":             "ls17",
     "ls# 17":            "ls17",
     "ls 17":             "ls17",
+    "cove 17":           "ls17",   # deficiency crew shorthand
     "cove b2":           "ls2",
     "cove building 2":   "ls2",
     "cove 2":            "ls2",
@@ -243,6 +244,10 @@ IGNORED_JOBS = {
     "leston",               # upcoming job — revisit when active
     "monarch",              # subcontracted out; headcount not a useful metric
     "stoneshire",           # completed project; occasional clean-up visits
+    "binder",               # old job from last summer — not tracked
+    "launch",               # event/meeting entry — not a project
+    "metis hope village",   # not a tracked project
+    "missing from 4",       # foreman note in job cell — not a project
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -1452,9 +1457,9 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         direct, subs, roster = get(proj_key)
         status = status_class(direct, budget, done=done)
 
-        actual_str  = str(direct) if direct is not None else '—'
+        actual_str  = '—' if done else (str(direct) if direct is not None else '—')
         color_class = {'ok':'green','under':'yellow','over':'red','roster':'purple','pending':'gray','done':'gray'}.get(status,'gray')
-        bar_w   = bar_pct(direct, budget)
+        bar_w   = 0 if done else bar_pct(direct, budget)
         bar_cls = {'ok':'fill-ok','under':'fill-under','over':'fill-over','roster':'fill-roster','pending':'fill-pending','done':'fill-pending'}.get(status,'fill-pending')
 
         if done:
@@ -1470,7 +1475,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
             else:          status_txt, status_color = f'{abs(gap)} direct under budget', 'under'
 
         subs_html = ''
-        if subs:
+        if subs and not done:
             subs_html = f'<span class="bldg-subs-pill">+{subs} sub{"s" if subs!=1 else ""}</span>'
 
         bldgs_html += f'''
