@@ -2,8 +2,8 @@ name: Update Headcount Dashboard
 
 on:
   schedule:
-    # Runs Mon–Fri at 14:17 UTC = 7:17 AM MST (UTC-7) / 8:17 AM MDT (UTC-6)
-    - cron: '17 14 * * 1-5'
+    # Runs Mon–Fri at 13:17 UTC = 7:17 AM MDT (UTC-6) / 6:17 AM MST (UTC-7)
+    - cron: '17 13 * * 1-5'
   workflow_dispatch:   # ← also allows a manual "Run workflow" button in GitHub UI
 
 jobs:
