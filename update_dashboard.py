@@ -254,6 +254,13 @@ IGNORED_JOBS = {
 # Rob's timesheets are now consistently filled in so he no longer needs this fallback
 ROSTER_ONLY_CREWS = set()
 
+# Canonical spelling for sub workers whose names are misspelled in some sheets.
+# Keys are lowercase variants; values are the canonical lowercase form used for
+# cross-sheet deduplication.  Only the last-name portion matters here.
+SUB_NAME_CANONICAL = {
+    "chad hjelmeland": "chad hjemeland",   # extra 'l' in We Panel sheet
+}
+
 # Budget phases for projects with mobilization ramp-up.
 # List phases in chronological order; each phase applies from 'from' date onward.
 # Projects not listed here use their single BUDGETS value for all dates.
@@ -914,10 +921,13 @@ def parse_sheet(path):
 
 def tally(employees, last_job, roster_only=False):
     """
-    Returns dict: project_key -> {direct: int, subs: int, roster: bool}
+    Returns (counts_dict, sub_names_dict):
+      counts_dict:    project_key -> {direct: int, subs: int, roster: bool}
+      sub_names_dict: project_key -> set of sub name strings (for cross-sheet dedup)
     roster=True means no actual entries found, using full roster as count.
     """
-    result = defaultdict(lambda: {'direct': 0, 'subs': 0, 'roster': False})
+    result    = defaultdict(lambda: {'direct': 0, 'subs': 0, 'roster': False})
+    sub_names = defaultdict(set)   # proj -> {name, ...}
     has_entries = bool(last_job) and not roster_only
 
     for col, name, is_sub in employees:
@@ -930,6 +940,7 @@ def tally(employees, last_job, roster_only=False):
             if proj:
                 if is_sub:
                     result[proj]['subs'] += 1
+                    sub_names[proj].add(name.strip())
                 else:
                     result[proj]['direct'] += 1
         else:
@@ -937,7 +948,7 @@ def tally(employees, last_job, roster_only=False):
             # or leave unmapped (handled by caller)
             pass
 
-    return result
+    return result, sub_names
 
 
 # ─────────────────────────────────────────────────────────
@@ -1090,6 +1101,8 @@ def collect_headcount():
     roster_data = {}  # crew_id -> (employees, last_job) for roster-only crews
     # Injured workers merged by name across all sheets
     injured_by_name = {}  # name -> {'name', 'regular', 'ot'}
+    # Global dedup for subs: proj -> set of sub names already counted
+    seen_sub_names = defaultdict(set)
 
     for crew_id, path in crew_files.items():
         try:
@@ -1107,12 +1120,27 @@ def collect_headcount():
             injured_by_name[n]['ot']      += data['ot']
 
         is_roster_only = crew_id in ROSTER_ONLY_CREWS or not last_job
-        result = tally(employees, last_job, roster_only=is_roster_only)
+        result, sub_names = tally(employees, last_job, roster_only=is_roster_only)
 
         if result:
             for proj, counts in result.items():
                 totals[proj]['direct'] += counts['direct']
-                totals[proj]['subs']   += counts['subs']
+                # Deduplicate subs by name across sheets — same person can appear
+                # in their own sub timesheet AND in a foreman's sheet; only count once.
+                # Deduplicate subs by name across sheets — same person can appear
+                # in their own sub timesheet AND in a foreman's sheet; only count once.
+                # Normalize: lowercase, strip "- S"/"-S" suffix, collapse whitespace,
+                # then apply canonical aliases to handle spelling variants
+                # (e.g. Hjelmeland vs Hjemeland).
+                def _norm_sub(n):
+                    base = re.sub(r'\s*-\s*s\s*$', '', n.strip().lower(),
+                                  flags=re.I).strip()
+                    return SUB_NAME_CANONICAL.get(base, base)
+                for raw_name in sub_names[proj]:
+                    key = _norm_sub(raw_name)
+                    if key not in seen_sub_names[proj]:
+                        seen_sub_names[proj].add(key)
+                        totals[proj]['subs'] += 1
         elif is_roster_only:
             roster_data[crew_id] = (employees, last_job)
 
