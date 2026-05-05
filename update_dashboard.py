@@ -130,7 +130,9 @@ JOB_CODE_MAP = {
     "terrace":             "covenant",
     "terrce":              "covenant",   # typo found in timesheets
     "terrase":             "covenant",   # typo found in Vadym's timesheet
+    "terrace- 9h":         "covenant",   # hours appended with space — not stripped by JOB_HOURS_RE
     "covenant terrace":    "covenant",
+    "crane move":          "cantiro",    # crane relocation (Cantiro → Terrace); hours to Cantiro this week
     # Terrace Covenant Health — Phase 2 (job codes to use once Phase 2 begins)
     "covenant p2":         "covenant_p2",
     "covenant phase 2":    "covenant_p2",
@@ -248,6 +250,11 @@ IGNORED_JOBS = {
     "launch",               # event/meeting entry — not a project
     "metis hope village",   # not a tracked project
     "missing from 4",       # foreman note in job cell — not a project
+    # Internal LLC meetings — overhead, not project-attributable
+    "llc meeting",
+    "llc meeting .5h",      # hours appended without dash — not stripped by JOB_HOURS_RE
+    "llc supervisor meeting",
+    "llc supervisor meeting 1h",
 }
 
 # Crews that may not have current-period entries yet (use roster count)
