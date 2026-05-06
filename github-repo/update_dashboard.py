@@ -137,6 +137,8 @@ JOB_CODE_MAP = {
     "covenant p2":         "covenant_p2",
     "covenant phase 2":    "covenant_p2",
     "covenant health p2":  "covenant_p2",
+    "terrace p1":          "covenant",    # Phase 1 explicit label
+    "terrace phase 1":     "covenant",
     "terrace p2":          "covenant_p2",
     "terrace phase 2":     "covenant_p2",
     "cove 19":           "ls19",        # shorthand for Cove Building 19
