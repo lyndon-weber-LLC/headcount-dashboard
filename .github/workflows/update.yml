@@ -120,6 +120,57 @@ jobs:
             -o "data/live/Vadym Timesheet(December 30, 9999).csv"
 
           # Alvin (URL 4) — intentionally skipped (not tracked)
+
+          # ── Archive outgoing pay periods (ALWAYS download fresh — no [ -f ] guard) ──
+          #
+          # WHY NO [ -f ] GUARD:
+          #   The guard caused data loss. GitHub Actions commits archive files back to
+          #   the remote repo. If you ever push local changes without pulling first
+          #   (your local data/live/ only has 2 files), the workflow checks out a state
+          #   WITHOUT the archive files. [ -f ] returns false → curl re-downloads → git
+          #   commits → you push again without pulling → files wiped. Endless loop.
+          #   Fix: always re-download. Historical tabs don't change, so git sees no diff
+          #   after the first commit. Safe, fast, and resilient to push conflicts.
+          #
+          # ROLLOVER CHECKLIST (do this at every rollover):
+          #   1. Get the GID of the OUTGOING current tab (about to become historical).
+          #      Open the sheet → click the tab → copy #gid= from URL.
+          #   2. Add a new curl block here for that period (no [ -f ] guard).
+          #   3. THEN update the previous-tab GID in the "Download live timesheets" step.
+          #   4. Update period labels and rollover comments above.
+          #   Employee rollovers: every ~24 days (next: May 24 — need May 9–23 GIDs)
+          #   Sub rollovers:      every ~15 days (next: May 16 — need May 1–15 GIDs)
+
+          # ── Apr 9–23 employee tabs (archived May 9, 2026) ──
+          echo "→ Archive: Apr 9–23 employees"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv&gid=335108572" \
+            -o "data/live/Alex Timesheet(April 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv&gid=681555469" \
+            -o "data/live/Carlisle Timesheet(April 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlHN1sQRdBulLg54rAM92L-MskUTY42VzPw-3X2QDyFI3o-GxDz9II2E16PCTWugtE4wlq3FjzT5Id/pub?output=csv&gid=536078559" \
+            -o "data/live/Chad Timesheet(April 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLyfku8YLaXk7POu-hI4M2qMlWhbDsicEbBI_IhEln1XsRLCP4sx3lMAH5y_sAAdDxprYl0aNCsSrQ/pub?output=csv&gid=998135604" \
+            -o "data/live/Cory Timesheet(April 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv&gid=993926926" \
+            -o "data/live/Dave Timesheet(April 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv&gid=2462930" \
+            -o "data/live/Hayden Timesheet(April 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv&gid=1327796898" \
+            -o "data/live/Vadym Timesheet(April 23, 2026).csv"
+
+          # ── Apr 16–30 sub tabs (pre-archived ahead of May 16 sub rollover) ──
+          # These are the current previous-tab GIDs. Pre-archiving now means the
+          # May 16 rollover won't lose this period the way Apr 9–23 was lost.
+          echo "→ Archive: Apr 16–30 subs"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv&gid=2040275893" \
+            -o "data/live/Alex Weber - Subs Timesheet(April 30, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv&gid=818473477" \
+            -o "data/live/Chad Hjemeland Timesheet(April 30, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv&gid=1873779629" \
+            -o "data/live/Devon Mcinroy Timesheet(April 30, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv&gid=51153033" \
+            -o "data/live/Sam Brent Timesheet(April 30, 2026).csv"
+
           echo "✅ All timesheets downloaded"
 
       # ── 3. Run the Python script ─────────────────────────────────────────────
