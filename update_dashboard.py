@@ -48,7 +48,7 @@ PROJECT_SCHEDULE = {
     "kaskitew": {"budget_days": 85,  "budget_start": "2026-04-01"}, # 85-day budget starts with full crew April 1
     "mt2":      {"budget_days": 55,  "budget_start": "2026-03-02"}, # 55 days from full-crew start March 2
     "covenant":    {"budget_days": 70,  "budget_start": "2026-04-02"}, # Phase 1: full crew Apr 2, completion Jul 14
-    # covenant_p2 intentionally excluded — stop/start mobilization; re-add once schedule is fluid
+    "covenant_p2": {"budget_days": 60,  "budget_start": "2026-05-11"}, # Phase 2: 60 days, mobilization May 11, full crew May 18, completion Oct 9
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
@@ -257,6 +257,11 @@ IGNORED_JOBS = {
     "llc meeting .5h",      # hours appended without dash — not stripped by JOB_HOURS_RE
     "llc supervisor meeting",
     "llc supervisor meeting 1h",
+    # Cove building 1 — not a tracked project
+    "cove b1",
+    # Internal/personal projects — not tracked
+    "rob project",
+    "rob's project",
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -303,9 +308,13 @@ DATE_RE = re.compile(
 WE_PANEL_RE = re.compile(r'^w(?:e)?\s+panel$', re.I)
 # Matches "We Panel (PROJECT)" — prefab for a specific project, e.g. "We Panel (MT2)"
 WE_PANEL_INLINE_RE = re.compile(r'^w(?:e)?\s+panel\s*\((.+)\)$', re.I)
-# Matches job codes with hours embedded, e.g. "cantiro-5h", "gram-4.5h", "graham-5", "monarch-1.5"
-# The trailing 'h' is optional so bare-number suffixes are also stripped.
-JOB_HOURS_RE = re.compile(r'^(.+?)-[\d.]+h?$', re.I)
+# Matches job codes with hours embedded: "JOB-Xh" or compound "JOB-Xh-NEXTJOB".
+# Accepts both regular hyphens and en-dashes (Google Sheets autocorrect).
+# No trailing $ — allows compound entries like "Monarch-6.5h-terrace P1".
+JOB_HOURS_RE = re.compile(r'^(.+?)[-–][\d.]+h?', re.I)
+# Matches "JOB Xh- NEXTJOB" format (hours before the dash separator).
+# e.g. "Monarch 3h- terrace P1", "Monarch 3h– terrace P1"
+JOB_HOURS_PREFIX_RE = re.compile(r'^(.+?)\s+[\d.]+h?\s*[-–]\s*(.+)$', re.I)
 # Entries that terminate an employee — actively remove them from the roster
 # so they no longer count toward any project headcount.
 TERMINATION_VALS = {
@@ -412,10 +421,39 @@ _unknown_jobs = set()
 
 def normalize_job(raw):
     cleaned = raw.strip()
-    # Strip embedded hours suffix like "cantiro-5h", "gram-4.5h", "monarch-1.5"
+
+    # Pattern 1: "JOB-Xh" or compound "JOB-Xh-NEXTJOB" / "JOB–Xh–NEXTJOB"
     m_hrs = JOB_HOURS_RE.match(cleaned)
     if m_hrs:
-        cleaned = m_hrs.group(1).strip()
+        first_job = m_hrs.group(1).strip()
+        first_key = ' '.join(first_job.lower().split())
+        # Everything after the matched hours portion (strip leading dash/en-dash)
+        remainder = cleaned[m_hrs.end():].strip().lstrip('-–').strip()
+        first_proj = JOB_CODE_MAP.get(first_key)
+        if first_proj:
+            return first_proj          # e.g. "Terrace p1-2.5h monarch" → covenant
+        if first_key in IGNORED_JOBS and remainder:
+            return normalize_job(remainder)  # e.g. "Monarch-6.5h-terrace P1" → covenant
+        cleaned = first_job            # fall through with the first job name
+
+    else:
+        # Pattern 2: "JOB Xh- NEXTJOB" — hours before the dash separator
+        # e.g. "Monarch 3h- terrace P1", "Monarch 3h– terrace P1"
+        m_pre = JOB_HOURS_PREFIX_RE.match(cleaned)
+        if m_pre:
+            first_job  = m_pre.group(1).strip()
+            second_job = m_pre.group(2).strip()
+            first_key  = ' '.join(first_job.lower().split())
+            first_proj = JOB_CODE_MAP.get(first_key)
+            if first_proj:
+                return first_proj
+            if first_key in IGNORED_JOBS:
+                return normalize_job(second_job)
+            second_proj = normalize_job(second_job)
+            if second_proj:
+                return second_proj
+            cleaned = first_job
+
     # Normalize all whitespace (handles non-breaking spaces, double spaces, etc.)
     # so timesheet encoding quirks don't produce false unknowns
     key = ' '.join(cleaned.lower().split())
@@ -1560,6 +1598,13 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
       <span class="injured-badge">WCB</span>
     </div>
     <div class="injured-names">{inj_names}</div>
+  </div>'''
+    elif injured_history:
+        # No current injuries but historical WCB records exist — keep card clickable
+        inj_section_html = '''
+  <div class="section-title">Injured Workers — WCB / Modified Duty</div>
+  <div class="injured-card injured-none" onclick="openInjuredModal()" title="Click to view WCB history" style="cursor:pointer">
+    <div class="injured-count" style="color:#c9a84c">✅ No current injuries &nbsp;·&nbsp; <span style="text-decoration:underline;color:#4a90d9;font-size:0.85em">view history</span></div>
   </div>'''
     else:
         inj_section_html = '''
