@@ -37,10 +37,14 @@ BUDGETS = {
 }
 
 # ── Schedule / FTE tracking ───────────────────────────────
-# budget_days  : total business days budgeted for the project
-#                (weekdays count as 1.0, Saturdays as 0.5)
-# budget_start : date the FTE clock starts (YYYY-MM-DD).
-#                'auto' = use first date this project appears in history data.
+# budget_days   : total business days budgeted for the project
+#                 (weekdays count as 1.0, Saturdays as 0.5)
+# budget_start  : date the FTE accumulation clock starts (YYYY-MM-DD).
+#                 'auto' = use first date this project appears in history data.
+# elapsed_start : (optional) date the calendar-days-elapsed counter starts.
+#                 When omitted or set to "paused", elapsed = 0 and the card shows
+#                 "⏸ Clock paused" — FTE still accumulates from budget_start.
+#                 Set this once you're ready to start counting schedule pressure.
 # Note: MT1 data begins Jan 15 2026 (project started Oct 27 2025) — bar will
 #       conservatively undercount the ~11 weeks of missing pre-data FTE-days.
 #       Same applies to Cantiro (project started Nov 10 2025).
@@ -48,7 +52,8 @@ PROJECT_SCHEDULE = {
     "kaskitew": {"budget_days": 85,  "budget_start": "2026-04-01"}, # 85-day budget starts with full crew April 1
     "mt2":      {"budget_days": 55,  "budget_start": "2026-03-02"}, # 55 days from full-crew start March 2
     "covenant":    {"budget_days": 70,  "budget_start": "2026-04-02"}, # Phase 1: full crew Apr 2, completion Jul 14
-    "covenant_p2": {"budget_days": 60,  "budget_start": "2026-05-11"}, # Phase 2: 60 days, mobilization May 11, full crew May 18, completion Oct 9
+    "covenant_p2": {"budget_days": 60,  "budget_start": "2026-05-11",  # Phase 2: mobilization May 11, full crew May 18
+                    "elapsed_start": "paused"},                        # ← clock paused; set to "YYYY-MM-DD" when ready
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
@@ -1329,12 +1334,24 @@ def calc_schedule_progress(proj_key, history_detail, budget_headcount):
     days_consumed = round(cumulative_fte / budget_headcount, 2) if budget_headcount else 0
 
     # ── Calendar days elapsed (through yesterday) ─────────
-    yesterday = date.today() - timedelta(days=1)
-    through   = max(budget_start, yesterday)   # don't go negative
-    calendar_elapsed = round(_business_days_elapsed(budget_start, through), 2)
+    # elapsed_start is optional. If absent → use budget_start (normal behavior).
+    # If explicitly set to "paused" → freeze elapsed at 0 (show ⏸ Clock paused).
+    elapsed_start_raw = cfg.get("elapsed_start")  # None = default; "paused" = frozen; "YYYY-MM-DD" = custom
+    elapsed_paused = (elapsed_start_raw is not None and
+                      str(elapsed_start_raw).lower() == "paused")
+    if elapsed_paused:
+        calendar_elapsed = 0.0
+    else:
+        if elapsed_start_raw is None:
+            elapsed_start = budget_start   # default: same as FTE accumulation start
+        else:
+            elapsed_start = datetime.strptime(elapsed_start_raw, "%Y-%m-%d").date()
+        yesterday = date.today() - timedelta(days=1)
+        through   = max(elapsed_start, yesterday)   # don't go negative
+        calendar_elapsed = round(_business_days_elapsed(elapsed_start, through), 2)
 
     pct_consumed = round(min(110, days_consumed / budget_days * 100), 1)
-    pct_elapsed  = round(min(110, calendar_elapsed / budget_days * 100), 1)
+    pct_elapsed  = round(min(110, calendar_elapsed / budget_days * 100), 1) if not elapsed_paused else 0.0
 
     return {
         "budget_days":      budget_days,
@@ -1342,6 +1359,7 @@ def calc_schedule_progress(proj_key, history_detail, budget_headcount):
         "calendar_elapsed": calendar_elapsed,
         "pct_consumed":     pct_consumed,
         "pct_elapsed":      pct_elapsed,
+        "elapsed_paused":   elapsed_paused,
         "on_pace":          days_consumed >= calendar_elapsed,
         "budget_start_str": budget_start.isoformat(),
     }
@@ -1475,12 +1493,23 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         if sched:
             # Green = consuming less labor than budgeted for this calendar period (running lean)
             # Amber = consuming more labor than budgeted rate (burning faster than planned)
-            lean           = sched['days_consumed'] <= sched['calendar_elapsed']
-            bar_color      = '#48bb78' if lean else '#ed8936'
-            elapsed_pct    = min(100, sched['pct_elapsed'])
-            consumed_pct   = min(100, sched['pct_consumed'])
-            pace_lbl       = '✅ Lean on labor' if lean else '⚡ Ahead of pace'
-            pace_color     = '#7a5c0a'            if lean else '#975a16'
+            elapsed_paused = sched.get('elapsed_paused', False)
+            if elapsed_paused:
+                # Clock not yet started — show neutral grey bar, no pace judgment
+                bar_color    = '#4a90d9'   # blue for "accumulating"
+                elapsed_pct  = 0
+                consumed_pct = min(100, sched['pct_consumed'])
+                pace_lbl     = '⏸ Clock paused'
+                pace_color   = '#4a6fa5'
+                elapsed_label = '— elapsed'
+            else:
+                lean          = sched['days_consumed'] <= sched['calendar_elapsed']
+                bar_color     = '#48bb78' if lean else '#ed8936'
+                elapsed_pct   = min(100, sched['pct_elapsed'])
+                consumed_pct  = min(100, sched['pct_consumed'])
+                pace_lbl      = '✅ Lean on labor' if lean else '⚡ Ahead of pace'
+                pace_color    = '#7a5c0a'            if lean else '#975a16'
+                elapsed_label = f"{sched['calendar_elapsed']} elapsed"
             sched_html = f'''
       <div class="sched-section">
         <div class="sched-label">📅 Schedule Progress <span style="color:{pace_color};font-weight:600;font-size:0.65rem">{pace_lbl}</span></div>
@@ -1490,7 +1519,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         </div>
         <div class="sched-nums">
           <span>{sched['days_consumed']} consumed</span>
-          <span style="color:#718096">{sched['calendar_elapsed']} elapsed</span>
+          <span style="color:#718096">{elapsed_label}</span>
           <span style="color:#a0aec0">/ {sched['budget_days']} days</span>
         </div>
       </div>'''
@@ -1623,7 +1652,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'mt1':      'Deveraux — MacTaggart Bldg 1',
         'mt2':      'Deveraux — MacTaggart Bldg 2',
         'kaskitew': 'Graham — Kaskitew',
-        'covenant': 'Terrace — Covenant Health',
+        'covenant':    'Terrace — Covenant Health — Phase 1',
+        'covenant_p2': 'Terrace — Covenant Health — Phase 2',
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
         'ls16':     'Lewis Estates — Building #16',
