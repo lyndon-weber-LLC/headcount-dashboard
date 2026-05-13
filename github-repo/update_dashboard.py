@@ -39,7 +39,7 @@ BUDGETS = {
 
 # ── Schedule / FTE tracking ───────────────────────────────
 # budget_days   : total business days budgeted for the project
-#                 (weekdays count as 1.0, Saturdays as 0.5)
+#                 (weekdays count as 1.0, Saturdays as 0.25)
 # budget_start  : date the FTE accumulation clock starts (YYYY-MM-DD).
 #                 'auto' = use first date this project appears in history data.
 # elapsed_start : (optional) date the calendar-days-elapsed counter starts.
@@ -54,7 +54,7 @@ PROJECT_SCHEDULE = {
     "mt2":      {"budget_days": 55,  "budget_start": "2026-03-02"}, # 55 days from full-crew start March 2
     "covenant":    {"budget_days": 70,  "budget_start": "2026-04-02"}, # Phase 1: full crew Apr 2, completion Jul 14
     "covenant_p2": {"budget_days": 60,  "budget_start": "2026-05-11",  # Phase 2: mobilization May 11, full crew May 18
-                    "elapsed_start": "paused"},                        # ← clock paused; set to "YYYY-MM-DD" when ready
+                    "elapsed_start": "2026-05-13"},                    # elapsed clock started May 13; completion ~Aug 4
     # Hankewich: rate-per-day contract — track cumulative FTE only, no schedule bar
     "hankewich": {"budget_start": "2026-05-11", "fte_only": True},
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
@@ -276,6 +276,14 @@ IGNORED_JOBS = {
     "rob's project",
     # Not worth tracking
     "beaumont",
+    # Dave C timesheet — non-project entries
+    "dansereau",          # not a tracked project
+    "fall pro",           # not a tracked project
+    "heatherglen 79",     # partial variant of heatherglen 79-83 (already ignored)
+    "not in",             # absence / out-of-office note
+    "monarch 5",          # monarch variant — subcontracted, not tracked
+    # LLC overhead variants
+    "llc meeting 1h",     # hours appended variant (already have .5h)
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -325,6 +333,9 @@ WE_PANEL_INLINE_RE = re.compile(r'^w(?:e)?\s+panel\s*\((.+)\)$', re.I)
 # Matches job codes with hours embedded: "JOB-Xh" or compound "JOB-Xh-NEXTJOB".
 # Accepts both regular hyphens and en-dashes (Google Sheets autocorrect).
 # No trailing $ — allows compound entries like "Monarch-6.5h-terrace P1".
+# Matches trailing hours suffix with no preceding dash: "JOB Xh" → strips to "JOB".
+# e.g. "terrace P1 3h", "covenant 2.5h" — hours at end, space-separated, no dash.
+JOB_HOURS_TRAILING_RE = re.compile(r'^(.+?)\s+[\d.]+h$', re.I)
 JOB_HOURS_RE = re.compile(r'^(.+?)[-–][\d.]+h?', re.I)
 # Matches "JOB Xh- NEXTJOB" format (hours before the dash separator).
 # e.g. "Monarch 3h- terrace P1", "Monarch 3h– terrace P1"
@@ -467,6 +478,11 @@ def normalize_job(raw):
             if second_proj:
                 return second_proj
             cleaned = first_job
+
+    # Last-chance: strip trailing "Xh" suffix with no preceding dash (e.g. "terrace P1 3h")
+    m_trail = JOB_HOURS_TRAILING_RE.match(cleaned)
+    if m_trail:
+        cleaned = m_trail.group(1).strip()
 
     # Normalize all whitespace (handles non-breaking spaces, double spaces, etc.)
     # so timesheet encoding quirks don't produce false unknowns
@@ -1256,7 +1272,7 @@ def bar_pct(actual, budget):
 # ─────────────────────────────────────────────────────────
 
 # Alberta statutory holidays — excluded from elapsed business-day counts.
-# Saturdays that fall on a stat are already worth 0.5 so no special handling needed.
+# Saturdays that fall on a stat are already worth 0.25 so no special handling needed.
 ALBERTA_STAT_HOLIDAYS: set = {
     # 2025
     date(2025, 12, 25),   # Christmas Day
@@ -1276,7 +1292,8 @@ ALBERTA_STAT_HOLIDAYS: set = {
 
 def _business_days_elapsed(start: date, through: date) -> float:
     """Count business days from start through through (inclusive).
-    Weekdays = 1.0 each, Saturdays = 0.5 each, Sundays = 0.
+    Weekdays = 1.0 each, Saturdays = 0.25 each, Sundays = 0.
+    (Changed from 0.5 → 0.25 May 2026: Saturdays used less frequently lately.)
     Alberta statutory holidays on weekdays are skipped (0.0).
     """
     if through < start:
@@ -1290,7 +1307,7 @@ def _business_days_elapsed(start: date, through: date) -> float:
         elif wd < 5:        # Mon–Fri
             total += 1.0
         elif wd == 5:       # Saturday
-            total += 0.5
+            total += 0.25
         cur += timedelta(days=1)
     return total
 
@@ -1395,7 +1412,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('mt2',      'Deveraux Developments', 'MacTaggart Bldg 2',   'Alex & Sam Crew',      'Started Jan 19, 2026'),
         ('kaskitew', 'Graham',                'Kaskitew',             'Chad / Corey Crew',    'Until Jul 10, 2026'),
         ('covenant',    'Terrace', 'Covenant Health — Phase 1', "Hayden & Devon Crew", 'Until Jul 14, 2026'),
-        ('covenant_p2', 'Terrace', 'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Oct 9, 2026'),
+        ('covenant_p2', 'Terrace', 'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
         ('cantiro',  'Cantiro',               'West Block 200',       "Cory's Crew",          'Started Nov 10, 2025'),
         ('hankewich','Hankewich',             'Steel Framing',        "Vadym's Crew",         'Rate per day'),
     ]
