@@ -15,10 +15,10 @@
 ,"Saturday, May 9, 2026",,,,,,,
 ,,,,,,,,
 ,"Monday, May 11, 2026",Terrace/Graham/Virdi/Monarch,7:00,5:30,10,,,
-,"Tuesday, May 12, 2026",Terrace/Graham/Monarch,7:00,5:30,10,,,
+,"Tuesday, May 12, 2026",Terrace/ Graham/ Monarch,7:00,5:30,10,,,
 ,"Wednesday, May 13, 2026",Terrace / Graham / Canbian ,7:00,5:30,10,,,
 ,"Thursday, May 14, 2026",Terrace / Graham / RFQ ,7:00,5:30,10,,,
-,"Friday, May 15, 2026",Terrace / Graham,7:00,5:30,10,,,
+,"Friday, May 15, 2026",Graham/Terrace ,7:00,5:30,10,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
@@ -32,13 +32,27 @@
 ,,Total Hours:,Regular:,109.5,OT:,0,,
 ,,,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,,,
-,Chad Hjemeland - S,109.5,0,1,,,Graham/Terrace ,30
+,Chad Hjemeland - S,109.5,0,1,,,Graham/Terrace ,40
 ,,,,,,,Rob's Project ,15.5
 ,,,,,,,Terrace/Graham/Virdi,4
-,,,,,,,Terrace/ Graham/ Monarch,10
+,,,,,,,Terrace/ Graham/ Monarch,20
 ,,,,,,,SGSLL,0
+,,,,,,,Terrace/Graham/Virdi/Monarch,10
+,,,,,,,Terrace / Graham / Canbian ,10
+,,,,,,,Terrace / Graham / RFQ ,10
 ,,,,,,,LLMP,0
 ,,,,,,,Fall Pro,0
 ,,,,,,,MT1/Fall Pro,0
-,,,,,,,,59.5
-,,,,,,,,50
+,,,,,,,,109.5
+,,,,,,,,0
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,"Graham/Terrace: 40 hrs – $2,730.78",,
+,,,,,,"Rob’s Project: 15.5 hrs – $1,058.19",,
+,,,,,,Virdi: 4 hrs – $273.07,,
+,,,,,,"Monarch: 20 hrs – $1,365.39",,
+,,,,,,Canbian: 10 hrs – $682.69,,
+,,,,,,RFQ: 10 hrs – $682.69,,
+,,,,,,SGSLL: 0 hrs – $0.00,,
