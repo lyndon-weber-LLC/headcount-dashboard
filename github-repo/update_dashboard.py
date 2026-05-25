@@ -234,7 +234,7 @@ COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17"}
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
-CLOSED_PROJECTS = {"mt1", "cantiro"}
+CLOSED_PROJECTS = {"mt1", "cantiro", "mt2"}
 
 # Job codes that appear in timesheets but should be silently ignored
 # (completed projects, personal jobs, misc entries we don't want to track)
@@ -284,6 +284,12 @@ IGNORED_JOBS = {
     "monarch 5",          # monarch variant — subcontracted, not tracked
     # LLC overhead variants
     "llc meeting 1h",     # hours appended variant (already have .5h)
+    "llc meeting 1.5",    # another hours variant
+    # Standalone hour/misc entries — no project context
+    "5h",                 # bare hours entry, no project
+    "cove misc.",         # miscellaneous cove entry, not tracked
+    "cove b2 stone shire",# combined entry — not a tracked project
+    "rfq",                # request for quote — not a project
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -335,7 +341,7 @@ WE_PANEL_INLINE_RE = re.compile(r'^w(?:e)?\s+panel\s*\((.+)\)$', re.I)
 # No trailing $ — allows compound entries like "Monarch-6.5h-terrace P1".
 # Matches trailing hours suffix with no preceding dash: "JOB Xh" → strips to "JOB".
 # e.g. "terrace P1 3h", "covenant 2.5h" — hours at end, space-separated, no dash.
-JOB_HOURS_TRAILING_RE = re.compile(r'^(.+?)\s+[\d.]+h$', re.I)
+JOB_HOURS_TRAILING_RE = re.compile(r'^(.+?)\s+[\d.]+h?$', re.I)  # h is optional ("monarch 3.5" as well as "monarch 3.5h")
 JOB_HOURS_RE = re.compile(r'^(.+?)[-–][\d.]+h?', re.I)
 # Matches "JOB Xh- NEXTJOB" format (hours before the dash separator).
 # e.g. "Monarch 3h- terrace P1", "Monarch 3h– terrace P1"
@@ -479,10 +485,13 @@ def normalize_job(raw):
                 return second_proj
             cleaned = first_job
 
-    # Last-chance: strip trailing "Xh" suffix with no preceding dash (e.g. "terrace P1 3h")
+    # Last-chance: strip trailing "Xh" suffix with no preceding dash (e.g. "terrace P1 3h", "monarch 3.5")
     m_trail = JOB_HOURS_TRAILING_RE.match(cleaned)
     if m_trail:
         cleaned = m_trail.group(1).strip()
+
+    # Strip trailing dash/en-dash left by Google Sheets autocorrect (e.g. "Terrace–" → "Terrace")
+    cleaned = cleaned.rstrip('-–').strip()
 
     # Normalize all whitespace (handles non-breaking spaces, double spaces, etc.)
     # so timesheet encoding quirks don't produce false unknowns
@@ -1409,7 +1418,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     # ── Project-level data ──
     projects = [
         ('mt1',      'Deveraux Developments', 'MacTaggart Bldg 1',   'Alex & Sam Crew',      'Started Oct 27, 2025'),
-        ('mt2',      'Deveraux Developments', 'MacTaggart Bldg 2',   'Alex & Sam Crew',      'Started Jan 19, 2026'),
+        ('mt2',      'Deveraux Developments', 'MacTaggart Bldg 2',   'Alex & Sam Crew',      'Completed May 2026'),
         ('kaskitew', 'Graham',                'Kaskitew',             'Chad / Corey Crew',    'Until Jul 10, 2026'),
         ('covenant',    'Terrace', 'Covenant Health — Phase 1', "Hayden & Devon Crew", 'Until Jul 14, 2026'),
         ('covenant_p2', 'Terrace', 'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
@@ -1433,7 +1442,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     known_actual = 0
     known_budget = 0
     total_subs   = 0
-    total_budget = sum(BUDGETS[k] for k in ['mt2','kaskitew','covenant','covenant_p2','cantiro','hankewich','ls6','ls17','ls19'])
+    total_budget = sum(BUDGETS[k] for k in ['kaskitew','covenant','covenant_p2','hankewich','ls6','ls17','ls19'])
 
     for proj_key, *_ in projects:
         if proj_key in CLOSED_PROJECTS:
@@ -1526,7 +1535,24 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
 
         # schedule progress bar
         sched = calc_schedule_progress(proj_key, history_detail, budget)
-        if sched and sched.get('fte_only'):
+        if sched and proj_key in CLOSED_PROJECTS:
+            # Project complete — show final FTE consumed vs budget, no pace judgment
+            consumed_pct = min(110, sched['pct_consumed'])
+            over = sched['days_consumed'] > sched['budget_days']
+            bar_color_s  = '#a0aec0' if not over else '#ed8936'   # grey = on/under; amber = over
+            over_lbl     = f" (+{round(sched['days_consumed'] - sched['budget_days'], 1)} over)" if over else ''
+            sched_html = f'''
+      <div class="sched-section">
+        <div class="sched-label">📅 Final FTE <span style="color:#4a6fa5;font-weight:600;font-size:0.65rem">✅ Complete{over_lbl}</span></div>
+        <div class="sched-track">
+          <div class="sched-fill" style="width:{min(100,consumed_pct)}%;background:{bar_color_s}"></div>
+        </div>
+        <div class="sched-nums">
+          <span>{sched['days_consumed']} consumed</span>
+          <span style="color:#a0aec0">/ {sched['budget_days']} days budgeted</span>
+        </div>
+      </div>'''
+        elif sched and sched.get('fte_only'):
             # Rate-per-day contract: show FTE count only, no schedule pressure bar
             sched_html = f'''
       <div class="sched-section">

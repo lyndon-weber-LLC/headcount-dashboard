@@ -284,6 +284,12 @@ IGNORED_JOBS = {
     "monarch 5",          # monarch variant — subcontracted, not tracked
     # LLC overhead variants
     "llc meeting 1h",     # hours appended variant (already have .5h)
+    "llc meeting 1.5",    # another hours variant
+    # Standalone hour/misc entries — no project context
+    "5h",                 # bare hours entry, no project
+    "cove misc.",         # miscellaneous cove entry, not tracked
+    "cove b2 stone shire",# combined entry — not a tracked project
+    "rfq",                # request for quote — not a project
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -335,7 +341,7 @@ WE_PANEL_INLINE_RE = re.compile(r'^w(?:e)?\s+panel\s*\((.+)\)$', re.I)
 # No trailing $ — allows compound entries like "Monarch-6.5h-terrace P1".
 # Matches trailing hours suffix with no preceding dash: "JOB Xh" → strips to "JOB".
 # e.g. "terrace P1 3h", "covenant 2.5h" — hours at end, space-separated, no dash.
-JOB_HOURS_TRAILING_RE = re.compile(r'^(.+?)\s+[\d.]+h$', re.I)
+JOB_HOURS_TRAILING_RE = re.compile(r'^(.+?)\s+[\d.]+h?$', re.I)  # h is optional ("monarch 3.5" as well as "monarch 3.5h")
 JOB_HOURS_RE = re.compile(r'^(.+?)[-–][\d.]+h?', re.I)
 # Matches "JOB Xh- NEXTJOB" format (hours before the dash separator).
 # e.g. "Monarch 3h- terrace P1", "Monarch 3h– terrace P1"
@@ -479,10 +485,13 @@ def normalize_job(raw):
                 return second_proj
             cleaned = first_job
 
-    # Last-chance: strip trailing "Xh" suffix with no preceding dash (e.g. "terrace P1 3h")
+    # Last-chance: strip trailing "Xh" suffix with no preceding dash (e.g. "terrace P1 3h", "monarch 3.5")
     m_trail = JOB_HOURS_TRAILING_RE.match(cleaned)
     if m_trail:
         cleaned = m_trail.group(1).strip()
+
+    # Strip trailing dash/en-dash left by Google Sheets autocorrect (e.g. "Terrace–" → "Terrace")
+    cleaned = cleaned.rstrip('-–').strip()
 
     # Normalize all whitespace (handles non-breaking spaces, double spaces, etc.)
     # so timesheet encoding quirks don't produce false unknowns
