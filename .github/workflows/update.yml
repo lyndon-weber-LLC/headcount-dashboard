@@ -34,19 +34,19 @@ jobs:
       #   Alvin G-S: moved to overhead employee — no longer tracked as sub.
       # Next sub rollover: Jun 1 — provide May 16–31 tab gids at that time.
       #
-      # Current employee previous tabs: Apr 24–May 8 (rolled over May 9, 2026)
-      #   Alex W=3795797  Alex/Sam=1403236371  Chad prefab=449356319  Cory=570591662
-      #   Dave=1739506184  Hayden=740241296  Vadym=1315391341
-      # Next employee rollover: May 24 — provide May 9–23 tab gids at that time.
+      # Current employee previous tabs: May 9–23 (rolled over May 24, 2026)
+      #   Alex W=415251949  Alex/Sam=849020412  Chad prefab=1316553344  Cory=678814583
+      #   Dave=1243918028  Hayden=1448229710  Vadym=222630031
+      # Next employee rollover: Jun 8 — provide May 24–Jun 7 tab gids at that time.
       - name: Download live timesheets
         run: |
           mkdir -p data/live
 
-          echo "→ Alex W (current tab: May 9–23)"
+          echo "→ Alex W (current tab: May 24–Jun 7)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv" \
             -o "data/live/Alex Timesheet(December 31, 9999).csv"
-          echo "→ Alex W (previous tab: Apr 24–May 8, gid=3795797)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv&gid=3795797" \
+          echo "→ Alex W (previous tab: May 9–23, gid=415251949)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv&gid=415251949" \
             -o "data/live/Alex Timesheet(December 30, 9999).csv"
 
           echo "→ Alex Weber – Subs (current tab: May 16–31)"
@@ -56,11 +56,11 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv&gid=1741750007" \
             -o "data/live/Alex Weber - Subs Timesheet(December 30, 9999).csv"
 
-          echo "→ Alex/Sam crew (current tab: May 9–23)"
+          echo "→ Alex/Sam crew (current tab: May 24–Jun 7)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv" \
             -o "data/live/Carlisle Timesheet(December 31, 9999).csv"
-          echo "→ Alex/Sam crew (previous tab: Apr 24–May 8, gid=1403236371)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv&gid=1403236371" \
+          echo "→ Alex/Sam crew (previous tab: May 9–23, gid=849020412)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv&gid=849020412" \
             -o "data/live/Carlisle Timesheet(December 30, 9999).csv"
 
           echo "→ Chad Hjemeland – Subs (current tab: May 16–31)"
@@ -70,25 +70,25 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv&gid=1907216836" \
             -o "data/live/Chad Hjemeland Timesheet(December 30, 9999).csv"
 
-          echo "→ Chad prefab (current tab: May 9–23)"
+          echo "→ Chad prefab (current tab: May 24–Jun 7)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlHN1sQRdBulLg54rAM92L-MskUTY42VzPw-3X2QDyFI3o-GxDz9II2E16PCTWugtE4wlq3FjzT5Id/pub?output=csv" \
             -o "data/live/Chad Timesheet(December 31, 9999).csv"
-          echo "→ Chad prefab (previous tab: Apr 24–May 8, gid=449356319)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlHN1sQRdBulLg54rAM92L-MskUTY42VzPw-3X2QDyFI3o-GxDz9II2E16PCTWugtE4wlq3FjzT5Id/pub?output=csv&gid=449356319" \
+          echo "→ Chad prefab (previous tab: May 9–23, gid=1316553344)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlHN1sQRdBulLg54rAM92L-MskUTY42VzPw-3X2QDyFI3o-GxDz9II2E16PCTWugtE4wlq3FjzT5Id/pub?output=csv&gid=1316553344" \
             -o "data/live/Chad Timesheet(December 30, 9999).csv"
 
-          echo "→ Cory (current tab: May 9–23)"
+          echo "→ Cory (current tab: May 24–Jun 7)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLyfku8YLaXk7POu-hI4M2qMlWhbDsicEbBI_IhEln1XsRLCP4sx3lMAH5y_sAAdDxprYl0aNCsSrQ/pub?output=csv" \
             -o "data/live/Cory Timesheet(December 31, 9999).csv"
-          echo "→ Cory (previous tab: Apr 24–May 8, gid=570591662)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLyfku8YLaXk7POu-hI4M2qMlWhbDsicEbBI_IhEln1XsRLCP4sx3lMAH5y_sAAdDxprYl0aNCsSrQ/pub?output=csv&gid=570591662" \
+          echo "→ Cory (previous tab: May 9–23, gid=678814583)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLyfku8YLaXk7POu-hI4M2qMlWhbDsicEbBI_IhEln1XsRLCP4sx3lMAH5y_sAAdDxprYl0aNCsSrQ/pub?output=csv&gid=678814583" \
             -o "data/live/Cory Timesheet(December 30, 9999).csv"
 
-          echo "→ Dave (current tab: May 9–23)"
+          echo "→ Dave (current tab: May 24–Jun 7)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv" \
             -o "data/live/Dave Timesheet(December 31, 9999).csv"
-          echo "→ Dave (previous tab: Apr 24–May 8, gid=1739506184)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv&gid=1739506184" \
+          echo "→ Dave (previous tab: May 9–23, gid=1243918028)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv&gid=1243918028" \
             -o "data/live/Dave Timesheet(December 30, 9999).csv"
 
           echo "→ Devon Mcinroy – Subs (current tab: May 16–31)"
@@ -98,11 +98,11 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv&gid=461485123" \
             -o "data/live/Devon Mcinroy Timesheet(December 30, 9999).csv"
 
-          echo "→ Hayden & Devon (current tab: May 9–23)"
+          echo "→ Hayden & Devon (current tab: May 24–Jun 7)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv" \
             -o "data/live/Hayden Timesheet(December 31, 9999).csv"
-          echo "→ Hayden & Devon (previous tab: Apr 24–May 8, gid=740241296)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv&gid=740241296" \
+          echo "→ Hayden & Devon (previous tab: May 9–23, gid=1448229710)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv&gid=1448229710" \
             -o "data/live/Hayden Timesheet(December 30, 9999).csv"
 
           echo "→ Sam Brent – Subs (current tab: May 16–31)"
@@ -112,11 +112,11 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv&gid=1784243999" \
             -o "data/live/Sam Brent Timesheet(December 30, 9999).csv"
 
-          echo "→ Vadym (current tab: May 9–23)"
+          echo "→ Vadym (current tab: May 24–Jun 7)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv" \
             -o "data/live/Vadym Timesheet(December 31, 9999).csv"
-          echo "→ Vadym (previous tab: Apr 24–May 8, gid=1315391341)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv&gid=1315391341" \
+          echo "→ Vadym (previous tab: May 9–23, gid=222630031)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv&gid=222630031" \
             -o "data/live/Vadym Timesheet(December 30, 9999).csv"
 
           # Alvin (URL 4) — intentionally skipped (not tracked)
@@ -138,7 +138,7 @@ jobs:
           #   2. Add a new curl block here for that period (no [ -f ] guard).
           #   3. THEN update the previous-tab GID in the "Download live timesheets" step.
           #   4. Update period labels and rollover comments above.
-          #   Employee rollovers: every ~24 days (next: May 24 — need May 9–23 GIDs)
+          #   Employee rollovers: every ~24 days (next: Jun 8 — need May 24–Jun 7 GIDs)
           #   Sub rollovers:      every ~15 days (next: Jun 1  — need May 16–31 GIDs)
 
           # ── Apr 9–23 employee tabs (archived May 9, 2026) ──
@@ -157,6 +157,40 @@ jobs:
             -o "data/live/Hayden Timesheet(April 23, 2026).csv"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv&gid=1327796898" \
             -o "data/live/Vadym Timesheet(April 23, 2026).csv"
+
+          # ── Apr 24–May 8 employee tabs (archived May 9, 2026) ──
+          echo "→ Archive: Apr 24–May 8 employees"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv&gid=3795797" \
+            -o "data/live/Alex Timesheet(May 8, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv&gid=1403236371" \
+            -o "data/live/Carlisle Timesheet(May 8, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlHN1sQRdBulLg54rAM92L-MskUTY42VzPw-3X2QDyFI3o-GxDz9II2E16PCTWugtE4wlq3FjzT5Id/pub?output=csv&gid=449356319" \
+            -o "data/live/Chad Timesheet(May 8, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLyfku8YLaXk7POu-hI4M2qMlWhbDsicEbBI_IhEln1XsRLCP4sx3lMAH5y_sAAdDxprYl0aNCsSrQ/pub?output=csv&gid=570591662" \
+            -o "data/live/Cory Timesheet(May 8, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv&gid=1739506184" \
+            -o "data/live/Dave Timesheet(May 8, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv&gid=740241296" \
+            -o "data/live/Hayden Timesheet(May 8, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv&gid=1315391341" \
+            -o "data/live/Vadym Timesheet(May 8, 2026).csv"
+
+          # ── May 9–23 employee tabs (archived May 24, 2026) ──
+          echo "→ Archive: May 9–23 employees"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv&gid=415251949" \
+            -o "data/live/Alex Timesheet(May 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv&gid=849020412" \
+            -o "data/live/Carlisle Timesheet(May 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlHN1sQRdBulLg54rAM92L-MskUTY42VzPw-3X2QDyFI3o-GxDz9II2E16PCTWugtE4wlq3FjzT5Id/pub?output=csv&gid=1316553344" \
+            -o "data/live/Chad Timesheet(May 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLyfku8YLaXk7POu-hI4M2qMlWhbDsicEbBI_IhEln1XsRLCP4sx3lMAH5y_sAAdDxprYl0aNCsSrQ/pub?output=csv&gid=678814583" \
+            -o "data/live/Cory Timesheet(May 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv&gid=1243918028" \
+            -o "data/live/Dave Timesheet(May 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv&gid=1448229710" \
+            -o "data/live/Hayden Timesheet(May 23, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv&gid=222630031" \
+            -o "data/live/Vadym Timesheet(May 23, 2026).csv"
 
           # ── May 1–15 sub tabs (archived May 16, 2026) ──
           echo "→ Archive: May 1–15 subs"
