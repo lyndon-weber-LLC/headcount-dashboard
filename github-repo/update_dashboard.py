@@ -290,6 +290,19 @@ IGNORED_JOBS = {
     "cove misc.",         # miscellaneous cove entry, not tracked
     "cove b2 stone shire",# combined entry — not a tracked project
     "rfq",                # request for quote — not a project
+    # Cove / Stoneshire variants — completed project, occasional visits
+    "cove",
+    "cove building",
+    "cove bldg",
+    "cove b",
+    "cove (ss)",
+    # Averton — completed project, not tracked
+    "averton building",
+    # Lewis Estates — incomplete entry (missing building number), ignore until properly logged
+    "lewis",
+    "lewis estates",
+    # Incomplete/foreman notes
+    "missing from",
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -451,7 +464,10 @@ def is_mod_entry(raw):
 _unknown_jobs = set()
 
 def normalize_job(raw):
-    cleaned = raw.strip()
+    # Normalize all Unicode dash/hyphen variants to ASCII hyphen so Google Sheets
+    # encoding quirks (en-dash, em-dash, figure dash, etc.) don't break regex matching.
+    cleaned = re.sub(r'[‐‑‒–—―−﹘﹣－]',
+                     '-', raw.strip())
 
     # Pattern 1: "JOB-Xh" or compound "JOB-Xh-NEXTJOB" / "JOB–Xh–NEXTJOB"
     m_hrs = JOB_HOURS_RE.match(cleaned)
