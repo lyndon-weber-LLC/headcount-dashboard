@@ -939,6 +939,12 @@ def parse_sheet(path):
     # Track employees who have explicitly left (terminated/quit/moved).
     # Used below to avoid re-adding them when seeding blank-cell absences.
     terminated_cols = set()
+    # Track columns that had ANY entry this period (project, absence, MOD, or
+    # termination).  Only these workers are eligible for dominant-project seeding —
+    # workers with zero entries in the current tab are new to this period (just
+    # rolled over) and must NOT be seeded, otherwise they get mis-assigned to
+    # whatever project happens to dominate the sparse new-period data.
+    cols_with_any_entry = set()
 
     for row in rows[5:]:
         if not row:
@@ -952,6 +958,10 @@ def parse_sheet(path):
                 continue
             raw_job = row[col].strip()
             jl = raw_job.lower()
+
+            # Any non-empty cell counts as "this worker has been seen this period"
+            if raw_job:
+                cols_with_any_entry.add(col)
 
             # ── MOD / WCB injured check (before SKIP_VALS) ──
             if raw_job and is_mod_entry(raw_job):
@@ -1004,16 +1014,20 @@ def parse_sheet(path):
                         last_job[col] = proj
                         break
 
-    # Seed any crew member with no entry this period to the dominant project.
-    # This handles both (a) employees with explicit "OFF"/"sick" entries and
-    # (b) employees with completely blank cells — both occur on the first day of a
-    # new pay-period tab when the foreman only fills in whoever showed up.
-    # Terminated employees (tracked in terminated_cols) are intentionally excluded.
+    # Seed any crew member with no entry THIS period to the dominant project —
+    # but ONLY if they appeared at least once in this tab (cols_with_any_entry).
+    # This handles mid-period off days (e.g. worker logged Mon/Wed but not Tue).
+    # Workers with zero entries in the current tab are excluded: they carried over
+    # from a previous pay period and their last known project is unknown here;
+    # seeding them to the dominant project would mis-assign them (e.g. a Terrace
+    # worker counted as Hankewich because they were off on day 1 of the new period).
+    # Terminated employees are also excluded.
     if last_job:
         from collections import Counter
         dominant_proj = Counter(last_job.values()).most_common(1)[0][0]
         for col, name, is_sub in employees:
             if (col not in last_job
+                    and col in cols_with_any_entry
                     and col not in terminated_cols
                     and not re.match(r'^(New \d+|0)$', name.strip())):
                 last_job[col] = dominant_proj
