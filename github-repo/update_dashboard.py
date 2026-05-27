@@ -147,9 +147,23 @@ JOB_CODE_MAP = {
     "covenant health p2":  "covenant_p2",
     "terrace p1":          "covenant",    # Phase 1 explicit label
     "terrace phase 1":     "covenant",
+    "terrace ph1":         "covenant",    # shorthand "PH1" variant
+    "terrace ph 1":        "covenant",
+    "terrence p1":         "covenant",    # "Terrence" typo
     "tp1":                 "covenant",    # Hayden/Devon shorthand for Terrace Phase 1
     "terrace p2":          "covenant_p2",
     "terrace phase 2":     "covenant_p2",
+    "terrence p2":         "covenant_p2", # "Terrence" typo for Phase 2
+    "terrence phase 2":    "covenant_p2",
+    # "Monarch 3h– terrace P1" compound — monarch is ignored, picks up terrace P1.
+    # Direct entries here as belt-and-suspenders in case the regex path fails.
+    "monarch 3h- terrace p1":  "covenant",   # hyphen variant (after unicode normalization)
+    "monarch 3h– terrace p1":  "covenant",   # en-dash variant (raw from Google Sheets)
+    # "Tp1-Lewis 2" — worker split between Terrace P1 and Lewis Bldg 2.
+    # JOB_HOURS_TRAILING_RE strips the trailing " 2", leaving "Tp1-Lewis" → key below.
+    # Count toward Terrace P1 for headcount; Lewis contribution is secondary.
+    "tp1-lewis":           "covenant",
+    "tp1-lewis 2":         "covenant",    # fallback if trailing strip doesn't fire
     "cove 19":           "ls19",        # shorthand for Cove Building 19
     "m2t":               "mt2",         # transposition typo for MT2
     "lewis 19":          "ls19",
@@ -269,6 +283,7 @@ IGNORED_JOBS = {
     "llc meeting .5h",      # hours appended without dash — not stripped by JOB_HOURS_RE
     "llc supervisor meeting",
     "llc supervisor meeting 1h",
+    "llc field meeting",    # field coordination meeting — overhead
     # Cove building 1 — not a tracked project
     "cove b1",
     # Internal/personal projects — not tracked
