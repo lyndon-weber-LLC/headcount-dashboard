@@ -4,7 +4,7 @@
 ,Date:,Job #,Time,,Hours,,Job #,Time,,Hours,,,,,,,,,,,
 ,,,IN,OUT,Regular,OT,,IN,OUT,Regular,OT,,,,,,,,,,
 ,"Monday, May 25, 2026",monarch- 8.5/ LLC field meeting 1h,7:00,5:30,8,1.5,,,,,,,,,,,,,,,
-,"Tuesday, May 26, 2026",,,,,,,,,,,,,,,,,,,,
+,"Tuesday, May 26, 2026",monarch ,7:00,4:00,8,0.5,,,,,,,,,,,,,,,
 ,"Wednesday, May 27, 2026",,,,,,,,,,,,,,,,,,,,
 ,"Thursday, May 28, 2026",,,,,,,,,,,,,,,,,,,,
 ,"Friday, May 29, 2026",,,,,,,,,,,,,,,,,,,,
@@ -12,10 +12,10 @@
 ,,,,,,,,,,,,,,,,,,,,,
 ,"Monday, June 01, 2026",,,,,,,,,,,,,,,,,,,,
 ,"Tuesday, June 02, 2026",,,,,,,,,,,,,,,,,,,,
-,"Wednesday, June 03, 2026",,,,,,,,,,,,,LLC meeting,1,1.5,,,,,2.50
-,"Thursday, June 04, 2026",,,,,,,,,,,,,Terrace P1,3,6.5,6.5,2,2,,20.00
-,"Friday, June 05, 2026",,,,,,,,,,,,,Monarch ,5,7.5,3,3.5,9,4.5,32.50
-,"Saturday, June 06, 2026",,,,,,,,,,,,,,,,,,,,55.00
+,"Wednesday, June 03, 2026",,,,,,,,,,,,,LLC meeting,1,,,,,,1.00
+,"Thursday, June 04, 2026",,,,,,,,,,,,,Terrace P1,,,,,,,0.00
+,"Friday, June 05, 2026",,,,,,,,,,,,,Monarch ,8.5,,,,,,8.50
+,"Saturday, June 06, 2026",,,,,,,,,,,,,,,,,,,,9.50
 ,,,,,,,,,,,,,,,,,,,,,
 ,"Monday, June 08, 2026",,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,
@@ -27,8 +27,8 @@
 ,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,
-,Summary,Total Hours:,Regular:,8,OT:,1.5,Total Hours:,Regular:,0,OT:,0,,,,,,,,,,
+,Summary,Total Hours:,Regular:,16,OT:,2,Total Hours:,Regular:,0,OT:,0,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,,,,,,,,,,,,,,,,
-,David Corkery,8,1.5,,,,,,,,,,,,,,,,,,
+,David Corkery,16,2,,,,,,,,,,,,,,,,,,
 ,,0,0,,,,,,,,,,,,,,,,,,
