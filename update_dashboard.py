@@ -485,6 +485,9 @@ def normalize_job(raw):
     # encoding quirks (en-dash, em-dash, figure dash, etc.) don't break regex matching.
     cleaned = re.sub(r'[‐‑‒–—―−﹘﹣－]',
                      '-', raw.strip())
+    # Strip leading non-alphanumeric characters (e.g. ".Cove b16" from a stray
+    # period entered in Google Sheets before the job name).
+    cleaned = re.sub(r'^[^a-zA-Z0-9]+', '', cleaned)
 
     # Pattern 1: "JOB-Xh" or compound "JOB-Xh-NEXTJOB" / "JOB–Xh–NEXTJOB"
     m_hrs = JOB_HOURS_RE.match(cleaned)
