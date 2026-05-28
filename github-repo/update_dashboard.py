@@ -234,6 +234,8 @@ JOB_CODE_MAP = {
     "b6":  "ls6", "b17": "ls17","b18": "ls18",  "b19": "ls19",
     # Additional Lewis Estates aliases found in older timesheets
     "lewis 2":           "ls2",
+    "lewis b2":          "ls2",
+    "cove lewis b2":     "ls2",
     "lewis 4":           "ls4",
     "cove bldg 2":       "ls2",
     "cove 1":            "ls2",    # likely ls1 but mapping to ls2 as closest — confirm
