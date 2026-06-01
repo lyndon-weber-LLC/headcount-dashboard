@@ -50,7 +50,7 @@ BUDGETS = {
 #       conservatively undercount the ~11 weeks of missing pre-data FTE-days.
 #       Same applies to Cantiro (project started Nov 10 2025).
 PROJECT_SCHEDULE = {
-    "kaskitew": {"budget_days": 85,  "budget_start": "2026-04-01"}, # 85-day budget starts with full crew April 1
+    "kaskitew": {"budget_days": 70,  "budget_start": "2026-04-01"}, # 70-day budget starts with full crew April 1
     "mt2":      {"budget_days": 55,  "budget_start": "2026-03-02"}, # 55 days from full-crew start March 2
     "covenant":    {"budget_days": 70,  "budget_start": "2026-04-02"}, # Phase 1: full crew Apr 2, completion Jul 14
     "covenant_p2": {"budget_days": 60,  "budget_start": "2026-05-11",  # Phase 2: mobilization May 11, full crew May 18
