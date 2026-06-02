@@ -135,6 +135,7 @@ JOB_CODE_MAP = {
     "covenant":            "covenant",
     "covenant health":     "covenant",
     "cantiro":             "cantiro",
+    "cantiro no break":    "cantiro",   # shift note included in job cell
     "terrace":             "covenant",
     "terrce":              "covenant",   # typo found in timesheets
     "terrase":             "covenant",   # typo found in Vadym's timesheet
