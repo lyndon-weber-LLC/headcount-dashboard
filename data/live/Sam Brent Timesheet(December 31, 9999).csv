@@ -3,7 +3,7 @@
 ,,,,,,
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
-,"Monday, June 1, 2026",,,,,
+,"Monday, June 1, 2026",Cantiro No Break,7:00,4:30,9.5,
 ,"Tuesday, June 2, 2026",,,,,
 ,"Wedneday June 3, 2026",,,,,
 ,"Thursday, June 4, 2026",,,,,
@@ -28,10 +28,10 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,0,OT:,0
+,,Total Hours:,Regular:,9.5,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Sam Brent (Broad Const.) - S ,0,0,1,Cantiro,0
+,Sam Brent (Broad Const.) - S ,9.5,0,1,Cantiro,0
 ,,,,,,0
 ,,,,,Salvi 13 & 14,0
 ,,,,,SGSLL,0
@@ -39,4 +39,4 @@
 ,,,,,Fall Pro,0
 ,,,,,MT1/Fall Pro,0
 ,,,,,,0
-,,,,,,0
+,,,,,,9.5
