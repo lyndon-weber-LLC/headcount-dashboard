@@ -4,7 +4,7 @@
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
 ,"Monday, June 1, 2026",,,,,
-,"Tuesday, June 2, 2026",,,,,
+,"Tuesday, June 2, 2026",tp1,630,530,10.5,
 ,"Wednesday, June 3, 2026",,,,,
 ,"Thursday, June 4, 2026",,,,,
 ,"Friday, June 5, 2026",,,,,
@@ -28,10 +28,10 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,0,OT:,0
+,,Total Hours:,Regular:,10.5,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,0,0,1,Cove,0
+,Devon McInroy - S,10.5,0,1,Cove,0
 ,,,,,Lewis 2,0
 ,,,,,Lewis 4/2,0
 ,,,,,Lewis 4,0
@@ -42,4 +42,4 @@
 ,,,,,Cantiro,0
 ,,,,,LLMP,0
 ,,,,,,0
-,,,,,,0
+,,,,,,10.5
