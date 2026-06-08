@@ -7,9 +7,9 @@
 ,"Tuesday, June 2, 2026",tp1,630,530,10.5,
 ,"Wednesday, June 3, 2026",tp1,630,530,10.5,
 ,"Thursday, June 4, 2026",tp1,630,530,10.5,
-,"Friday, June 5, 2026",,,,,
-,"Saturday, June 6, 2026",,,,,
-,,,,,,
+,"Friday, June 5, 2026",tp1,630,530,10.5,
+,"Saturday, June 6, 2026",tp1,630,130,7,
+,,tp1,7,1,6,
 ,"Monday, June 8, 2026",,,,,
 ,"Tuesday, June 9, 2026",,,,,
 ,"Wedneday June 10, 2026",,,,,
@@ -28,10 +28,10 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,31.5,OT:,0
+,,Total Hours:,Regular:,55,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,31.5,0,1,Cove,0
+,Devon McInroy - S,55,0,1,Cove,0
 ,,,,,Lewis 2,0
 ,,,,,Lewis 4/2,0
 ,,,,,Lewis 4,0
@@ -42,4 +42,4 @@
 ,,,,,Cantiro,0
 ,,,,,LLMP,0
 ,,,,,,0
-,,,,,,31.5
+,,,,,,55
