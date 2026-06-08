@@ -321,6 +321,21 @@ IGNORED_JOBS = {
     "lewis estates",
     # Incomplete/foreman notes
     "missing from",
+    # Weather / non-project entries
+    "rain",
+    "rain day",
+    # Deveraux Watt Common — next Deveraux job, not yet mobilized; ignore until active
+    "deveraux watt",
+    "watt",
+    "watt common",
+    # Misc untracked entries
+    "faction",
+    "health course",
+    "sam azoos",       # likely a name entered in the job column
+    "ois clinic",      # not a tracked project
+    # Rupy Khehra — small upcoming job, not yet mobilized; ignore until active
+    "rupy khehra",
+    "rupy",
 }
 
 # Crews that may not have current-period entries yet (use roster count)
