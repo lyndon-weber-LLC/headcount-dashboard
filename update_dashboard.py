@@ -25,7 +25,8 @@ BUDGETS = {
     "covenant_p2": 19,   # Terrace Covenant Health — Phase 2
     "cantiro":  17,   # Cantiro West Block 200
     "ls6":       8,   # Lewis Estates Bldg #6
-    "hankewich": 4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
+    "hankewich":   4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
+    "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
     "ls16":      5,   # Lewis Estates Bldg #16
     "ls17":      5,   # Lewis Estates Bldg #17
     "ls19":      8,   # Lewis Estates Bldg #19
@@ -56,7 +57,9 @@ PROJECT_SCHEDULE = {
     "covenant_p2": {"budget_days": 60,  "budget_start": "2026-05-11",  # Phase 2: mobilization May 11, full crew May 18
                     "elapsed_start": "2026-05-13"},                    # elapsed clock started May 13; completion ~Aug 4
     # Hankewich: rate-per-day contract — track cumulative FTE only, no schedule bar
-    "hankewich": {"budget_start": "2026-05-11", "fte_only": True},
+    "hankewich":   {"budget_start": "2026-05-11", "fte_only": True},
+    # Graham Townhouse A — Vadym's crew, 21-day FTE budget, clock starts Jun 11
+    "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
@@ -244,6 +247,11 @@ JOB_CODE_MAP = {
     # Hankewich steel framing — Vadym's crew, rate-per-day contract
     "hankewich":         "hankewich",
     "hankevich":         "hankewich",   # likely misspelling variant
+    # Graham Townhouse A — Vadym's crew
+    "graham tha":        "graham_tha",
+    "graham townhouse":  "graham_tha",
+    "graham townhouse a":"graham_tha",
+    "tha":               "graham_tha",
 }
 
 # Projects whose completion date is past (shown as "complete" in dashboard)
@@ -336,6 +344,8 @@ IGNORED_JOBS = {
     "health course",
     "sam azoos",       # likely a name entered in the job column
     "ois clinic",      # not a tracked project
+    "custom salvi",    # completed project
+    "no lunch",        # foreman note in job cell — not a project
     # Rupy Khehra — small upcoming job, not yet mobilized; ignore until active
     "rupy khehra",
     "rupy",
@@ -1492,7 +1502,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('covenant',    'Terrace', 'Covenant Health — Phase 1', "Hayden & Devon Crew", 'Until Jul 14, 2026'),
         ('covenant_p2', 'Terrace', 'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
         ('cantiro',  'Cantiro',               'West Block 200',       "Cory's Crew",          'Started Nov 10, 2025'),
-        ('hankewich','Hankewich',             'Steel Framing',        "Vadym's Crew",         'Rate per day'),
+        ('hankewich',  'Hankewich',  'Steel Framing',  "Vadym's Crew",  'Rate per day'),
+        ('graham_tha', 'Graham',     'Townhouse A',    "Vadym's Crew",  'Until Jul 10, 2026'),
     ]
 
     lewis_buildings = [
@@ -1796,6 +1807,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'covenant':    'Terrace — Covenant Health — Phase 1',
         'covenant_p2': 'Terrace — Covenant Health — Phase 2',
         'hankewich':   'Hankewich — Steel Framing',
+        'graham_tha':  'Graham — Townhouse A',
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
         'ls16':     'Lewis Estates — Building #16',
