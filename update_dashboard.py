@@ -309,6 +309,9 @@ IGNORED_JOBS = {
     "cove b2 stone shire",# combined entry — not a tracked project
     "rfq",                # request for quote — not a project
     # Cove / Stoneshire variants — completed project, occasional visits
+    "cove stoneshire",   # combined name variant — completed 2025
+    "min verdi",         # completed 2025 project
+    "vivid",             # completed 2025 project
     "cove",
     "cove building",
     "cove bldg",
