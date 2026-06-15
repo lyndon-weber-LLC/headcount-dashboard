@@ -349,6 +349,8 @@ IGNORED_JOBS = {
     # Rupy Khehra — small upcoming job, not yet mobilized; ignore until active
     "rupy khehra",
     "rupy",
+    # Internal overhead / admin codes
+    "oml",              # overhead meeting / logistics code
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -423,6 +425,15 @@ ABSENCE_STATUSES = {
     'cold day': 'off', 'cold day off': 'off', 'wfh': 'off',
     'training': 'off', 'jury duty': 'off', 'bereavement': 'off',
     'stat': 'off', 'no show': 'off',
+    # Holiday / day-off variants (broad net so any similar entry is silenced)
+    'holiday': 'off', 'holidays': 'off',
+    'stat holiday': 'off', 'statutory holiday': 'off',
+    'long weekend': 'off',
+    'pto': 'off', 'personal day': 'off', 'personal time': 'off',
+    'time off': 'off', 'day-off': 'off', 'days-off': 'off',
+    'paid time off': 'off', 'unpaid time off': 'off',
+    'leave': 'off', 'annual leave': 'off',
+    'absent': 'off', 'absence': 'off',
 }
 # All absence keys are also added to SKIP_VALS so normalize_job() doesn't flag them as unknown
 # (the absence logic in parse_sheet / parse_sheet_for_history catches them directly via jl lookup)
@@ -443,6 +454,11 @@ SKIP_VALS = {
     'cold day', 'cold day off', 'wfh',
     'training', 'jury duty', 'bereavement',
     'stat', 'no show',
+    # Holiday / day-off variants — mirrored from ABSENCE_STATUSES
+    'holiday', 'holidays', 'stat holiday', 'statutory holiday', 'long weekend',
+    'pto', 'personal day', 'personal time', 'time off', 'day-off', 'days-off',
+    'paid time off', 'unpaid time off', 'leave', 'annual leave',
+    'absent', 'absence',
 }
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
