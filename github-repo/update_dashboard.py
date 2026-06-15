@@ -2146,11 +2146,6 @@ body {{
     {cards_html}
   </div>
 
-  <div class="section-title">Completed Projects</div>
-  <div class="cards-grid" style="opacity:0.55;filter:grayscale(30%)">
-    {closed_cards_html}
-  </div>
-
   <div class="section-title">Lewis Estates — By Building (Cove Developments)</div>
   <div class="lewis-card">
     <div class="lewis-header">
@@ -2170,6 +2165,11 @@ body {{
   </div>
 
   {inj_section_html}
+
+  <div class="section-title">Completed Projects</div>
+  <div class="cards-grid" style="opacity:0.55;filter:grayscale(30%)">
+    {closed_cards_html}
+  </div>
 
   <div class="legend">
     <strong style="font-size:0.65rem;color:#4a5568;">Legend:</strong>
