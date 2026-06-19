@@ -5,7 +5,7 @@
 ,,,IN,OUT,Regular,OT
 ,"Tuesday, June 16, 2026",,,,OFF,
 ,"Wednesday, June 17, 2026",,,,,
-,"Thursday, June 18, 2026",,,,,
+,"Thursday, June 18, 2026",tp1,630,530,10.5,
 ,"Friday, June 19, 2026",,,,,
 ,"Saturday, June 20, 2026",,,,,
 ,,,,,,
@@ -28,10 +28,10 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,0,OT:,0
+,,Total Hours:,Regular:,10.5,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,0,0,1,Cove,0
+,Devon McInroy - S,10.5,0,1,Cove,0
 ,,,,,Lewis 2,0
 ,,,,,Lewis 4/2,0
 ,,,,,Lewis 4,0
@@ -41,4 +41,4 @@
 ,,,,,Cantiro,0
 ,,,,,LLMP,0
 ,,,,,,0
-,,,,,,0
+,,,,,,10.5
