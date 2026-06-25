@@ -27,6 +27,7 @@ BUDGETS = {
     "ls6":       8,   # Lewis Estates Bldg #6
     "hankewich":   4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
     "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
+    "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
     "ls16":      5,   # Lewis Estates Bldg #16
     "ls17":      5,   # Lewis Estates Bldg #17
     "ls19":      8,   # Lewis Estates Bldg #19
@@ -60,7 +61,8 @@ PROJECT_SCHEDULE = {
     "hankewich":   {"budget_start": "2026-05-11", "fte_only": True},
     # Graham Townhouse A — Vadym's crew, 21-day FTE budget, clock starts Jun 11
     "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
-    "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 5
+    "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
+    "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 24 (completed Jun 24)
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
     "ls19":     {"budget_days": 20,  "budget_start": "2026-03-02"}, # Mar 2 – Mar 27 (completed)
@@ -159,6 +161,7 @@ JOB_CODE_MAP = {
     "terrace phase 2":     "covenant_p2",
     "terrence p2":         "covenant_p2", # "Terrence" typo for Phase 2
     "terrence phase 2":    "covenant_p2",
+    "terrcace p2":         "covenant_p2",  # typo variant
     # "Monarch 3h– terrace P1" compound — monarch is ignored, picks up terrace P1.
     # Direct entries here as belt-and-suspenders in case the regex path fails.
     "monarch 3h- terrace p1":  "covenant",   # hyphen variant (after unicode normalization)
@@ -252,10 +255,15 @@ JOB_CODE_MAP = {
     "graham townhouse":  "graham_tha",
     "graham townhouse a":"graham_tha",
     "tha":               "graham_tha",
+    # Khehra — Ruby Custom
+    "rupi custom":       "khehra",
+    "rupy custom":       "khehra",
+    "ruby custom":       "khehra",
+    "khehra custom":     "khehra",
 }
 
 # Projects whose completion date is past (shown as "complete" in dashboard)
-COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17"}
+COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17", "ls16"}
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
@@ -351,6 +359,8 @@ IGNORED_JOBS = {
     "rupy",
     # Internal overhead / admin codes
     "oml",              # overhead meeting / logistics code
+    "award",            # not a tracked project
+    "llc douglas",      # not a tracked project
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -1520,11 +1530,12 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('cantiro',  'Cantiro',               'West Block 200',       "Cory's Crew",          'Started Nov 10, 2025'),
         ('hankewich',  'Hankewich',  'Steel Framing',  "Vadym's Crew",  'Rate per day'),
         ('graham_tha', 'Graham',     'Townhouse A',    "Vadym's Crew",  'Until Jul 10, 2026'),
+        ('khehra',     'Khehra',     'Ruby Custom',    'LLC Crew',      'Until Jul 15, 2026'),
     ]
 
     lewis_buildings = [
         ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   True),
-        ('ls16', 'Building #16 ⚡',"Alex W's Crew", 'Apr 23 – Jun 5',   False),
+        ('ls16', 'Building #16 ⚡',"Alex W's Crew", 'Apr 23 – Jun 24',  True),
         ('ls17', 'Building #17 ⚡',"Alex W's Crew", 'Mar 18 – Apr 29',  True),
         ('ls19', 'Building #19 ⚡',"Hayden's Crew", 'Mar 2 – Mar 27',   True),
         ('ls2',  'Building #2',    "Hayden's Crew", 'Jan 26 – Feb 27',  True),
@@ -1824,6 +1835,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'covenant_p2': 'Terrace — Covenant Health — Phase 2',
         'hankewich':   'Hankewich — Steel Framing',
         'graham_tha':  'Graham — Townhouse A',
+        'khehra':      'Khehra — Ruby Custom',
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
         'ls16':     'Lewis Estates — Building #16',
