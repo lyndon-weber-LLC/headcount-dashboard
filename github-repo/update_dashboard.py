@@ -1530,7 +1530,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('cantiro',  'Cantiro',               'West Block 200',       "Cory's Crew",          'Started Nov 10, 2025'),
         ('hankewich',  'Hankewich',  'Steel Framing',  "Vadym's Crew",  'Rate per day'),
         ('graham_tha', 'Graham',     'Townhouse A',    "Vadym's Crew",  'Until Jul 10, 2026'),
-        ('khehra',     'Khehra',     'Ruby Custom',    'LLC Crew',      'Until Jul 15, 2026'),
+        ('khehra',     'Khehra',     'Ruby Custom',    "Alex W's Crew", 'Until Jul 15, 2026'),
     ]
 
     lewis_buildings = [
