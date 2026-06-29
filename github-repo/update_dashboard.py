@@ -267,7 +267,7 @@ COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17", "ls16"
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
-CLOSED_PROJECTS = {"mt1", "cantiro", "mt2"}
+CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich"}
 
 # Job codes that appear in timesheets but should be silently ignored
 # (completed projects, personal jobs, misc entries we don't want to track)
@@ -1642,7 +1642,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
 
         # schedule progress bar
         sched = calc_schedule_progress(proj_key, history_detail, budget)
-        if sched and proj_key in CLOSED_PROJECTS:
+        if sched and proj_key in CLOSED_PROJECTS and not sched.get('fte_only'):
             # Project complete — show final FTE consumed vs budget, no pace judgment
             consumed_pct = min(110, sched['pct_consumed'])
             over = sched['days_consumed'] > sched['budget_days']
@@ -1661,9 +1661,11 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
       </div>'''
         elif sched and sched.get('fte_only'):
             # Rate-per-day contract: show FTE count only, no schedule pressure bar
+            # Label switches to "✅ Complete" when project moves to CLOSED_PROJECTS
+            fte_lbl = '✅ Complete' if proj_key in CLOSED_PROJECTS else 'Rate per day'
             sched_html = f'''
       <div class="sched-section">
-        <div class="sched-label">📋 FTE Logged <span style="color:#4a6fa5;font-weight:600;font-size:0.65rem">Rate per day</span></div>
+        <div class="sched-label">📋 FTE Logged <span style="color:#4a6fa5;font-weight:600;font-size:0.65rem">{fte_lbl}</span></div>
         <div class="sched-nums" style="margin-top:4px">
           <span style="font-size:1.05rem;font-weight:600;color:#2d3748">{sched['days_consumed']}</span>
           <span style="color:#718096;font-size:0.8rem"> crew-days consumed</span>
