@@ -3,23 +3,21 @@
 ,,,,,,
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
-,"Tuesday, June 16, 2026",,OFF,,,
-,"Wednesday, June 17, 2026",,OFF,,,
-,"Thursday, June 18, 2026",tp1,630,530,10.5,
-,"Friday, June 19, 2026",tp1,630,530,10.5,
-,"Saturday, June 20, 2026",min verdi,7,930,2.5,
-,"Sunday, June 21, 2026",Tp1,930,330,6,
-,"Monday, June 22, 2026",tp1,630,530,10.5,
-,"Tuesday, June 23, 2026",tp1,630,530,10.5,
-,"Wednesday, June 24, 2026",tp1,630,530,10.5,
-,"Thursday June 25, 2026",tp1,630,530,10.5,
-,"Friday, June 26, 2026",tp1,630,530,10.5,
-,"Saturday, June 27, 2026",tp1,730,2,6.5,
+,"Wednesday, July 1, 2026",tp1,630,530,10.5,
+,"Thursday, July 2, 2026",tp1,630,530,10.5,
+,"Friday, July 3, 2026",tp1,630,530,10.5,
+,"Saturday, July 4, 2026",tp1,630,230,8,
 ,,,,,,
-,"Monday, June 29, 2026",tp1,630,530,10.5,
-,"Tuesday, June 30, 2026",tp1,630,530,10.5,
+,"Monday, July 6, 2026",BMC,630,530,10.5,
+,"Tuesday, July 7, 2026",BMC,630,530,10.5,
+,"Wednesday, July 8, 2026",BMC,630,530,10.5,
+,"Thursday, July 9, 2026",,,,,
+,"Friday July 10, 2026",,,,,
+,"Saturday, July 11, 2026",,,,,
 ,,,,,,
-,,,,,,
+,"Monday, July 13, 2026",,,,,
+,"Tuesday, July 14, 2026",,,,,
+,"Tuesday, July 15, 2025",,,,,
 ,,,,,,
 ,,,,,,
 ,,,,,,
@@ -28,17 +26,19 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,109.5,OT:,0
+,,,,,,
+,,,,,,
+,,Total Hours:,Regular:,71,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,109.5,0,1,Cove,0
+,Devon McInroy - S,71,0,1,Cove,0
 ,,,,,Lewis 2,0
 ,,,,,Lewis 4/2,0
-,,,,,tp1,107
-,,,,,min verdi,2.5
+,,,,,tp1,39.5
+,,,,,,0
 ,,,,,MT1,0
 ,,,,,MT2,0
 ,,,,,Cantiro,0
 ,,,,,LLMP,0
-,,,,,,109.5
-,,,,,,0
+,,,,,,39.5
+,,,,,,31.5
