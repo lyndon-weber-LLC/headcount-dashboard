@@ -28,6 +28,7 @@ BUDGETS = {
     "hankewich":   4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
     "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
     "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
+    "bmc":         24,  # Black Mud Creek — Carlisle 3000
     "ls16":      5,   # Lewis Estates Bldg #16
     "ls17":      5,   # Lewis Estates Bldg #17
     "ls19":      8,   # Lewis Estates Bldg #19
@@ -62,6 +63,7 @@ PROJECT_SCHEDULE = {
     # Graham Townhouse A — Vadym's crew, 21-day FTE budget, clock starts Jun 11
     "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
+    "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 24 (completed Jun 24)
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
@@ -162,6 +164,7 @@ JOB_CODE_MAP = {
     "terrence p2":         "covenant_p2", # "Terrence" typo for Phase 2
     "terrence phase 2":    "covenant_p2",
     "terrcace p2":         "covenant_p2",  # typo variant
+    "tp2":                 "covenant_p2",  # shorthand
     # "Monarch 3h– terrace P1" compound — monarch is ignored, picks up terrace P1.
     # Direct entries here as belt-and-suspenders in case the regex path fails.
     "monarch 3h- terrace p1":  "covenant",   # hyphen variant (after unicode normalization)
@@ -255,6 +258,12 @@ JOB_CODE_MAP = {
     "graham townhouse":  "graham_tha",
     "graham townhouse a":"graham_tha",
     "tha":               "graham_tha",
+    # Black Mud Creek — Carlisle 3000
+    "bmc":               "bmc",
+    "carlisle":          "bmc",
+    "carlisle 3000":     "bmc",
+    "bmc carlisle":      "bmc",
+    "black mud creek":   "bmc",
     # Khehra — Ruby Custom
     "rupi custom":       "khehra",
     "rupy custom":       "khehra",
@@ -361,6 +370,13 @@ IGNORED_JOBS = {
     "oml",              # overhead meeting / logistics code
     "award",            # not a tracked project
     "llc douglas",      # not a tracked project
+    # Not tracked / completed / overhead
+    "arbutus",          # unknown / not tracked
+    "rigging course",   # training — overhead
+    "roseshire",        # not a tracked project
+    "salvi custom",     # completed project variant (see also "custom salvi")
+    "salvi 120roseshire",  # salvi + roseshire combined entry
+    "tovi house",       # not a tracked project
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -444,6 +460,9 @@ ABSENCE_STATUSES = {
     'paid time off': 'off', 'unpaid time off': 'off',
     'leave': 'off', 'annual leave': 'off',
     'absent': 'off', 'absence': 'off',
+    '0ff': 'off',                          # zero instead of letter O — typo of "off"
+    'vac': 'off',                          # vacation abbreviation
+    'no call no show': 'off', 'no call': 'off',  # absence / no-show
 }
 # All absence keys are also added to SKIP_VALS so normalize_job() doesn't flag them as unknown
 # (the absence logic in parse_sheet / parse_sheet_for_history catches them directly via jl lookup)
@@ -469,6 +488,7 @@ SKIP_VALS = {
     'pto', 'personal day', 'personal time', 'time off', 'day-off', 'days-off',
     'paid time off', 'unpaid time off', 'leave', 'annual leave',
     'absent', 'absence',
+    '0ff', 'vac', 'no call no show', 'no call',
 }
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
@@ -1531,6 +1551,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('hankewich',  'Hankewich',  'Steel Framing',  "Vadym's Crew",  'Rate per day'),
         ('graham_tha', 'Graham',     'Townhouse A',    "Vadym's Crew",  'Until Jul 10, 2026'),
         ('khehra',     'Khehra',     'Ruby Custom',    "Alex W's Crew", 'Until Jul 15, 2026'),
+        ('bmc',        'Black Mud Creek', 'Carlisle 3000', 'Hayden & Devon Crew', 'Until Oct 3, 2026'),
     ]
 
     lewis_buildings = [
@@ -1838,6 +1859,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'hankewich':   'Hankewich — Steel Framing',
         'graham_tha':  'Graham — Townhouse A',
         'khehra':      'Khehra — Ruby Custom',
+        'bmc':         'BMC — Carlisle 3000',
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
         'ls16':     'Lewis Estates — Building #16',
