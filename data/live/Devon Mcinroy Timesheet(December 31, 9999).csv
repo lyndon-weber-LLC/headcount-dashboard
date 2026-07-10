@@ -11,7 +11,7 @@
 ,"Monday, July 6, 2026",BMC,630,530,10.5,
 ,"Tuesday, July 7, 2026",BMC,630,530,10.5,
 ,"Wednesday, July 8, 2026",BMC,630,530,10.5,
-,"Thursday, July 9, 2026",,,,,
+,"Thursday, July 9, 2026",BMC,630,530,10.5,
 ,"Friday July 10, 2026",,,,,
 ,"Saturday, July 11, 2026",,,,,
 ,,,,,,
@@ -28,10 +28,10 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,71,OT:,0
+,,Total Hours:,Regular:,81.5,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,71,0,1,Cove,0
+,Devon McInroy - S,81.5,0,1,Cove,0
 ,,,,,Lewis 2,0
 ,,,,,Lewis 4/2,0
 ,,,,,tp1,39.5
@@ -41,4 +41,4 @@
 ,,,,,Cantiro,0
 ,,,,,LLMP,0
 ,,,,,,39.5
-,,,,,,31.5
+,,,,,,42
