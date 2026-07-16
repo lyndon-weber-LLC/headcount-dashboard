@@ -29,6 +29,7 @@ BUDGETS = {
     "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
     "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
     "bmc":         24,  # Black Mud Creek — Carlisle 3000
+    "revive":      4,   # Revive School Reno — Alex Weber crew, 4 direct
     "ls16":      5,   # Lewis Estates Bldg #16
     "ls17":      5,   # Lewis Estates Bldg #17
     "ls19":      8,   # Lewis Estates Bldg #19
@@ -64,6 +65,7 @@ PROJECT_SCHEDULE = {
     "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
+    "revive":      {"budget_start": "auto", "fte_only": True},         # School Reno — cumulative FTE only, no fixed budget yet
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 24 (completed Jun 24)
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
@@ -258,6 +260,11 @@ JOB_CODE_MAP = {
     "graham townhouse":  "graham_tha",
     "graham townhouse a":"graham_tha",
     "tha":               "graham_tha",
+    # Revive School Reno
+    "school":            "revive",
+    "revive school":     "revive",
+    "revive school reno":"revive",
+    "school reno":       "revive",
     # Black Mud Creek — Carlisle 3000
     "bmc":               "bmc",
     "carlisle":          "bmc",
@@ -1552,6 +1559,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('graham_tha', 'Graham',     'Townhouse A',    "Vadym's Crew",  'Until Jul 10, 2026'),
         ('khehra',     'Khehra',     'Ruby Custom',    "Alex W's Crew", 'Until Jul 15, 2026'),
         ('bmc',        'Black Mud Creek', 'Carlisle 3000', 'Hayden & Devon Crew', 'Until Oct 3, 2026'),
+        ('revive',     'Revive',          'School Reno',   "Alex W's Crew",       'FTE tracking'),
     ]
 
     lewis_buildings = [
@@ -1860,6 +1868,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'graham_tha':  'Graham — Townhouse A',
         'khehra':      'Khehra — Ruby Custom',
         'bmc':         'BMC — Carlisle 3000',
+        'revive':      'Revive — School Reno',
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
         'ls16':     'Lewis Estates — Building #16',
