@@ -4,7 +4,7 @@
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
 ,"Thursday, July 16, 2026",BMC,630,530,10.5,
-,"Friday, July 17, 2026",BMC,,,,
+,"Friday, July 17, 2026",BMC,630,530,10.5,
 ,"Saturday, July 18, 2026",,,,,
 ,,,,,,
 ,"Monday, July 20, 2026",,,,,
@@ -28,10 +28,10 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,10.5,OT:,0
+,,Total Hours:,Regular:,21,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,10.5,0,1,Cove,0
+,Devon McInroy - S,21,0,1,Cove,0
 ,,,,,Lewis 2,0
 ,,,,,Lewis 4/2,0
 ,,,,,,0
@@ -41,4 +41,4 @@
 ,,,,,Cantiro,0
 ,,,,,LLMP,0
 ,,,,,,0
-,,,,,,10.5
+,,,,,,21
