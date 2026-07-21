@@ -268,6 +268,7 @@ JOB_CODE_MAP = {
     # Black Mud Creek — Carlisle 3000
     "bmc":               "bmc",
     "carlisle":          "bmc",
+    "carlise":           "bmc",   # typo variant (missing l)
     "carlisle 3000":     "bmc",
     "bmc carlisle":      "bmc",
     "black mud creek":   "bmc",
@@ -379,6 +380,8 @@ IGNORED_JOBS = {
     "llc douglas",      # not a tracked project
     # Not tracked / completed / overhead
     "arbutus",          # unknown / not tracked
+    "dev pergolas",     # not a tracked project
+    "synergy",          # upcoming project — ignore until active
     "rigging course",   # training — overhead
     "roseshire",        # not a tracked project
     "salvi custom",     # completed project variant (see also "custom salvi")
@@ -470,6 +473,7 @@ ABSENCE_STATUSES = {
     '0ff': 'off',                          # zero instead of letter O — typo of "off"
     'vac': 'off',                          # vacation abbreviation
     'no call no show': 'off', 'no call': 'off',  # absence / no-show
+    'went to hospital': 'off', 'hospital': 'off',  # medical absence
 }
 # All absence keys are also added to SKIP_VALS so normalize_job() doesn't flag them as unknown
 # (the absence logic in parse_sheet / parse_sheet_for_history catches them directly via jl lookup)
@@ -495,7 +499,7 @@ SKIP_VALS = {
     'pto', 'personal day', 'personal time', 'time off', 'day-off', 'days-off',
     'paid time off', 'unpaid time off', 'leave', 'annual leave',
     'absent', 'absence',
-    '0ff', 'vac', 'no call no show', 'no call',
+    '0ff', 'vac', 'no call no show', 'no call', 'went to hospital', 'hospital',
 }
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
