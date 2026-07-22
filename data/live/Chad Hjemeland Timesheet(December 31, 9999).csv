@@ -4,11 +4,11 @@
 ,Date:,Job #,Time,,Hours,,,,,,,,,,,,
 ,,,IN,OUT,Regular,OT,,,,,,,,,,,
 ,"Thursday July 16, 2026",Terrace / Graham / Carlisle / Launch / Monarch ,7:00,5:30,10,,,,,,,,,,,,
-,"Friday July 17, 2026",Terrace / Graham / Carlise / Sam Azoos / ,7:00,5:30,10,,,,,,,,,,,,
+,"Friday July 17, 2026",Terrace / Graham / Carlisle / Sam Azoos / ,7:00,5:30,10,,,,,,,,,,,,
 ,"Saturday July 18, 2026",Terrace / Graham / Launch / Sam Azoos / ,7:00,2:00,7,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,
 ,"Monday July 20, 2026",Terrace / Graham / Carlisle ,7:00,5:30,10,,,,,,,,,,,,
-,"Tuesday July 21, 2026",,,,,,,,,,,,,,,,
+,"Tuesday July 21, 2026",Terrace / Carlisle ,7:00,5:30,10,,,,,,,,,,,,
 ,"Wednesday July 22, 2026",,,,,,,,,,,,,,,,
 ,"Thursday July 23, 2026",,,,,,,,,,,,,,,,
 ,"Friday July 24, 2026",,,,,,,,,,,,,,,,
@@ -30,13 +30,15 @@
 ,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,
-,,Total Hours:,Regular:,37,OT:,0,,,,,,,,,,,
+,,Total Hours:,Regular:,47,OT:,0,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,,,,,,,,,,,,
-,Chad Hjemeland - S,37,0,1,,,,,,,,,,,,,
-,,,,,,,Terrace,,,,,,,,,,0
-,,,,,,,Graham,,,,,,,,,,0
-,,,,,,,Carlisle,,,,,,,,,,0
-,,,,,,,Monarch,,,,,,,,,,0
-,,,,,,,,0,0,0,0,0,0,0,0,0,0
-,,,,,,,,,,,,,,,,,37
+,Chad Hjemeland - S,47,0,1,,,,,,,,,,,,,
+,,,,,,,Terrace,2,2.5,1.75,3.33,5,,,,,14.58
+,,,,,,,Graham,2,2.5,1.75,3.33,,,,,,9.58
+,,,,,,,Carlisle,2,2.5,,3.34,5,,,,,12.84
+,,,,,,,Launch,2,,1.75,,,,,,,3.75
+,,,,,,,Monarch,2,,,,,,,,,2
+,,,,,,,Sam Azoos,,2.5,1.75,,,,,,,4.25
+,,,,,,,,10,10,7,10,10,0,0,0,0,47
+,,,,,,,,,,,,,,,,,0
