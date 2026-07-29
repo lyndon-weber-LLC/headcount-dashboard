@@ -272,7 +272,10 @@ JOB_CODE_MAP = {
     "carlisle 3000":     "bmc",
     "bmc carlisle":      "bmc",
     "black mud creek":   "bmc",
+    "shimming":          "bmc",   # shimming work on BMC site
+    "carlisle shimming": "bmc",
     # Khehra — Ruby Custom
+    "rupi":              "khehra",
     "rupi custom":       "khehra",
     "rupy custom":       "khehra",
     "ruby custom":       "khehra",
@@ -383,6 +386,11 @@ IGNORED_JOBS = {
     "dev pergolas",     # not a tracked project
     "synergy",          # upcoming project — ignore until active
     "rigging course",   # training — overhead
+    "rigging",          # non-billable certification hours
+    "rms",              # non-billable certification hours
+    "kellar",           # not a tracked project
+    "modifided",        # typo for "modified" — WCB/overhead entry
+    "modified",         # WCB/overhead entry
     "roseshire",        # not a tracked project
     "salvi custom",     # completed project variant (see also "custom salvi")
     "salvi 120roseshire",  # salvi + roseshire combined entry
