@@ -25,6 +25,8 @@ BUDGETS = {
     "covenant_p2": 19,   # Terrace Covenant Health — Phase 2
     "cantiro":  17,   # Cantiro West Block 200
     "ls6":       8,   # Lewis Estates Bldg #6
+    "ls7":       8,   # Lewis Estates Bldg #7 — Vadym's crew (same as #6)
+    "ls15":      3,   # Lewis Estates Bldg #15 — Alex W's crew (3 employees + 5 subs)
     "hankewich":   4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
     "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
     "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
@@ -67,8 +69,10 @@ PROJECT_SCHEDULE = {
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
     "revive":      {"budget_start": "auto", "fte_only": True},         # School Reno — cumulative FTE only, no fixed budget yet
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 24 (completed Jun 24)
+    "ls15":     {"budget_days": 31,  "budget_start": "auto"},       # Alex W's crew — same target as #16
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
+    "ls7":      {"budget_days": 25,  "budget_start": "auto"},       # Vadym's crew — same target as #6
     "ls19":     {"budget_days": 20,  "budget_start": "2026-03-02"}, # Mar 2 – Mar 27 (completed)
     # MT1 and Cantiro excluded — historical timesheets pre-Jan 15 not yet loaded;
     # re-add once full data is available:
@@ -166,6 +170,7 @@ JOB_CODE_MAP = {
     "terrence p2":         "covenant_p2", # "Terrence" typo for Phase 2
     "terrence phase 2":    "covenant_p2",
     "terrcace p2":         "covenant_p2",  # typo variant
+    "terracec p2":         "covenant_p2",  # typo variant
     "tp2":                 "covenant_p2",  # shorthand
     # "Monarch 3h– terrace P1" compound — monarch is ignored, picks up terrace P1.
     # Direct entries here as belt-and-suspenders in case the regex path fails.
@@ -188,6 +193,10 @@ JOB_CODE_MAP = {
     "cove b 6":          "ls6",
     "cove building 6":   "ls6",
     "cove b6,":          "ls6",
+    "cove b7":           "ls7",
+    "cove b 7":          "ls7",
+    "cove building 7":   "ls7",
+    "cove 7":            "ls7",
     "ls#2":              "ls2",
     "ls# 2":             "ls2",
     "ls 2":              "ls2",
@@ -238,12 +247,16 @@ JOB_CODE_MAP = {
     "cove b5":           "ls5",
     "cove building 5":   "ls5",
     "cove 5":            "ls5",
+    "cove b15":          "ls15",
+    "cove b 15":         "ls15",
+    "cove building 15":  "ls15",
+    "cove 15":           "ls15",
     "cove b18":          "ls18",
     "cove building 18":  "ls18",
     "cove 18":           "ls18",
     # Bare building shorthand — appear as sub-parts after slash splits (e.g. "Cove b4/b5/b6")
     "b2":  "ls2", "b3":  "ls3", "b4":  "ls4",  "b5":  "ls5",
-    "b6":  "ls6", "b17": "ls17","b18": "ls18",  "b19": "ls19",
+    "b6":  "ls6", "b7":  "ls7", "b15": "ls15", "b17": "ls17","b18": "ls18",  "b19": "ls19",
     # Additional Lewis Estates aliases found in older timesheets
     "lewis 2":           "ls2",
     "lewis b2":          "ls2",
@@ -267,6 +280,7 @@ JOB_CODE_MAP = {
     "school reno":       "revive",
     # Black Mud Creek — Carlisle 3000
     "bmc":               "bmc",
+    "bcc":               "bmc",   # typo for bmc (fixed in source, kept as safety net)
     "carlisle":          "bmc",
     "carlise":           "bmc",   # typo variant (missing l)
     "carlisle 3000":     "bmc",
@@ -389,6 +403,7 @@ IGNORED_JOBS = {
     "rigging",          # non-billable certification hours
     "rms",              # non-billable certification hours
     "kellar",           # not a tracked project
+    "jackson ave",      # not a tracked project
     "modifided",        # typo for "modified" — WCB/overhead entry
     "modified",         # WCB/overhead entry
     "roseshire",        # not a tracked project
@@ -1575,6 +1590,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     ]
 
     lewis_buildings = [
+        ('ls7',  'Building #7',    "Vadym's Crew",  'Active',            False),
+        ('ls15', 'Building #15',   "Alex W's Crew", 'Active',            False),
         ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   True),
         ('ls16', 'Building #16 ⚡',"Alex W's Crew", 'Apr 23 – Jun 24',  True),
         ('ls17', 'Building #17 ⚡',"Alex W's Crew", 'Mar 18 – Apr 29',  True),
@@ -1883,6 +1900,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'revive':      'Revive — School Reno',
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
+        'ls7':      'Lewis Estates — Building #7',
+        'ls15':     'Lewis Estates — Building #15',
         'ls16':     'Lewis Estates — Building #16',
         'ls17':     'Lewis Estates — Building #17',
         'ls19':     'Lewis Estates — Building #19',
