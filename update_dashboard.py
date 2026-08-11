@@ -29,6 +29,7 @@ BUDGETS = {
     "ls15":      3,   # Lewis Estates Bldg #15 — Alex W's crew (3 employees + 5 subs)
     "hankewich":   4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
     "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
+    "thb":        12,   # Graham Townhouse B — Cory's crew
     "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
     "bmc":         24,  # Black Mud Creek — Carlisle 3000
     "revive":      4,   # Revive School Reno — Alex Weber crew, 4 direct
@@ -65,6 +66,7 @@ PROJECT_SCHEDULE = {
     "hankewich":   {"budget_start": "2026-05-11", "fte_only": True},
     # Graham Townhouse A — Vadym's crew, 21-day FTE budget, clock starts Jun 11
     "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
+    "thb":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse B — Cory's crew
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
     "revive":      {"budget_start": "auto", "fte_only": True},         # School Reno — cumulative FTE only, no fixed budget yet
@@ -273,6 +275,10 @@ JOB_CODE_MAP = {
     "graham townhouse":  "graham_tha",
     "graham townhouse a":"graham_tha",
     "tha":               "graham_tha",
+    # Graham Townhouse B — Cory's crew
+    "thb":               "thb",
+    "graham thb":        "thb",
+    "graham townhouse b":"thb",
     # Revive School Reno
     "school":            "revive",
     "revive school":     "revive",
@@ -283,6 +289,7 @@ JOB_CODE_MAP = {
     "bcc":               "bmc",   # typo for bmc (fixed in source, kept as safety net)
     "carlisle":          "bmc",
     "carlise":           "bmc",   # typo variant (missing l)
+    "carlislie":         "bmc",   # typo variant
     "carlisle 3000":     "bmc",
     "bmc carlisle":      "bmc",
     "black mud creek":   "bmc",
@@ -404,6 +411,9 @@ IGNORED_JOBS = {
     "rms",              # non-billable certification hours
     "kellar",           # not a tracked project
     "jackson ave",      # not a tracked project
+    "injury",           # off-job injury, not WCB tracked
+    "medical leave",    # off-job medical, not WCB tracked
+    "medical",          # off-job medical, not WCB tracked
     "modifided",        # typo for "modified" — WCB/overhead entry
     "modified",         # WCB/overhead entry
     "roseshire",        # not a tracked project
@@ -1584,6 +1594,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('cantiro',  'Cantiro',               'West Block 200',       "Cory's Crew",          'Started Nov 10, 2025'),
         ('hankewich',  'Hankewich',  'Steel Framing',  "Vadym's Crew",  'Rate per day'),
         ('graham_tha', 'Graham',     'Townhouse A',    "Vadym's Crew",  'Until Jul 10, 2026'),
+        ('thb',        'Graham',     'Townhouse B',    "Cory's Crew",   'FTE tracking'),
         ('khehra',     'Khehra',     'Ruby Custom',    "Alex W's Crew", 'Until Jul 15, 2026'),
         ('bmc',        'Black Mud Creek', 'Carlisle 3000', 'Hayden & Devon Crew', 'Until Oct 3, 2026'),
         ('revive',     'Revive',          'School Reno',   "Alex W's Crew",       'FTE tracking'),
@@ -1895,6 +1906,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'covenant_p2': 'Terrace — Covenant Health — Phase 2',
         'hankewich':   'Hankewich — Steel Framing',
         'graham_tha':  'Graham — Townhouse A',
+        'thb':         'Graham — Townhouse B',
         'khehra':      'Khehra — Ruby Custom',
         'bmc':         'BMC — Carlisle 3000',
         'revive':      'Revive — School Reno',
