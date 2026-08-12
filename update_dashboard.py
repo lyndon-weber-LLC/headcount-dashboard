@@ -308,7 +308,7 @@ COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17", "ls16"
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
-CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich"}
+CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich", "khehra"}
 
 # Job codes that appear in timesheets but should be silently ignored
 # (completed projects, personal jobs, misc entries we don't want to track)
