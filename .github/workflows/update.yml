@@ -29,10 +29,11 @@ jobs:
       # Employees: 9th–23rd  /  24th–8th        → update Previous tab gids each cycle
       # To find a gid: open the sheet, click the tab, copy the #gid= value from the URL.
       #
-      # Current sub previous tabs: Jul 1–15 (rolled over Jul 16, 2026)
-      #   Alex W-S=1340555123  Chad-S=131990297  Devon-S=567796808  Sam-S=1114848794
+      # Current sub previous tabs: Aug 1–15 (rolled over Aug 16, 2026)
+      #   Alex W-S=837864954  Chad-S=1834778238  Devon-S=1336236363  Sam-S=2036363347
       #   Alvin G-S: moved to overhead employee — no longer tracked as sub.
-      # Next sub rollover: Aug 1 — provide Jul 16–31 tab gids at that time.
+      #   NOTE: Jul 16–31 sub tabs were not archived — GIDs not captured at Aug 1 rollover.
+      # Next sub rollover: Sep 1 — provide Aug 16–31 tab gids at that time.
       #
       # Current employee previous tabs: Jul 24–Aug 8 (rolled over Aug 9, 2026)
       #   Alex W=1007783868  Alex/Sam=423501453  Cory=1361389671  Dave=1309742702
@@ -50,11 +51,11 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE7HYX2kGwCSWVgY2FV1FFTRqvp8XSAQNijxsmwFv9NH1wgqzbAvPj0MW9XjIOIu-8z2Olju-le0wz/pub?output=csv&gid=1007783868" \
             -o "data/live/Alex Timesheet(December 30, 9999).csv"
 
-          echo "→ Alex Weber – Subs (current tab: Jul 16–31)"
+          echo "→ Alex Weber – Subs (current tab: Aug 16–31)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv" \
             -o "data/live/Alex Weber - Subs Timesheet(December 31, 9999).csv"
-          echo "→ Alex Weber – Subs (previous tab: Jul 1–15, gid=1340555123)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv&gid=1340555123" \
+          echo "→ Alex Weber – Subs (previous tab: Aug 1–15, gid=837864954)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv&gid=837864954" \
             -o "data/live/Alex Weber - Subs Timesheet(December 30, 9999).csv"
 
           echo "→ Alex/Sam crew (current tab: Aug 9–Aug 23)"
@@ -64,11 +65,11 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsUkwgqJNFEG5gRTiGDS4Zcuj-ReBp8ufkazSWPi5uzYiBf15xcipaTl77d8Z7WkrG6zGABbkO-SDh/pub?output=csv&gid=423501453" \
             -o "data/live/Carlisle Timesheet(December 30, 9999).csv"
 
-          echo "→ Chad Hjemeland – Subs (current tab: Jul 16–31)"
+          echo "→ Chad Hjemeland – Subs (current tab: Aug 16–31)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv" \
             -o "data/live/Chad Hjemeland Timesheet(December 31, 9999).csv"
-          echo "→ Chad Hjemeland – Subs (previous tab: Jul 1–15, gid=131990297)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv&gid=131990297" \
+          echo "→ Chad Hjemeland – Subs (previous tab: Aug 1–15, gid=1834778238)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv&gid=1834778238" \
             -o "data/live/Chad Hjemeland Timesheet(December 30, 9999).csv"
 
           echo "→ Chad prefab (current tab: Aug 9–Aug 23)"
@@ -92,11 +93,11 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vToKSuU0ZRYCV527njgJak0vbc9XZb6m1bb6dWTeM2TKJtEfDE9H-QXzRKboj4qjqhbLeGDI5xA9Tvt/pub?output=csv&gid=1309742702" \
             -o "data/live/Dave Timesheet(December 30, 9999).csv"
 
-          echo "→ Devon Mcinroy – Subs (current tab: Jul 16–31)"
+          echo "→ Devon Mcinroy – Subs (current tab: Aug 16–31)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv" \
             -o "data/live/Devon Mcinroy Timesheet(December 31, 9999).csv"
-          echo "→ Devon Mcinroy – Subs (previous tab: Jul 1–15, gid=567796808)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv&gid=567796808" \
+          echo "→ Devon Mcinroy – Subs (previous tab: Aug 1–15, gid=1336236363)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv&gid=1336236363" \
             -o "data/live/Devon Mcinroy Timesheet(December 30, 9999).csv"
 
           echo "→ Hayden & Devon (current tab: Aug 9–Aug 23)"
@@ -106,11 +107,11 @@ jobs:
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQHZZ2lRv4dFgR-VSD0TM2aMlsf2BPGN4S80ujzYBy2KL-qG0oYMO6LetdP90Ztj0NvOYqahnmldu8L/pub?output=csv&gid=1442781748" \
             -o "data/live/Hayden Timesheet(December 30, 9999).csv"
 
-          echo "→ Sam Brent – Subs (current tab: Jul 16–31)"
+          echo "→ Sam Brent – Subs (current tab: Aug 16–31)"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv" \
             -o "data/live/Sam Brent Timesheet(December 31, 9999).csv"
-          echo "→ Sam Brent – Subs (previous tab: Jul 1–15, gid=1114848794)"
-          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv&gid=1114848794" \
+          echo "→ Sam Brent – Subs (previous tab: Aug 1–15, gid=2036363347)"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv&gid=2036363347" \
             -o "data/live/Sam Brent Timesheet(December 30, 9999).csv"
 
           echo "→ Vadym (current tab: Aug 9–Aug 23)"
@@ -140,7 +141,7 @@ jobs:
           #   3. THEN update the previous-tab GID in the "Download live timesheets" step.
           #   4. Update period labels and rollover comments above.
           #   Employee rollovers: every ~15 days (next: Aug 24 — need Aug 9–Aug 23 GIDs)
-          #   Sub rollovers:      every ~15 days (next: Aug 1 — need Jul 16–31 GIDs)
+          #   Sub rollovers:      every ~15 days (next: Sep 1 — need Aug 16–31 GIDs)
 
           # ── Apr 9–23 employee tabs (archived May 9, 2026) ──
           echo "→ Archive: Apr 9–23 employees"
@@ -273,6 +274,27 @@ jobs:
             -o "data/live/Hayden Timesheet(May 23, 2026).csv"
           curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQyzIB7YjlAHrhCsnnicbAtEYVomqFdnUxuwo3kQWO9uiZmA0NHZUQWbNMKYL6nDtT8j0jv9vb8kRW/pub?output=csv&gid=222630031" \
             -o "data/live/Vadym Timesheet(May 23, 2026).csv"
+
+          # ── Aug 1–15 sub tabs (archived Aug 16, 2026) ──
+          echo "→ Archive: Aug 1–15 subs"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv&gid=837864954" \
+            -o "data/live/Alex Weber - Subs Timesheet(August 15, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv&gid=1834778238" \
+            -o "data/live/Chad Hjemeland Timesheet(August 15, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv&gid=1336236363" \
+            -o "data/live/Devon Mcinroy Timesheet(August 15, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv&gid=2036363347" \
+            -o "data/live/Sam Brent Timesheet(August 15, 2026).csv"
+          # ── Jul 16–31 sub tabs (archived Aug 1, 2026) ──
+          echo "→ Archive: Jul 16–31 subs"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXjSKPO6f1XeCO2bV8Jl6IpJ-K16TucQ5YTVW906fUQyVIwyOpPqVzl-ya-wFzWaj_I77lVnoYmGSU/pub?output=csv&gid=1280095" \
+            -o "data/live/Alex Weber - Subs Timesheet(July 31, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoDfslLtOjrVa3mlzrRh8QMdpXf1C_Atjc1Sap-JA9cuidDkKC4K6bHaX-iH-JXw52wkVlSGJwuJlq/pub?output=csv&gid=1077052973" \
+            -o "data/live/Chad Hjemeland Timesheet(July 31, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrHVuKUQNTI2hM9drvyt14SesTPRtmhLFTnO1MtiIiYw4DhprYTkIJw42ddN5Zvijselozep_HuqPY/pub?output=csv&gid=465634121" \
+            -o "data/live/Devon Mcinroy Timesheet(July 31, 2026).csv"
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIcEivopzWB5ecc9_c6zarMhL0Qj8JfNhpRao353p-cjJMJscXCFl6shthE-ugqd9g_FNCZM60vfUI/pub?output=csv&gid=2040419809" \
+            -o "data/live/Sam Brent Timesheet(July 31, 2026).csv"
 
           # ── Jul 1–15 sub tabs (archived Jul 16, 2026) ──
           echo "→ Archive: Jul 1–15 subs"
