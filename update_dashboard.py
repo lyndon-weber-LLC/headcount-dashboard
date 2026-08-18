@@ -286,6 +286,7 @@ JOB_CODE_MAP = {
     "school reno":       "revive",
     # Black Mud Creek — Carlisle 3000
     "bmc":               "bmc",
+    "bmc3000":           "bmc",   # no-space variant
     "bcc":               "bmc",   # typo for bmc (fixed in source, kept as safety net)
     "carlisle":          "bmc",
     "carlise":           "bmc",   # typo variant (missing l)
@@ -308,7 +309,7 @@ COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17", "ls16"
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
-CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich", "khehra"}
+CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich", "khehra", "revive", "covenant"}
 
 # Job codes that appear in timesheets but should be silently ignored
 # (completed projects, personal jobs, misc entries we don't want to track)
@@ -411,6 +412,7 @@ IGNORED_JOBS = {
     "rms",              # non-billable certification hours
     "kellar",           # not a tracked project
     "jackson ave",      # not a tracked project
+    "heartland housing",# not a tracked project — monitor until identified
     "injury",           # off-job injury, not WCB tracked
     "medical leave",    # off-job medical, not WCB tracked
     "medical",          # off-job medical, not WCB tracked
@@ -1832,6 +1834,31 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         if subs and not done:
             subs_html = f'<span class="bldg-subs-pill">+{subs} sub{"s" if subs!=1 else ""}</span>'
 
+        # Schedule / FTE progress for active buildings that have a schedule entry
+        bldg_sched_html = ''
+        if not done:
+            sched = calc_schedule_progress(proj_key, history_detail, budget)
+            if sched and not sched.get('fte_only'):
+                on_track      = sched['pct_consumed'] <= sched['pct_elapsed'] + 5
+                lean          = sched['pct_consumed'] < sched['pct_elapsed'] - 10
+                pace_lbl      = '✅ Lean on labor' if lean else ('✅ On track' if on_track else '⚡ Ahead of pace')
+                pace_color    = '#7a5c0a' if lean else ('#276749' if on_track else '#975a16')
+                elapsed_label = f"{sched['calendar_elapsed']} elapsed"
+                consumed_pct  = min(100, sched['pct_consumed'])
+                elapsed_pct   = min(100, sched['pct_elapsed'])
+                bldg_sched_html = f'''
+      <div class="sched-section">
+        <div class="sched-label">📅 Schedule Progress <span style="color:{pace_color};font-weight:600;font-size:0.65rem">{pace_lbl}</span></div>
+        <div class="sched-track">
+          <div class="sched-fill" style="width:{consumed_pct}%"></div>
+          <div class="sched-elapsed" style="width:{elapsed_pct}%"></div>
+        </div>
+        <div class="sched-nums">
+          <span>{sched['days_consumed']:.1f} / {sched['budget_days']} FTE days</span>
+          <span style="color:#888">{elapsed_label}</span>
+        </div>
+      </div>'''
+
         bldgs_html += f'''
       <div class="bldg {status}" data-project="{proj_key}" title="Click to view history">
         <div class="bldg-name">{bldg_name}</div>
@@ -1844,6 +1871,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         </div>
         <div class="mini-bar-wrap"><div class="mini-bar-fill {bar_cls}" style="width:{bar_w}%"></div></div>
         <div class="bldg-status {status_color}">{status_txt}</div>
+        {bldg_sched_html}
       </div>'''
 
         if not done:
