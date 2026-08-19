@@ -1588,18 +1588,20 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
 
     # ── Project-level data ──
     projects = [
-        ('mt1',      'Deveraux Developments', 'MacTaggart Bldg 1',   'Alex & Sam Crew',      'Started Oct 27, 2025'),
-        ('mt2',      'Deveraux Developments', 'MacTaggart Bldg 2',   'Alex & Sam Crew',      'Completed May 2026'),
-        ('kaskitew', 'Graham',                'Kaskitew',             'Chad / Corey Crew',    'Until Jul 10, 2026'),
-        ('covenant',    'Terrace', 'Covenant Health — Phase 1', "Hayden & Devon Crew", 'Until Jul 14, 2026'),
-        ('covenant_p2', 'Terrace', 'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
-        ('cantiro',  'Cantiro',               'West Block 200',       "Cory's Crew",          'Started Nov 10, 2025'),
-        ('hankewich',  'Hankewich',  'Steel Framing',  "Vadym's Crew",  'Rate per day'),
-        ('graham_tha', 'Graham',     'Townhouse A',    "Vadym's Crew",  'Until Jul 10, 2026'),
-        ('thb',        'Graham',     'Townhouse B',    "Cory's Crew",   'FTE tracking'),
-        ('khehra',     'Khehra',     'Ruby Custom',    "Alex W's Crew", 'Until Jul 15, 2026'),
-        ('bmc',        'Black Mud Creek', 'Carlisle 3000', 'Hayden & Devon Crew', 'Until Oct 3, 2026'),
-        ('revive',     'Revive',          'School Reno',   "Alex W's Crew",       'FTE tracking'),
+        # ── Active projects (alphabetical: company → project name) ──
+        ('bmc',        'Black Mud Creek', 'Carlisle 3000',             'Hayden & Devon Crew', 'Until Oct 3, 2026'),
+        ('kaskitew',   'Graham',          'Kaskitew',                  'Chad / Corey Crew',   'Until Jul 10, 2026'),
+        ('graham_tha', 'Graham',          'Townhouse A',               "Vadym's Crew",        'Until Jul 10, 2026'),
+        ('thb',        'Graham',          'Townhouse B',               "Cory's Crew",         'FTE tracking'),
+        ('covenant_p2','Terrace',         'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
+        # ── Completed / closed projects ──
+        ('covenant',   'Terrace',  'Covenant Health — Phase 1', "Hayden & Devon Crew", 'Until Jul 14, 2026'),
+        ('khehra',     'Khehra',   'Ruby Custom',               "Alex W's Crew",        'Until Jul 15, 2026'),
+        ('revive',     'Revive',   'School Reno',               "Alex W's Crew",        'FTE tracking'),
+        ('hankewich',  'Hankewich','Steel Framing',             "Vadym's Crew",         'Rate per day'),
+        ('cantiro',    'Cantiro',  'West Block 200',            "Cory's Crew",          'Started Nov 10, 2025'),
+        ('mt1',        'Deveraux Developments', 'MacTaggart Bldg 1', 'Alex & Sam Crew', 'Started Oct 27, 2025'),
+        ('mt2',        'Deveraux Developments', 'MacTaggart Bldg 2', 'Alex & Sam Crew', 'Completed May 2026'),
     ]
 
     lewis_buildings = [
@@ -1847,15 +1849,15 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
                 consumed_pct  = min(100, sched['pct_consumed'])
                 elapsed_pct   = min(100, sched['pct_elapsed'])
                 bldg_sched_html = f'''
-      <div class="sched-section">
-        <div class="sched-label">📅 Schedule Progress <span style="color:{pace_color};font-weight:600;font-size:0.65rem">{pace_lbl}</span></div>
-        <div class="sched-track">
-          <div class="sched-fill" style="width:{consumed_pct}%"></div>
-          <div class="sched-elapsed" style="width:{elapsed_pct}%"></div>
+      <div style="margin-top:6px;padding-top:6px;border-top:1px solid #eee;">
+        <div style="font-size:0.65rem;color:#555;margin-bottom:3px;">📅 Schedule Progress <span style="color:{pace_color};font-weight:600">{pace_lbl}</span></div>
+        <div style="position:relative;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-bottom:3px;">
+          <div style="position:absolute;top:0;left:0;height:100%;width:{consumed_pct}%;background:#4a6fa5;border-radius:3px;"></div>
+          <div style="position:absolute;top:0;left:0;height:100%;width:{elapsed_pct}%;background:rgba(0,0,0,0.12);border-radius:3px;"></div>
         </div>
-        <div class="sched-nums">
+        <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:#666;">
           <span>{sched['days_consumed']:.1f} / {sched['budget_days']} FTE days</span>
-          <span style="color:#888">{elapsed_label}</span>
+          <span>{elapsed_label}</span>
         </div>
       </div>'''
 
