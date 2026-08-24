@@ -5,9 +5,9 @@
 ,,,IN,OUT,Regular,OT
 ,"Monday August 17, 2026",,OFF,,,
 ,"Tuesday August 18, 2026",THB,6:30,5:30,10,
-,"Wednesday August 19, 2026",THB,6:30,5:30,,
+,"Wednesday August 19, 2026",THB,6:30,5:30,10,
 ,"Thursday August 20, 2026",THB,6:30,5:30,10,
-,"Friday August 21, 2026",,,,,
+,"Friday August 21, 2026",THB,6:30,5:30,10,
 ,"Saturday August 22, 2026",,,,,
 ,,,,,,
 ,"Monday August 24, 2026",,,,,
@@ -28,14 +28,14 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,20,OT:,0
+,,Total Hours:,Regular:,40,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Sam Brent (Broad Const.) - S ,20,0,1,,0
+,Sam Brent (Broad Const.) - S ,40,0,1,,0
 ,,,,,THB,50
 ,,,,,THB,45.5
 ,,,,,LLMP,0
 ,,,,,Fall Pro,0
 ,,,,,MT1/Fall Pro,0
 ,,,,,,95.5
-,,,,,,-75.5
+,,,,,,-55.5
