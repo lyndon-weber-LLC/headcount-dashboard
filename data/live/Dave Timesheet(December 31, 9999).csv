@@ -3,8 +3,8 @@
 ,,,,,,,,,,,
 ,Date:,Job #,Time,,Hours,,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT,,IN,OUT,Regular,OT
-,"Monday August 24, 2026",,,,,,,,,,
-,"Tuesday August 25, 2026",,,,,,,,,,
+,"Monday August 24, 2026",Monarch,7:00,3:00,8,,,,,,
+,"Tuesday August 25, 2026",Monarch,7:00,5:30,8,1.5,,,,,
 ,"Wednesday August 26, 2026",,,,,,,,,,
 ,"Thursday, August 27, 2026",,,,,,,,,,
 ,"Friday, August 28, 2026",,,,,,,,,,
@@ -27,8 +27,8 @@
 ,,,,,,,,,,,
 ,,,,,,,,,,,
 ,,,,,,,,,,,
-,Summary,Total Hours:,Regular:,0,OT:,0,Total Hours:,Regular:,0,OT:,0
+,Summary,Total Hours:,Regular:,16,OT:,1.5,Total Hours:,Regular:,0,OT:,0
 ,,,,,,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,,,,,,
-,David Corkery,0,0,,,,,,,,
+,David Corkery,16,1.5,,,,,,,,
 ,,0,0,,,,,,,,
