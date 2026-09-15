@@ -29,6 +29,7 @@ BUDGETS = {
     "ls15":      3,   # Lewis Estates Bldg #15 — Alex W's crew (3 employees + 5 subs)
     "hankewich":   4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
     "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
+    "azur":        8,   # Launch Azur Townhomes — Vadym's crew
     "thb":        12,   # Graham Townhouse B — Cory's crew
     "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
     "bmc":         24,  # Black Mud Creek — Carlisle 3000
@@ -66,6 +67,8 @@ PROJECT_SCHEDULE = {
     "hankewich":   {"budget_start": "2026-05-11", "fte_only": True},
     # Graham Townhouse A — Vadym's crew, 21-day FTE budget, clock starts Jun 11
     "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
+    # Launch Azur Townhomes — Vadym's crew, 22 business days (≈29 cal days), starts Sep 9
+    "azur":        {"budget_days": 29, "budget_start": "2026-09-09"},
     "thb":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse B — Cory's crew
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
@@ -147,6 +150,7 @@ JOB_CODE_MAP = {
     "gram":              "kaskitew", # shorthand for Graham
     "graham":            "kaskitew",
     "kaskitew":          "kaskitew",
+    "graham mod":        "kaskitew", # timesheet variant for Graham Kaskitew
     "covenant":            "covenant",
     "covenant health":     "covenant",
     "cantiro":             "cantiro",
@@ -296,6 +300,11 @@ JOB_CODE_MAP = {
     "black mud creek":   "bmc",
     "shimming":          "bmc",   # shimming work on BMC site
     "carlisle shimming": "bmc",
+    "bmc ge":            "bmc",   # timesheet variant for BMC 3000
+    # Launch — Azur Townhomes (Vadym's crew)
+    "azur":              "azur",
+    "azur b27":          "azur",
+    "azur townhomes":    "azur",
     # Khehra — Ruby Custom
     "rupi":              "khehra",
     "rupi custom":       "khehra",
@@ -422,6 +431,14 @@ IGNORED_JOBS = {
     "salvi custom",     # completed project variant (see also "custom salvi")
     "salvi 120roseshire",  # salvi + roseshire combined entry
     "tovi house",       # not a tracked project
+    "off indefinitely", # non-project status note — ignore
+    "tourney",          # non-project entry — ignore
+    "ever red",         # unknown — ignore for now
+    "liri valley",      # unknown — ignore for now
+    "move to cory",     # foreman reassignment note — not a project
+    "sat",              # likely Saturday label — not a project
+    "telehandler course",  # training — overhead
+    "telehandler cours",   # truncated variant
 }
 
 # Crews that may not have current-period entries yet (use roster count)
@@ -1591,6 +1608,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         # ── Active projects (alphabetical: company → project name) ──
         ('bmc',        'Black Mud Creek', 'Carlisle 3000',             'Hayden & Devon Crew', 'Until Oct 3, 2026'),
         ('kaskitew',   'Graham',          'Kaskitew',                  'Chad / Corey Crew',   'Until Jul 10, 2026'),
+        ('azur',       'Launch',           'Azur Townhomes',            "Vadym's Crew",        'Until Oct 8, 2026'),
         ('graham_tha', 'Graham',          'Townhouse A',               "Vadym's Crew",        'Until Jul 10, 2026'),
         ('thb',        'Graham',          'Townhouse B',               "Cory's Crew",         'FTE tracking'),
         ('covenant_p2','Terrace',         'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
