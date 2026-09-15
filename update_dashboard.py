@@ -29,7 +29,8 @@ BUDGETS = {
     "ls15":      3,   # Lewis Estates Bldg #15 — Alex W's crew (3 employees + 5 subs)
     "hankewich":   4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
     "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
-    "azur":        8,   # Launch Azur Townhomes — Vadym's crew
+    "azur":        8,   # Launch Azur Townhomes — Bldg #27, Vadym's crew
+    "wc1":        20,   # Deveraux Watt Common — Bldg 1, Alex/Sam crew
     "thb":        12,   # Graham Townhouse B — Cory's crew
     "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
     "bmc":         24,  # Black Mud Creek — Carlisle 3000
@@ -67,8 +68,10 @@ PROJECT_SCHEDULE = {
     "hankewich":   {"budget_start": "2026-05-11", "fte_only": True},
     # Graham Townhouse A — Vadym's crew, 21-day FTE budget, clock starts Jun 11
     "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
-    # Launch Azur Townhomes — Vadym's crew, 22 business days (≈29 cal days), starts Sep 9
+    # Launch Azur Townhomes — Bldg #27, Vadym's crew, 22 business days (≈29 cal days), starts Sep 9
     "azur":        {"budget_days": 29, "budget_start": "2026-09-09"},
+    # Deveraux Watt Common — Bldg 1, Alex/Sam crew, 59 business days (≈83 cal days)
+    "wc1":         {"budget_days": 83, "budget_start": "auto"},
     "thb":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse B — Cory's crew
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
@@ -301,10 +304,18 @@ JOB_CODE_MAP = {
     "shimming":          "bmc",   # shimming work on BMC site
     "carlisle shimming": "bmc",
     "bmc ge":            "bmc",   # timesheet variant for BMC 3000
-    # Launch — Azur Townhomes (Vadym's crew)
+    # Launch — Azur Townhomes Bldg #27 (Vadym's crew)
     "azur":              "azur",
     "azur b27":          "azur",
     "azur townhomes":    "azur",
+    "azur bldg 27":      "azur",
+    # Deveraux — Watt Common Bldg 1 (Alex/Sam crew)
+    "wc1":               "wc1",
+    "watt":              "wc1",
+    "watt common":       "wc1",
+    "deveraux watt":     "wc1",
+    "watt common bldg 1":"wc1",
+    "watt bldg 1":       "wc1",
     # Khehra — Ruby Custom
     "rupi":              "khehra",
     "rupi custom":       "khehra",
@@ -394,10 +405,6 @@ IGNORED_JOBS = {
     # Weather / non-project entries
     "rain",
     "rain day",
-    # Deveraux Watt Common — next Deveraux job, not yet mobilized; ignore until active
-    "deveraux watt",
-    "watt",
-    "watt common",
     # Misc untracked entries
     "faction",
     "health course",
@@ -1608,7 +1615,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         # ── Active projects (alphabetical: company → project name) ──
         ('bmc',        'Black Mud Creek', 'Carlisle 3000',             'Hayden & Devon Crew', 'Until Oct 3, 2026'),
         ('kaskitew',   'Graham',          'Kaskitew',                  'Chad / Corey Crew',   'Until Jul 10, 2026'),
-        ('azur',       'Launch',           'Azur Townhomes',            "Vadym's Crew",        'Until Oct 8, 2026'),
+        ('wc1',        'Deveraux Developments', 'Watt Common — Bldg 1',  'Alex & Sam Crew',     'Active'),
+        ('azur',       'Launch',           'Azur Townhomes — Bldg #27', "Vadym's Crew",        'Until Oct 8, 2026'),
         ('graham_tha', 'Graham',          'Townhouse A',               "Vadym's Crew",        'Until Jul 10, 2026'),
         ('thb',        'Graham',          'Townhouse B',               "Cory's Crew",         'FTE tracking'),
         ('covenant_p2','Terrace',         'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
