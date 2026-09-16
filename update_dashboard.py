@@ -309,6 +309,9 @@ JOB_CODE_MAP = {
     "azur b27":          "azur",
     "azur townhomes":    "azur",
     "azur bldg 27":      "azur",
+    "launch 8plex":      "azur",   # timesheet variants for Azur B27
+    "launch homes 8 plex": "azur",
+    "lunch 8plex":       "azur",   # typo variant
     # Deveraux — Watt Common Bldg 1 (Alex/Sam crew)
     "wc1":               "wc1",
     "watt":              "wc1",
