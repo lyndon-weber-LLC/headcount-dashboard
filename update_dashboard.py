@@ -69,16 +69,16 @@ PROJECT_SCHEDULE = {
     "hankewich":   {"budget_start": "2026-05-11", "fte_only": True},
     # Graham Townhouse A — Vadym's crew, 21-day FTE budget, clock starts Jun 11
     "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
-    # Launch Azur Townhomes — Bldg #27, Vadym's crew, 22 business days (≈29 cal days), starts Sep 9
-    "azur":        {"budget_days": 29, "budget_start": "2026-09-09"},
-    # Deveraux Watt Common — Bldg 1, Alex/Sam crew, 59 business days (≈83 cal days)
-    "wc1":         {"budget_days": 83, "budget_start": "auto"},
+    # Launch Azur Townhomes — Bldg #27, Vadym's crew, 22 business days, starts Sep 9
+    "azur":        {"budget_days": 22, "budget_start": "2026-09-09"},
+    # Deveraux Watt Common — Bldg 1, Alex/Sam crew, 59 business days
+    "wc1":         {"budget_days": 59, "budget_start": "auto"},
     "thb":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse B — Cory's crew
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
     "revive":      {"budget_start": "auto", "fte_only": True},         # School Reno — cumulative FTE only, no fixed budget yet
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 24 (completed Jun 24)
-    "ls13":     {"budget_days": 28,  "budget_start": "auto"},       # Alex W's crew — 20 business days
+    "ls13":     {"budget_days": 20,  "budget_start": "auto"},       # Alex W's crew — 20 business days
     "ls15":     {"budget_days": 31,  "budget_start": "auto"},       # Alex W's crew — same target as #16
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
     "ls6":      {"budget_days": 25,  "budget_start": "2026-03-06"}, # Mar 6 – Apr 10
