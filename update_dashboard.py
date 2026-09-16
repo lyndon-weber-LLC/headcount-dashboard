@@ -2762,8 +2762,14 @@ function closeModal() {{
     no_show: {{ bg: '#fffaf0', border: '#fbd38d', text: '#b7791f' }},
   }};
   const STATUS_LABEL = {{ sick: 'Sick', off: 'Vacation/Off', no_show: 'No Show' }};
-  const CELL_COLORS  = ['#f7fafc','#fefcbf','#fbd38d','#fc8181','#e53e3e'];
-  // above: 0, 1, 2, 3, 4+ absences
+  // Colour thresholds: 0 | 1–4 | 5–9 | 10–14 | 15+
+  function cellColor(n) {{
+    if (n === 0)  return {{ bg: '#f7fafc', text: '#2d3748', border: '#e2e8f0' }};
+    if (n <= 4)   return {{ bg: '#fefcbf', text: '#744210', border: '#f6e05e' }};
+    if (n <= 9)   return {{ bg: '#f6ad55', text: '#7b341e', border: '#ed8936' }};
+    if (n <= 14)  return {{ bg: '#fc8181', text: '#fff',    border: '#f56565' }};
+    return               {{ bg: '#c53030', text: '#fff',    border: '#9b2c2c' }};
+  }}
 
   // ── helpers ──
   function addDays(iso, n) {{
@@ -2852,10 +2858,8 @@ function closeModal() {{
         }}
         const entries = (log[iso] || []).filter(e => e.status);
         const n = entries.length;
-        const colorIdx = Math.min(n, CELL_COLORS.length - 1);
-        const bg = n === 0 ? '#f7fafc' : CELL_COLORS[colorIdx];
-        const border = n === 0 ? '#e2e8f0' : '#cbd5e0';
-        const textColor = n >= 3 ? '#fff' : '#2d3748';
+        const cc = cellColor(n);
+        const bg = cc.bg; const border = cc.border; const textColor = cc.text;
         const isFuture = iso >= todayIso;
         const cellStyle = isFuture
           ? 'background:#f0f4f8;border:1px dashed #cbd5e0;border-radius:5px;cursor:default'
@@ -2869,9 +2873,16 @@ function closeModal() {{
 
     // Legend
     calEl.innerHTML += `<div></div>`;
+    const legendItems = [
+      {{ label: '0',    n: 0  }},
+      {{ label: '1–4',  n: 1  }},
+      {{ label: '5–9',  n: 5  }},
+      {{ label: '10–14',n: 10 }},
+      {{ label: '15+',  n: 15 }},
+    ];
     calEl.innerHTML += `<div style="grid-column:2/-1;display:flex;gap:8px;align-items:center;padding-top:6px;font-size:0.68rem;color:#718096">
       <span>Absences:</span>
-      ${{[0,1,2,3,'4+'].map((n,i)=>`<span style="display:inline-flex;align-items:center;gap:3px"><span style="width:14px;height:14px;background:${{CELL_COLORS[i]}};border:1px solid #cbd5e0;border-radius:3px;display:inline-block"></span>${{n}}</span>`).join('')}}
+      ${{legendItems.map(item => `<span style="display:inline-flex;align-items:center;gap:3px"><span style="width:14px;height:14px;background:${{cellColor(item.n).bg}};border:1px solid ${{cellColor(item.n).border}};border-radius:3px;display:inline-block"></span>${{item.label}}</span>`).join('')}}
     </div>`;
   }}
 
