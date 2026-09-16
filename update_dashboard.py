@@ -379,7 +379,7 @@ IGNORED_JOBS = {
     "dansereau",          # not a tracked project
     "fall pro",           # not a tracked project
     "heatherglen 79",     # partial variant of heatherglen 79-83 (already ignored)
-    "not in",             # absence / out-of-office note
+    # "not in" moved to ABSENCE_STATUSES → no_show (tracked)
     "monarch 5",          # monarch variant — subcontracted, not tracked
     # LLC overhead variants
     "llc meeting 1h",     # hours appended variant (already have .5h)
@@ -433,8 +433,8 @@ IGNORED_JOBS = {
     "jackson ave",      # not a tracked project
     "heartland housing",# not a tracked project — monitor until identified
     "injury",           # off-job injury, not WCB tracked
-    "medical leave",    # off-job medical, not WCB tracked
-    "medical",          # off-job medical, not WCB tracked
+    # "medical leave" moved to ABSENCE_STATUSES → sick (tracked)
+    "medical",          # off-job medical, not WCB tracked — too ambiguous to track as absence
     "modifided",        # typo for "modified" — WCB/overhead entry
     "modified",         # WCB/overhead entry
     "roseshire",        # not a tracked project
@@ -516,13 +516,13 @@ TERMINATION_VALS = {
 # Absence entries that appear in drilldown with a status badge (no hours counted)
 ABSENCE_STATUSES = {
     'sick': 'sick', 'sick day': 'sick', 'sick days': 'sick',
-    'called in': 'sick', 'called in sick': 'sick',
+    'called in': 'no_show', 'called in sick': 'sick',
     'covid': 'sick', 'flu': 'sick',
     'off': 'off', 'day off': 'off', 'days off': 'off',
     'booked off': 'off', 'vacation': 'off',
     'cold day': 'off', 'cold day off': 'off', 'wfh': 'off',
     'training': 'off', 'jury duty': 'off', 'bereavement': 'off',
-    'stat': 'off', 'no show': 'off',
+    'stat': 'off', 'no show': 'no_show',
     # Holiday / day-off variants (broad net so any similar entry is silenced)
     'holiday': 'off', 'holidays': 'off',
     'stat holiday': 'off', 'statutory holiday': 'off',
@@ -531,11 +531,13 @@ ABSENCE_STATUSES = {
     'time off': 'off', 'day-off': 'off', 'days-off': 'off',
     'paid time off': 'off', 'unpaid time off': 'off',
     'leave': 'off', 'annual leave': 'off',
-    'absent': 'off', 'absence': 'off',
+    'absent': 'no_show', 'absence': 'no_show',
     '0ff': 'off',                          # zero instead of letter O — typo of "off"
     'vac': 'off',                          # vacation abbreviation
-    'no call no show': 'off', 'no call': 'off',  # absence / no-show
-    'went to hospital': 'off', 'hospital': 'off',  # medical absence
+    'no call no show': 'no_show', 'no call': 'no_show',  # absence / no-show
+    'not in': 'no_show',                            # out-of-office note — unexplained
+    'went to hospital': 'sick', 'hospital': 'sick', # medical absence
+    'medical leave': 'sick',                         # off-job medical
 }
 # All absence keys are also added to SKIP_VALS so normalize_job() doesn't flag them as unknown
 # (the absence logic in parse_sheet / parse_sheet_for_history catches them directly via jl lookup)
@@ -562,6 +564,7 @@ SKIP_VALS = {
     'paid time off', 'unpaid time off', 'leave', 'annual leave',
     'absent', 'absence',
     '0ff', 'vac', 'no call no show', 'no call', 'went to hospital', 'hospital',
+    'not in', 'medical leave',
 }
 NUMERIC = re.compile(r'^\d+(\.\d+)?$')
 TIME_RE = re.compile(r'^\d{1,2}:\d{2}')
@@ -1954,6 +1957,23 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     # ── Prep JSON data for JS ──
     history_json        = json.dumps(history, ensure_ascii=False)
     history_detail_json = json.dumps(history_detail, ensure_ascii=False)
+    # Build absence log: date_iso -> [{name, crew, status}] from history_detail
+    # Deduplicate by (date, name) so a person on multiple projects isn't double-counted.
+    _absence_log_raw = {}
+    _seen_abs = set()
+    for _proj, _dates in history_detail.items():
+        for _date_iso, _detail in _dates.items():
+            for _emp in _detail.get('direct', []) + _detail.get('subs', []):
+                if _emp.get('status'):
+                    _key = (_date_iso, _emp['name'])
+                    if _key not in _seen_abs:
+                        _seen_abs.add(_key)
+                        _absence_log_raw.setdefault(_date_iso, []).append({
+                            'name':   _emp['name'],
+                            'crew':   _emp.get('crew', ''),
+                            'status': _emp['status'],
+                        })
+    absence_log_json = json.dumps(_absence_log_raw, ensure_ascii=False)
     budgets_json        = json.dumps({k: (int(v) if v == int(v) else v)
                                       for k, v in BUDGETS.items()})
     budget_phases_json  = json.dumps(BUDGET_PHASES)
@@ -1981,6 +2001,8 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'ls4':      'Lewis Estates — Building #4',
         'ls5':      'Lewis Estates — Building #5',
         'ls18':     'Lewis Estates — Building #18',
+        'azur':  'Launch — Azur Townhomes Bldg #27',
+        'wc1':   'Deveraux — Watt Common Bldg 1',
     })
 
     # ── Unknown-jobs warning banner ──
@@ -2318,6 +2340,34 @@ body {{
     {closed_cards_html}
   </div>
 
+  <!-- Time Off Tracker -->
+  <div class="section-title" style="margin-top:32px">Time Off Tracker</div>
+  <div style="background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 1px 6px rgba(0,0,0,0.08);margin-bottom:16px">
+
+    <!-- Summary pills -->
+    <div id="absence-summary" style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px"></div>
+
+    <!-- Calendar grid -->
+    <div style="overflow-x:auto">
+      <div id="absence-calendar" style="display:grid;gap:3px;min-width:600px"></div>
+    </div>
+
+    <!-- Day detail panel -->
+    <div id="absence-day-panel" style="display:none;margin-top:16px;padding:14px 16px;background:#f7fafc;border-radius:8px;border:1px solid #e2e8f0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <strong id="absence-day-title" style="font-size:0.95rem;color:#2d3748"></strong>
+        <button onclick="document.getElementById('absence-day-panel').style.display='none'" style="background:none;border:none;cursor:pointer;color:#718096;font-size:1.1rem">✕</button>
+      </div>
+      <div id="absence-day-body"></div>
+    </div>
+
+    <!-- Per-employee summary (last 30 days) -->
+    <div style="margin-top:20px">
+      <div style="font-size:0.78rem;font-weight:600;color:#718096;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">By Employee — Last 30 Days</div>
+      <div id="absence-emp-table" style="overflow-x:auto"></div>
+    </div>
+  </div>
+
   <div class="legend">
     <strong style="font-size:0.65rem;color:#4a5568;">Legend:</strong>
     <div class="legend-item"><div class="dot dot-ok"></div> On budget (≥95%)</div>
@@ -2386,6 +2436,7 @@ body {{
 <script>
 const HISTORY          = {history_json};
 const HISTORY_DETAIL   = {history_detail_json};
+const ABSENCE_LOG      = {absence_log_json};  // {{date_iso: [{{name,crew,status}}, ...]}}
 const BUDGETS          = {budgets_json};
 const BUDGET_PHASES    = {budget_phases_json};
 const PROJ_LABELS      = {proj_labels_json};
@@ -2558,12 +2609,14 @@ function openDayView(entryIndex) {{
 
   function absentRows(list, showCrew) {{
     const statusStyle = {{
-      sick: 'background:#fff5f5;color:#c53030;border:1px solid #fed7d7',
-      off:  'background:#f7fafc;color:#4a5568;border:1px solid #e2e8f0',
+      sick:    'background:#fff5f5;color:#c53030;border:1px solid #fed7d7',
+      off:     'background:#f7fafc;color:#4a5568;border:1px solid #e2e8f0',
+      no_show: 'background:#fffaf0;color:#b7791f;border:1px solid #fbd38d',
     }};
     return list.map(emp => {{
       const st = emp.status || 'off';
-      const badge = `<span style="font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;${{statusStyle[st] || statusStyle.off}}">${{st}}</span>`;
+      const stLabel = st === 'no_show' ? 'No Show' : st;
+      const badge = `<span style="font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;${{statusStyle[st] || statusStyle.off}}">${{stLabel}}</span>`;
       const crewCell = showCrew ? `<td style="color:#718096;font-size:0.8rem">${{emp.crew||'—'}}</td>` : '';
       return `<tr>
         <td style="color:#4a5568">${{emp.name}}</td>
@@ -2699,6 +2752,207 @@ function closeModal() {{
   document.body.style.overflow = '';
   if (chartInstance) {{ chartInstance.destroy(); chartInstance = null; }}
 }}
+
+// ── Time Off Tracker ──────────────────────────────────────────────
+(function() {{
+  const log = ABSENCE_LOG;  // {{date_iso: [{{name, crew, status}}, ...]}}
+  const STATUS_COLOR = {{
+    sick:    {{ bg: '#fff5f5', border: '#fed7d7', text: '#c53030' }},
+    off:     {{ bg: '#f0fff4', border: '#c6f6d5', text: '#276749' }},
+    no_show: {{ bg: '#fffaf0', border: '#fbd38d', text: '#b7791f' }},
+  }};
+  const STATUS_LABEL = {{ sick: 'Sick', off: 'Vacation/Off', no_show: 'No Show' }};
+  const CELL_COLORS  = ['#f7fafc','#fefcbf','#fbd38d','#fc8181','#e53e3e'];
+  // above: 0, 1, 2, 3, 4+ absences
+
+  // ── helpers ──
+  function addDays(iso, n) {{
+    const d = new Date(iso + 'T00:00:00');
+    d.setDate(d.getDate() + n);
+    return d.toISOString().slice(0,10);
+  }}
+  function fmtDay(iso) {{
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-CA', {{weekday:'short',month:'short',day:'numeric'}});
+  }}
+  function isWeekend(iso) {{
+    const day = new Date(iso + 'T00:00:00').getDay();
+    return day === 0 || day === 6;
+  }}
+
+  // ── build 90-day window (weekdays only) ──
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayIso = today.toISOString().slice(0,10);
+  const windowDays = [];
+  for (let i = 89; i >= 0; i--) {{
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const iso = d.toISOString().slice(0,10);
+    if (!isWeekend(iso)) windowDays.push(iso);
+  }}
+
+  // ── summary pills (last 30 calendar days) ──
+  const cutoff30 = addDays(todayIso, -30);
+  let totSick = 0, totOff = 0, totNoShow = 0;
+  for (const [d, entries] of Object.entries(log)) {{
+    if (d < cutoff30 || d >= todayIso) continue;
+    entries.forEach(e => {{
+      if (e.status === 'sick')    totSick++;
+      else if (e.status === 'no_show') totNoShow++;
+      else                             totOff++;
+    }});
+  }}
+  const summaryEl = document.getElementById('absence-summary');
+  if (summaryEl) {{
+    const pill = (icon, label, count, col) =>
+      `<div style="display:flex;align-items:center;gap:8px;background:${{col.bg}};border:1px solid ${{col.border}};border-radius:20px;padding:6px 16px;">
+         <span style="font-size:1.1rem">${{icon}}</span>
+         <div>
+           <div style="font-size:1.1rem;font-weight:700;color:${{col.text}};line-height:1">${{count}}</div>
+           <div style="font-size:0.68rem;color:${{col.text}};opacity:0.8">${{label}} — last 30d</div>
+         </div>
+       </div>`;
+    summaryEl.innerHTML =
+      pill('🤒', 'Sick Days',    totSick,   STATUS_COLOR.sick)   +
+      pill('🏖', 'Vacation/Off', totOff,    STATUS_COLOR.off)    +
+      pill('❓', 'No-Shows',     totNoShow, STATUS_COLOR.no_show);
+  }}
+
+  // ── calendar grid ──
+  // Group by week (Mon–Fri rows)
+  const calEl = document.getElementById('absence-calendar');
+  if (calEl) {{
+    // Determine weeks
+    const weeks = [];
+    let week = [];
+    windowDays.forEach(iso => {{
+      const dow = new Date(iso + 'T00:00:00').getDay(); // 1=Mon...5=Fri
+      if (dow === 1 && week.length) {{ weeks.push(week); week = []; }}
+      week.push(iso);
+    }});
+    if (week.length) weeks.push(week);
+
+    const cols = Math.max(...weeks.map(w => w.length));
+    calEl.style.gridTemplateColumns = `60px repeat(${{cols}}, minmax(32px,1fr))`;
+
+    // Header row: day labels for first week
+    calEl.innerHTML += `<div style="font-size:0.65rem;color:#718096;font-weight:600">Week</div>`;
+    ['Mon','Tue','Wed','Thu','Fri'].slice(0, cols).forEach(d =>
+      calEl.innerHTML += `<div style="font-size:0.65rem;color:#718096;text-align:center;font-weight:600">${{d}}</div>`);
+
+    weeks.forEach((wk, wi) => {{
+      // Week label
+      const wStart = new Date(wk[0] + 'T00:00:00');
+      const wLabel = wStart.toLocaleDateString('en-CA',{{month:'short',day:'numeric'}});
+      calEl.innerHTML += `<div style="font-size:0.65rem;color:#a0aec0;display:flex;align-items:center">${{wLabel}}</div>`;
+      // Day cells
+      for (let ci = 0; ci < cols; ci++) {{
+        const iso = wk[ci];
+        if (!iso) {{
+          calEl.innerHTML += `<div></div>`; continue;
+        }}
+        const entries = (log[iso] || []).filter(e => e.status);
+        const n = entries.length;
+        const colorIdx = Math.min(n, CELL_COLORS.length - 1);
+        const bg = n === 0 ? '#f7fafc' : CELL_COLORS[colorIdx];
+        const border = n === 0 ? '#e2e8f0' : '#cbd5e0';
+        const textColor = n >= 3 ? '#fff' : '#2d3748';
+        const isFuture = iso >= todayIso;
+        const cellStyle = isFuture
+          ? 'background:#f0f4f8;border:1px dashed #cbd5e0;border-radius:5px;cursor:default'
+          : `background:${{bg}};border:1px solid ${{border}};border-radius:5px;cursor:${{n?'pointer':'default'}}`;
+        calEl.innerHTML += `<div style="${{cellStyle}};padding:4px 2px;text-align:center;position:relative"
+          ${{n && !isFuture ? `onclick="showAbsenceDay('${{iso}}')"` : ''}}>
+          <div style="font-size:0.72rem;font-weight:${{n?700:400}};color:${{isFuture?'#a0aec0':textColor}}">${{n||''}}</div>
+        </div>`;
+      }}
+    }});
+
+    // Legend
+    calEl.innerHTML += `<div></div>`;
+    calEl.innerHTML += `<div style="grid-column:2/-1;display:flex;gap:8px;align-items:center;padding-top:6px;font-size:0.68rem;color:#718096">
+      <span>Absences:</span>
+      ${{[0,1,2,3,'4+'].map((n,i)=>`<span style="display:inline-flex;align-items:center;gap:3px"><span style="width:14px;height:14px;background:${{CELL_COLORS[i]}};border:1px solid #cbd5e0;border-radius:3px;display:inline-block"></span>${{n}}</span>`).join('')}}
+    </div>`;
+  }}
+
+  // ── day detail panel ──
+  window.showAbsenceDay = function(iso) {{
+    const entries = (log[iso] || []).filter(e => e.status);
+    if (!entries.length) return;
+    const panel = document.getElementById('absence-day-panel');
+    document.getElementById('absence-day-title').textContent = fmtDay(iso) + ' — ' + entries.length + ' absent';
+    const statusStyle = {{
+      sick:    'background:#fff5f5;color:#c53030;border:1px solid #fed7d7',
+      off:     'background:#f0fff4;color:#276749;border:1px solid #c6f6d5',
+      no_show: 'background:#fffaf0;color:#b7791f;border:1px solid #fbd38d',
+    }};
+    const rows = entries.map(e => {{
+      const st = e.status || 'off';
+      const label = STATUS_LABEL[st] || st;
+      const badge = `<span style="font-size:0.65rem;padding:2px 7px;border-radius:10px;font-weight:700;text-transform:uppercase;${{statusStyle[st]||statusStyle.off}}">${{label}}</span>`;
+      return `<tr>
+        <td style="padding:5px 8px;color:#2d3748">${{e.name}}</td>
+        <td style="padding:5px 8px;color:#718096;font-size:0.8rem">${{e.crew||'—'}}</td>
+        <td style="padding:5px 8px">${{badge}}</td>
+      </tr>`;
+    }}).join('');
+    document.getElementById('absence-day-body').innerHTML =
+      `<table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+        <thead><tr>
+          <th style="padding:4px 8px;text-align:left;font-size:0.72rem;color:#718096;font-weight:600;border-bottom:1px solid #e2e8f0">Name</th>
+          <th style="padding:4px 8px;text-align:left;font-size:0.72rem;color:#718096;font-weight:600;border-bottom:1px solid #e2e8f0">Crew</th>
+          <th style="padding:4px 8px;text-align:left;font-size:0.72rem;color:#718096;font-weight:600;border-bottom:1px solid #e2e8f0">Status</th>
+        </tr></thead><tbody>${{rows}}</tbody></table>`;
+    panel.style.display = 'block';
+    panel.scrollIntoView({{behavior:'smooth',block:'nearest'}});
+  }};
+
+  // ── per-employee table (last 30 days) ──
+  const empMap = {{}};  // name -> {{crew, sick, off, no_show}}
+  for (const [d, entries] of Object.entries(log)) {{
+    if (d < cutoff30 || d >= todayIso) continue;
+    entries.forEach(e => {{
+      if (!empMap[e.name]) empMap[e.name] = {{crew: e.crew, sick:0, off:0, no_show:0}};
+      if (e.status === 'sick')         empMap[e.name].sick++;
+      else if (e.status === 'no_show') empMap[e.name].no_show++;
+      else                             empMap[e.name].off++;
+    }});
+  }}
+  const empTableEl = document.getElementById('absence-emp-table');
+  if (empTableEl) {{
+    const sorted = Object.entries(empMap).sort((a,b) => {{
+      const totA = a[1].sick + a[1].no_show + a[1].off;
+      const totB = b[1].sick + b[1].no_show + b[1].off;
+      return totB - totA;
+    }});
+    if (!sorted.length) {{
+      empTableEl.innerHTML = '<div style="color:#a0aec0;font-size:0.85rem">No absence records in the last 30 days.</div>';
+    }} else {{
+      const thStyle = 'padding:6px 10px;text-align:left;font-size:0.72rem;color:#718096;font-weight:600;border-bottom:1px solid #e2e8f0;white-space:nowrap';
+      const tdStyle = 'padding:6px 10px;font-size:0.85rem;border-bottom:1px solid #f7fafc';
+      const rows = sorted.map(([name, d]) => {{
+        const tot = d.sick + d.no_show + d.off;
+        return `<tr>
+          <td style="${{tdStyle}};color:#2d3748">${{name}}</td>
+          <td style="${{tdStyle}};color:#718096;font-size:0.78rem">${{d.crew||'—'}}</td>
+          <td style="${{tdStyle}};color:#c53030;font-weight:${{d.sick?600:400}}">${{d.sick||'—'}}</td>
+          <td style="${{tdStyle}};color:#276749;font-weight:${{d.off?600:400}}">${{d.off||'—'}}</td>
+          <td style="${{tdStyle}};color:#b7791f;font-weight:${{d.no_show?600:400}}">${{d.no_show||'—'}}</td>
+          <td style="${{tdStyle}};font-weight:700;color:#2d3748">${{tot}}</td>
+        </tr>`;
+      }}).join('');
+      empTableEl.innerHTML = `<table style="width:100%;border-collapse:collapse;min-width:420px">
+        <thead><tr>
+          <th style="${{thStyle}}">Employee</th>
+          <th style="${{thStyle}}">Crew</th>
+          <th style="${{thStyle}};color:#c53030">🤒 Sick</th>
+          <th style="${{thStyle}};color:#276749">🏖 Vacation</th>
+          <th style="${{thStyle}};color:#b7791f">❓ No-Show</th>
+          <th style="${{thStyle}}">Total</th>
+        </tr></thead><tbody>${{rows}}</tbody></table>`;
+    }}
+  }}
+}})();
 
 document.addEventListener('DOMContentLoaded', () => {{
   document.querySelectorAll('[data-project]').forEach(el => {{
