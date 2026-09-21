@@ -3,10 +3,10 @@
 ,,,,,,
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
-,"Wednesday September 16, 2026",Bmc,7,530,10.5,
-,"Thursday September 17, 2026",BMC,7,530,10.5,
-,"Friday September 18, 2026",,,,,
-,"Saturday September 19, 2026",,,,,
+,"Wednesday September 16, 2026",Bmc,630,530,10.5,
+,"Thursday September 17, 2026",BMC,630,530,10.5,
+,"Friday September 18, 2026",BMC,630,530,10.5,
+,"Saturday September 19, 2026",BMC,630,330,8.5,
 ,,,,,,
 ,"Monday September 21, 2026",,,,,
 ,"Tuesday September 22, 2026",,,,,
@@ -28,7 +28,7 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,21,OT:,0
+,,Total Hours:,Regular:,40,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,21,0,1,,
+,Devon McInroy - S,40,0,1,,

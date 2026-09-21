@@ -1,43 +1,49 @@
-,,,,,,,,,,,,,
-,,Chad Hjemeland - S,,,,,,,,,,,
-,,,,,,,,,,,,,
-,Date:,Job #,Time,,Hours,,,,,,,,
-,,,IN,OUT,Regular,OT,,,,,,,
-,"Tuesday September 1, 2026",Launch / Carlisle / Graham / Deveraux ,7:00,5:30,10,,,,,,,,
-,"Wednesday September 2, 2026",Carlisle / Graham / Vivid ,7:00,5:30,10,,,,,,,,
-,"Thursday September 3, 2026",Graham / Liri Valley / Carlisle ,7:00,5:30,10,,,,,,,,
-,"Friday September 4, 2026",Graham/ Carlisle / SAT / Launch / Sam Azoos ,7:00,5:30,10,,,,,,,,
-,"Saturday September 5, 2026",Terrace,7:00,10:00,3,,,,,,,,
-,,,,,,,,,,,,,
-,"Tuesday September 8, 2026",Carlisle / Terrace / Launch / Graham,7:00,5:30,10,,,,,,,,
-,"Wednesday September 9, 2026",Terrace / Graham / Launch / Carlisle,7:00,5:30,10,,,,,,,,
-,"Thursday September 10, 2026",Terrace / Graham / Watt Common / Ever Red ,7:00,5:30,10,,,,,,,,
-,"Friday September 11, 2026",Terrace / Graham / Carlisle ,7:00,5:30,10,,,,,,,,
-,"Saturday September 12, 2026",,,,,,,,,,,,
-,,,,,,,,,,,,,
-,"Monday September 14, 2026",Terrace / Carlisle / Graham / Deveraux  ,7:00,5:30,10,,,,,,,,
-,"Tuesday September 15, 2026",Launch / Terrace / Carlisle / Graham / Deveraux,7:00,5:30,10,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
-,,Total Hours:,Regular:,103,OT:,0,,,,,,,
-,,,,,,,,,,,,,
-,Name:,Regular Hours:,OT Hours:,,,,,,,,,,
-,Chad Hjemeland - S,103,0,1,,,,,,,,,
-,,,,,,,,,,,,,
-,,,,,,,,,,,,Terrace,31.67
-,,,,,,,,,,,,Graham,35.66
-,,,,,,,,,,,,Carlisle,31.17
-,,,,,,,,,,,,Launch,7
-,,,,,,,,,,,,Sam Azoos,4.5
-,,,,,,,,,,,,,110
+,,,,,,,
+,,Chad Hjemeland - S,,,,,
+,,,,,,,
+,Date:,Job #,Time,,Hours,,
+,,,IN,OUT,Regular,OT,
+,"Tuesday September 1, 2026",Launch / Carlisle / Graham / Deveraux ,7:00,5:30,10,,
+,"Wednesday September 2, 2026",Carlisle / Graham / Vivid ,7:00,5:30,10,,
+,"Thursday September 3, 2026",Graham / Liri Valley / Carlisle ,7:00,5:30,10,,
+,"Friday September 4, 2026",Graham/ Carlisle / SAT / Launch / Sam Azoos ,7:00,5:30,10,,
+,"Saturday September 5, 2026",Terrace,7:00,10:00,3,,
+,,,,,,,
+,"Tuesday September 8, 2026",Carlisle / Terrace / Launch / Graham,7:00,5:30,10,,
+,"Wednesday September 9, 2026",Terrace / Graham / Launch / Carlisle,7:00,5:30,10,,
+,"Thursday September 10, 2026",Terrace / Graham / Watt Common / Ever Red ,7:00,5:30,10,,
+,"Friday September 11, 2026",Terrace / Graham / Carlisle ,7:00,5:30,10,,
+,"Saturday September 12, 2026",,,,,,
+,,,,,,,
+,"Monday September 14, 2026",Terrace / Carlisle / Graham / Deveraux  ,7:00,5:30,10,,
+,"Tuesday September 15, 2026",Launch / Terrace / Carlisle / Graham / Deveraux,7:00,5:30,10,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,Total Hours:,Regular:,103,OT:,0,
+,,,,,,,
+,Name:,Regular Hours:,OT Hours:,,,,
+,Chad Hjemeland - S,103,0,1,,,
+,,,,,,Job,Hours
+,,,,,,Graham,26.5
+,,,,,,Carlisle,24
+,,,,,,Terrace,18.33
+,,,,,,Launch,11.5
+,,,,,,Deveraux,7
+,,,,,,Vivid,3.34
+,,,,,,Liri Valley,3.33
+,,,,,,Watt Common,2.5
+,,,,,,Ever Red,2.5
+,,,,,,SAT,2
+,,,,,,Sam Azoos,2
+,,,,,,,103
