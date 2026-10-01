@@ -737,12 +737,12 @@ def parse_sheet_for_history(path):
         date_str = cell0.strip() if DATE_RE.search(cell0) else cell1.strip()
         try:
             parts = date_str.split(' ', 1)
-            d = datetime.strptime(parts[1], '%B %d, %Y')
+            d = datetime.strptime(parts[1].strip(), '%B %d, %Y')
             date_iso   = d.strftime('%Y-%m-%d')
             date_label = d.strftime('%b %-d')
         except Exception:
-            date_iso   = date_str
-            date_label = date_str
+            # Malformed date cell — skip entirely rather than storing the raw string
+            continue
         date_rows.setdefault(date_iso, []).append(row)
         date_labels[date_iso] = date_label
 
@@ -1559,7 +1559,8 @@ def calc_schedule_progress(proj_key, history_detail, budget_headcount):
 
     # Resolve "auto" start: first date this project appears in history
     if budget_start_raw == "auto":
-        all_dates = sorted(proj_history.keys())
+        # Filter to valid ISO dates only (guards against malformed date keys)
+        all_dates = sorted(k for k in proj_history.keys() if len(k) == 10 and k[4] == '-' and k[7] == '-')
         if not all_dates:
             return None
         budget_start = datetime.strptime(all_dates[0], "%Y-%m-%d").date()
