@@ -3,9 +3,9 @@
 ,,,,,,
 ,Date:,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT
-,"Thursday October 1, 2026",BMC,7,530,10.5,
-,"Friday October 2, 2026",,,,,
-,"Saturday October 3, 2026",,,,,
+,"Thursday October 1, 2026",BMC,630,530,10.5,
+,"Friday October 2, 2026",BMC,630,530,10.5,
+,"Saturday October 3, 2026",BMC ,7,330,8.5,
 ,,,,,,
 ,"Monday October 5, 2026",,,,,
 ,"Tuesday October 6, 2026",,,,,
@@ -28,7 +28,7 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,10.5,OT:,0
+,,Total Hours:,Regular:,29.5,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,10.5,0,1,,
+,Devon McInroy - S,29.5,0,1,,
