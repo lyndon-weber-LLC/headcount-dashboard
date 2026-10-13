@@ -457,6 +457,13 @@ IGNORED_JOBS = {
     "tourney",          # non-project entry — ignore
     "ever red",         # unknown — ignore for now
     "liri valley",      # unknown — ignore for now
+    "chandos",          # unknown — ignore for now
+    "hopewell",         # unknown — ignore for now
+    "jen-col",          # unknown — ignore for now
+    "jen col",          # variant
+    "leen craft",       # unknown — ignore for now
+    "sam azooz",        # unknown — ignore for now
+    "uplands",          # unknown — ignore for now
     "move to cory",     # foreman reassignment note — not a project
     "sat",              # likely Saturday label — not a project
     "telehandler course",  # training — overhead
