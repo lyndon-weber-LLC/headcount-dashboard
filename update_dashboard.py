@@ -342,7 +342,7 @@ COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17", "ls16"
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
-CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich", "khehra", "revive", "covenant", "graham_tha"}
+CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich", "khehra", "revive", "covenant", "graham_tha", "ls7", "ls15"}
 
 # Job codes that appear in timesheets but should be silently ignored
 # (completed projects, personal jobs, misc entries we don't want to track)
@@ -1657,9 +1657,9 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     ]
 
     lewis_buildings = [
-        ('ls7',  'Building #7',    "Vadym's Crew",  'Active',            False),
         ('ls13', 'Building #13',   "Alex W's Crew", 'Active',            False),
-        ('ls15', 'Building #15',   "Alex W's Crew", 'Active',            False),
+        ('ls7',  'Building #7 ⚡', "Vadym's Crew",  'Oct 2026',          True),
+        ('ls15', 'Building #15 ⚡',"Alex W's Crew", 'Oct 2026',          True),
         ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   True),
         ('ls16', 'Building #16 ⚡',"Alex W's Crew", 'Apr 23 – Jun 24',  True),
         ('ls17', 'Building #17 ⚡',"Alex W's Crew", 'Mar 18 – Apr 29',  True),
