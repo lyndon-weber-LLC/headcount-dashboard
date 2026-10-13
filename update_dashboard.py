@@ -26,6 +26,7 @@ BUDGETS = {
     "cantiro":  17,   # Cantiro West Block 200
     "ls6":       8,   # Lewis Estates Bldg #6
     "ls7":       8,   # Lewis Estates Bldg #7 — Vadym's crew (same as #6)
+    "ls11":      3,   # Lewis Estates Bldg #11 — Alex W's crew (3 employees + 5 subs)
     "ls13":      3,   # Lewis Estates Bldg #13 — Alex W's crew (3 employees + 5 subs)
     "ls15":      3,   # Lewis Estates Bldg #15 — Alex W's crew (3 employees + 5 subs)
     "hankewich":   4,   # Hankewich steel framing — Vadym's crew (rate-per-day; adjust crew size if needed)
@@ -78,6 +79,7 @@ PROJECT_SCHEDULE = {
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
     "revive":      {"budget_start": "auto", "fte_only": True},         # School Reno — cumulative FTE only, no fixed budget yet
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 24 (completed Jun 24)
+    "ls11":     {"budget_days": 20,  "budget_start": "auto"},       # Alex W's crew — 20 business days
     "ls13":     {"budget_days": 20,  "budget_start": "auto"},       # Alex W's crew — 20 business days
     "ls15":     {"budget_days": 31,  "budget_start": "auto"},       # Alex W's crew — same target as #16
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
@@ -258,6 +260,14 @@ JOB_CODE_MAP = {
     "cove b5":           "ls5",
     "cove building 5":   "ls5",
     "cove 5":            "ls5",
+    "cove b11":          "ls11",
+    "cove b 11":         "ls11",
+    "cove building 11":  "ls11",
+    "cove 11":           "ls11",
+    "ls11":              "ls11",
+    "ls# 11":            "ls11",
+    "ls 11":             "ls11",
+    "b11":               "ls11",
     "cove b13":          "ls13",
     "cove b 13":         "ls13",
     "cove building 13":  "ls13",
@@ -275,7 +285,7 @@ JOB_CODE_MAP = {
     "cove 18":           "ls18",
     # Bare building shorthand — appear as sub-parts after slash splits (e.g. "Cove b4/b5/b6")
     "b2":  "ls2", "b3":  "ls3", "b4":  "ls4",  "b5":  "ls5",
-    "b6":  "ls6", "b7":  "ls7", "b13": "ls13", "b15": "ls15", "b17": "ls17","b18": "ls18",  "b19": "ls19",
+    "b6":  "ls6", "b7":  "ls7", "b11": "ls11", "b13": "ls13", "b15": "ls15", "b17": "ls17","b18": "ls18",  "b19": "ls19",
     # Additional Lewis Estates aliases found in older timesheets
     "lewis 2":           "ls2",
     "lewis b2":          "ls2",
@@ -1657,6 +1667,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     ]
 
     lewis_buildings = [
+        ('ls11', 'Building #11',   "Alex W's Crew", 'Active',            False),
         ('ls13', 'Building #13',   "Alex W's Crew", 'Active',            False),
         ('ls7',  'Building #7 ⚡', "Vadym's Crew",  'Oct 2026',          True),
         ('ls15', 'Building #15 ⚡',"Alex W's Crew", 'Oct 2026',          True),
@@ -2013,6 +2024,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
         'ls7':      'Lewis Estates — Building #7',
+        'ls11':     'Lewis Estates — Building #11',
         'ls13':     'Lewis Estates — Building #13',
         'ls15':     'Lewis Estates — Building #15',
         'ls16':     'Lewis Estates — Building #16',
