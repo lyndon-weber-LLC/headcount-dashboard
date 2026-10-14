@@ -72,8 +72,8 @@ PROJECT_SCHEDULE = {
     "graham_tha":  {"budget_days": 21, "budget_start": "2026-06-11"},
     # Launch Azur Townhomes — Bldg #27, Vadym's crew, 22 business days, starts Sep 9
     "azur":        {"budget_days": 22, "budget_start": "2026-09-09"},
-    # Deveraux Watt Common — Bldg 1, Alex/Sam crew, 59 business days
-    "wc1":         {"budget_days": 59, "budget_start": "auto"},
+    # Deveraux Watt Common — Bldg 1, Alex/Sam crew, 59 business days, crew on site Sep 11
+    "wc1":         {"budget_days": 59, "budget_start": "2026-09-11"},
     "thb":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse B — Cory's crew
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
