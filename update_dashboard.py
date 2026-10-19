@@ -1658,12 +1658,12 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
     projects = [
         # ── Active projects (alphabetical: company → project name) ──
         ('bmc',        'Black Mud Creek', 'Carlisle 3000',             'Hayden & Devon Crew', 'Until Oct 3, 2026'),
-        ('kaskitew',   'Graham',          'Kaskitew',                  'Chad / Corey Crew',   'Until Jul 10, 2026'),
+        ('kaskitew',   'Graham',          'Kaskitew',                  'Sam / Charles Crew',  'Until Jul 10, 2026'),
         ('wc1',        'Deveraux Developments', 'Watt Common — Bldg 1',  'Alex & Sam Crew',     'Active'),
         ('azur',       'Launch',           'Azur Townhomes — Bldg #27', "Vadym's Crew",        'Until Oct 8, 2026'),
         ('graham_tha', 'Graham',          'Townhouse A',               "Vadym's Crew",        'Until Jul 10, 2026'),
         ('thd',        'Graham',          'Townhouse D',               "Vadym's Crew",        'Active'),
-        ('thb',        'Graham',          'Townhouse B',               "Cory's Crew",         'FTE tracking'),
+        ('thb',        'Graham',          'Townhouse B',               'Sam / Charles Crew',  'FTE tracking'),
         ('covenant_p2','Terrace',         'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
         # ── Completed / closed projects ──
         ('covenant',   'Terrace',  'Covenant Health — Phase 1', "Hayden & Devon Crew", 'Until Jul 14, 2026'),
