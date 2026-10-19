@@ -34,6 +34,7 @@ BUDGETS = {
     "azur":        8,   # Launch Azur Townhomes — Bldg #27, Vadym's crew
     "wc1":        20,   # Deveraux Watt Common — Bldg 1, Alex/Sam crew
     "thb":        12,   # Graham Townhouse B — Cory's crew
+    "thd":        12,   # Graham Townhouse D — Vadym's crew
     "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
     "bmc":         24,  # Black Mud Creek — Carlisle 3000
     "revive":      4,   # Revive School Reno — Alex Weber crew, 4 direct
@@ -75,6 +76,7 @@ PROJECT_SCHEDULE = {
     # Deveraux Watt Common — Bldg 1, Alex/Sam crew, 59 business days, crew on site Sep 11
     "wc1":         {"budget_days": 59, "budget_start": "2026-09-11"},
     "thb":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse B — Cory's crew
+    "thd":         {"budget_days": 21, "budget_start": "auto"},       # Graham Townhouse D — Vadym's crew
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
     "revive":      {"budget_start": "auto", "fte_only": True},         # School Reno — cumulative FTE only, no fixed budget yet
@@ -306,6 +308,11 @@ JOB_CODE_MAP = {
     "thb":               "thb",
     "graham thb":        "thb",
     "graham townhouse b":"thb",
+    # Graham Townhouse D — Vadym's crew
+    "thd":               "thd",
+    "graham thd":        "thd",
+    "graham townhouse d":"thd",
+    "townhouse d":       "thd",
     # Revive School Reno
     "school":            "revive",
     "revive school":     "revive",
@@ -326,6 +333,7 @@ JOB_CODE_MAP = {
     "bmc ge":            "bmc",   # timesheet variant for BMC 3000
     # Launch — Azur Townhomes Bldg #27 (Vadym's crew)
     "azur":              "azur",
+    "azurb27":           "azur",   # banner variant (no space)
     "azur b27":          "azur",
     "azur townhomes":    "azur",
     "azur bldg 27":      "azur",
@@ -1654,6 +1662,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('wc1',        'Deveraux Developments', 'Watt Common — Bldg 1',  'Alex & Sam Crew',     'Active'),
         ('azur',       'Launch',           'Azur Townhomes — Bldg #27', "Vadym's Crew",        'Until Oct 8, 2026'),
         ('graham_tha', 'Graham',          'Townhouse A',               "Vadym's Crew",        'Until Jul 10, 2026'),
+        ('thd',        'Graham',          'Townhouse D',               "Vadym's Crew",        'Active'),
         ('thb',        'Graham',          'Townhouse B',               "Cory's Crew",         'FTE tracking'),
         ('covenant_p2','Terrace',         'Covenant Health — Phase 2', "Alex & Sam Crew",     'Until Aug 4, 2026'),
         # ── Completed / closed projects ──
@@ -2017,6 +2026,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'covenant_p2': 'Terrace — Covenant Health — Phase 2',
         'hankewich':   'Hankewich — Steel Framing',
         'graham_tha':  'Graham — Townhouse A',
+        'thd':         'Graham — Townhouse D',
         'thb':         'Graham — Townhouse B',
         'khehra':      'Khehra — Ruby Custom',
         'bmc':         'BMC — Carlisle 3000',
