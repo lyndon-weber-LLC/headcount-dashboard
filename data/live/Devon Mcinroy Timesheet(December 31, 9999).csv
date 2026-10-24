@@ -9,9 +9,9 @@
 ,"Monday October 19, 2026",BMC,630,530,10.5,
 ,"Tuesday October 20, 2026",BMC,630,530,10.5,
 ,"Wednesday October 21, 2026",BMC,630,530,10.5,
-,"Thursday October 22, 2026",BMC,630,530,10.5,
-,"Friday October 23, 2026",BMC,,,,
-,"Saturday October 24, 2026",BMC,,,,
+,"Thursday October 22, 2026",BMC1k,630,530,10.5,
+,"Friday October 23, 2026",BMC,630,530,10.5,
+,"Saturday October 24, 2026",BMC1k,8,1,5,
 ,,,,,,
 ,"Monday October 26, 2026",BMC,,,,
 ,"Tuesday October 27, 2026",BMC,,,,
@@ -28,7 +28,7 @@
 ,,,,,,
 ,,,,,,
 ,,,,,,
-,,Total Hours:,Regular:,60,OT:,0
+,,Total Hours:,Regular:,75.5,OT:,0
 ,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,
-,Devon McInroy - S,60,0,1,,
+,Devon McInroy - S,75.5,0,1,,
