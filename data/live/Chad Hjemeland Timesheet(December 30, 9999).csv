@@ -3,23 +3,21 @@
 ,,,,,,,
 ,Date:,Job #,Time,,Hours,,
 ,,,IN,OUT,Regular,OT,
-,"Tuesday September 1, 2026",Launch / Carlisle / Graham / Deveraux ,7:00,5:30,10,,
-,"Wednesday September 2, 2026",Carlisle / Graham / Vivid ,7:00,5:30,10,,
-,"Thursday September 3, 2026",Graham / Liri Valley / Carlisle ,7:00,5:30,10,,
-,"Friday September 4, 2026",Graham/ Carlisle / SAT / Launch / Sam Azoos ,7:00,5:30,10,,
-,"Saturday September 5, 2026",Terrace,7:00,10:00,3,,
+,"Thursday October 1, 2026",Terrace / Launch / Deveraux / Vivid / Hopewell,7:00,5:30,10,,
+,"Friday October 2, 2026",Deveraux / Jen-Col / Leen Craft / Launch / ,7:00,5:30,10,,
+,"Saturday October 3, 2026",,,,,,
 ,,,,,,,
-,"Tuesday September 8, 2026",Carlisle / Terrace / Launch / Graham,7:00,5:30,10,,
-,"Wednesday September 9, 2026",Terrace / Graham / Launch / Carlisle,7:00,5:30,10,,
-,"Thursday September 10, 2026",Terrace / Graham / Watt Common / Ever Red ,7:00,5:30,10,,
-,"Friday September 11, 2026",Terrace / Graham / Carlisle ,7:00,5:30,10,,
-,"Saturday September 12, 2026",,,,,,
-,,,,,,,
-,"Monday September 14, 2026",Terrace / Carlisle / Graham / Deveraux  ,7:00,5:30,10,,
-,"Tuesday September 15, 2026",Launch / Terrace / Carlisle / Graham / Deveraux,7:00,5:30,10,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
+,"Monday October 5, 2026",Terrace / Deveraux / Launch / ,7:00,5:30,10,,
+,"Tuesday October 6, 2026",Launch / Terrace / Deveraux / Faction / ,7:00,5:30,10,,
+,"Wednesday October 7, 2026",Deveraux / Carlisle ,7:00,5:30,10,,
+,"Thursday October 8, 2026",Deveraux / Carlisle / Sam Azoos / Uplands / Graham /,7:00,5:30,10,,
+,"Friday October 9, 2026",Deveraux / Carlisle / Uplands / Graham ,7:00,5:30,10,,
+,"Saturday October 10, 2026",,,,,,
+,"Sunday October 11, 2026",Sam Azooz / Carlisle / Chandos,12:00,5:30,5.5,,
+,"Monday October 12, 2026",Deveraux / Kellar / Carlisle,7:00,3:30,8,,
+,"Tuesday October 13, 2026",Deveraux / Terrace / Carlisle / Kellar ,7:00,5:30,10,,
+,"Wednesday October 14, 2026",Deveraux / Graham / Carlisle / ,7:00,5:30,10,,
+,"Thursday October 15, 2026",Deveraux / Graham / Carlisle / ,7:00,5:30,10,,
 ,,,,,,,
 ,,,,,,,
 ,,,,,,,
@@ -30,20 +28,26 @@
 ,,,,,,,
 ,,,,,,,
 ,,,,,,,
-,,Total Hours:,Regular:,103,OT:,0,
+,,,,,,,
+,,,,,,,
+,,Total Hours:,Regular:,113.5,OT:,0,
 ,,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,,
-,Chad Hjemeland - S,103,0,1,,,
-,,,,,,Job,Hours
-,,,,,,Graham,26.5
-,,,,,,Carlisle,24
-,,,,,,Terrace,18.33
-,,,,,,Launch,11.5
-,,,,,,Deveraux,7
-,,,,,,Vivid,3.34
-,,,,,,Liri Valley,3.33
-,,,,,,Watt Common,2.5
-,,,,,,Ever Red,2.5
-,,,,,,SAT,2
-,,,,,,Sam Azoos,2
-,,,,,,,103
+,Chad Hjemeland - S,113.5,0,1,,,
+,,,,,,,
+,,,,,,,
+,,,,,,Terrace,9
+,,,,,,Launch,9.83
+,,,,,,Deveraux,30.5
+,,,,,,Vivid,2
+,,,,,,Hopewell,2
+,,,,,,Jen-Col,2.5
+,,,,,,Leen Craft,2.5
+,,,,,,Faction,2.5
+,,,,,,Carlisle,17.83
+,,,,,,Sam Azoos,3.83
+,,,,,,Uplands,4.5
+,,,,,,Graham,11.67
+,,,,,,Chandos,1.83
+,,,,,,Kellar,5
+,,,,,,TOTAL,113.5
