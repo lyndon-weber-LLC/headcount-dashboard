@@ -33,8 +33,10 @@ BUDGETS = {
     "graham_tha":  7,   # Graham Townhouse A — Vadym's crew
     "azur":        8,   # Launch Azur Townhomes — Bldg #27, Vadym's crew
     "wc1":        20,   # Deveraux Watt Common — Bldg 1, Alex/Sam crew
-    "thb":        12,   # Graham Townhouse B — Cory's crew
+    "thb":        12,   # Graham Townhouse B — Sam/Charles crew
+    "thc":        12,   # Graham Townhouse C — Sam/Charles crew
     "thd":        12,   # Graham Townhouse D — Vadym's crew
+    "bmc1k":      24,   # Black Mud Creek — Carlisle 1000, Hayden/Devon crew
     "khehra":      3,   # Khehra Ruby Custom — 3 direct employees
     "bmc":         24,  # Black Mud Creek — Carlisle 3000
     "revive":      4,   # Revive School Reno — Alex Weber crew, 4 direct
@@ -75,8 +77,10 @@ PROJECT_SCHEDULE = {
     "azur":        {"budget_days": 22, "budget_start": "2026-09-09"},
     # Deveraux Watt Common — Bldg 1, Alex/Sam crew, 59 business days, crew on site Sep 11
     "wc1":         {"budget_days": 59, "budget_start": "2026-09-11"},
-    "thb":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse B — Cory's crew
+    "thb":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse B — Sam/Charles crew
+    "thc":         {"budget_days": 20, "budget_start": "auto"},       # Graham Townhouse C — Sam/Charles crew
     "thd":         {"budget_days": 21, "budget_start": "auto"},       # Graham Townhouse D — Vadym's crew
+    "bmc1k":       {"budget_days": 80, "budget_start": "2026-10-24"}, # Carlisle 1000 — Hayden/Devon crew, Oct 24 start
     "khehra":      {"budget_days": 16, "budget_start": "2026-06-24"},  # Ruby Custom — Jun 24 – Jul 15
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
     "revive":      {"budget_start": "auto", "fte_only": True},         # School Reno — cumulative FTE only, no fixed budget yet
@@ -308,6 +312,11 @@ JOB_CODE_MAP = {
     "thb":               "thb",
     "graham thb":        "thb",
     "graham townhouse b":"thb",
+    # Graham Townhouse C — Sam/Charles crew
+    "thc":               "thc",
+    "graham thc":        "thc",
+    "graham townhouse c":"thc",
+    "townhouse c":       "thc",
     # Graham Townhouse D — Vadym's crew
     "thd":               "thd",
     "graham thd":        "thd",
@@ -321,6 +330,15 @@ JOB_CODE_MAP = {
     # Black Mud Creek — Carlisle 3000
     "bmc":               "bmc",
     "bmc3000":           "bmc",   # no-space variant
+    "bmc3k":             "bmc",   # shorthand
+    "bmc 3k":            "bmc",
+    # Black Mud Creek — Carlisle 1000
+    "bmc1k":             "bmc1k",
+    "bmc 1k":            "bmc1k",
+    "bmc1000":           "bmc1k",
+    "bmc 1000":          "bmc1k",
+    "carlisle 1000":     "bmc1k",
+    "carlisle1000":      "bmc1k",
     "bcc":               "bmc",   # typo for bmc (fixed in source, kept as safety net)
     "carlisle":          "bmc",
     "carlise":           "bmc",   # typo variant (missing l)
@@ -360,7 +378,7 @@ COMPLETED_PROJECTS = {"ls2", "ls3", "ls4", "ls5", "ls18", "ls19", "ls17", "ls16"
 
 # Main projects where all crew have left site — suppress the historical fallback
 # and show 0 / "Site closed" instead of stale last-recorded counts.
-CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich", "khehra", "revive", "covenant", "graham_tha", "ls7", "ls15"}
+CLOSED_PROJECTS = {"mt1", "cantiro", "mt2", "hankewich", "khehra", "revive", "covenant", "graham_tha", "ls7", "ls15", "azur", "ls13"}
 
 # Job codes that appear in timesheets but should be silently ignored
 # (completed projects, personal jobs, misc entries we don't want to track)
@@ -475,6 +493,14 @@ IGNORED_JOBS = {
     "tourney",          # non-project entry — ignore
     "ever red",         # unknown — ignore for now
     "liri valley",      # unknown — ignore for now
+    "awp course",       # safety course — overhead
+    "awp",              # variant
+    "car accident",     # non-project entry — ignore
+    "car crash",        # non-project entry — ignore
+    "crane set-up",     # non-project entry — ignore
+    "crane setup",      # variant
+    "fall pro course",  # safety course — overhead
+    "fall pro",         # variant
     "chandos",          # unknown — ignore for now
     "hopewell",         # unknown — ignore for now
     "jen-col",          # unknown — ignore for now
@@ -1660,7 +1686,9 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         ('bmc',        'Black Mud Creek', 'Carlisle 3000',             'Hayden & Devon Crew', 'Until Oct 3, 2026'),
         ('kaskitew',   'Graham',          'Kaskitew',                  'Sam / Charles Crew',  'Until Jul 10, 2026'),
         ('wc1',        'Deveraux Developments', 'Watt Common — Bldg 1',  'Alex & Sam Crew',     'Active'),
-        ('azur',       'Launch',           'Azur Townhomes — Bldg #27', "Vadym's Crew",        'Until Oct 8, 2026'),
+        ('bmc1k',      'Black Mud Creek',  'Carlisle 1000',             'Hayden & Devon Crew', 'Active'),
+        ('thc',        'Graham',           'Townhouse C',               'Sam / Charles Crew',  'Active'),
+        ('azur',       'Launch',           'Azur Townhomes — Bldg #27', "Vadym's Crew",        'Oct 2026'),
         ('graham_tha', 'Graham',          'Townhouse A',               "Vadym's Crew",        'Until Jul 10, 2026'),
         ('thd',        'Graham',          'Townhouse D',               "Vadym's Crew",        'Active'),
         ('thb',        'Graham',          'Townhouse B',               'Sam / Charles Crew',  'FTE tracking'),
@@ -1677,7 +1705,7 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
 
     lewis_buildings = [
         ('ls11', 'Building #11',   "Alex W's Crew", 'Active',            False),
-        ('ls13', 'Building #13',   "Alex W's Crew", 'Active',            False),
+        ('ls13', 'Building #13 ⚡',"Alex W's Crew", 'Oct 2026',          True),
         ('ls7',  'Building #7 ⚡', "Vadym's Crew",  'Oct 2026',          True),
         ('ls15', 'Building #15 ⚡',"Alex W's Crew", 'Oct 2026',          True),
         ('ls6',  'Building #6 ⚡', "Vadym's Crew",  'Mar 6 – Apr 10',   True),
@@ -2026,10 +2054,12 @@ def generate_html(headcount, history, history_detail, timestamp, injured_workers
         'covenant_p2': 'Terrace — Covenant Health — Phase 2',
         'hankewich':   'Hankewich — Steel Framing',
         'graham_tha':  'Graham — Townhouse A',
+        'thc':         'Graham — Townhouse C',
         'thd':         'Graham — Townhouse D',
         'thb':         'Graham — Townhouse B',
         'khehra':      'Khehra — Ruby Custom',
         'bmc':         'BMC — Carlisle 3000',
+        'bmc1k':       'BMC — Carlisle 1000',
         'revive':      'Revive — School Reno',
         'cantiro':  'Cantiro — West Block 200',
         'ls6':      'Lewis Estates — Building #6',
