@@ -85,7 +85,8 @@ PROJECT_SCHEDULE = {
     "bmc":         {"budget_days": 65, "budget_start": "2026-07-06"},  # Carlisle 3000 — Jul 6 – Oct 3
     "revive":      {"budget_start": "auto", "fte_only": True},         # School Reno — cumulative FTE only, no fixed budget yet
     "ls16":     {"budget_days": 31,  "budget_start": "2026-04-23"}, # Apr 23 – Jun 24 (completed Jun 24)
-    "ls11":     {"budget_days": 20,  "budget_start": "auto"},       # Alex W's crew — 20 business days
+    "ls11":     {"budget_days": 20,  "budget_start": "auto",
+                 "elapsed_start": "2026-10-13"},                    # Jul 1 straggler — elapsed clock from Oct 13
     "ls13":     {"budget_days": 20,  "budget_start": "auto"},       # Alex W's crew — 20 business days
     "ls15":     {"budget_days": 31,  "budget_start": "auto"},       # Alex W's crew — same target as #16
     # "ls17" completed Apr 29 — removed from schedule, moved to COMPLETED_PROJECTS
