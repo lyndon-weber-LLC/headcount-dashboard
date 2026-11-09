@@ -120,7 +120,8 @@ FILE_CREW_MAP = {
     "Hayden":     "hayden",
     "Rob":        "rob",
     "Cory":       "rob",         # Cory replaced Rob as foreman — same crew bucket
-    "Vadym":      "vadym",
+    "Evan":       "vadym",   # Nov 9 2026 — sheet renamed from Vadym to Evan
+    "Vadym":      "vadym",   # kept for historical archive filenames
     "Dave":       "dave",
 }
 
@@ -129,7 +130,7 @@ CREW_DISPLAY_NAMES = {
     'carlisle':      'Alex & Sam',
     'hayden':        'Hayden & Devon',
     'alex':          'Alex W',
-    'vadym':         'Vadym',
+    'vadym':         'Evan',   # renamed from Vadym Nov 9, 2026
     'dave':          'Dave',
     'rob':           'Cory',
     'chad':          'Chad',
@@ -333,6 +334,7 @@ JOB_CODE_MAP = {
     "bmc3000":           "bmc",   # no-space variant
     "bmc3k":             "bmc",   # shorthand
     "bmc 3k":            "bmc",
+    "3k":                "bmc",   # bare shorthand seen in timesheets
     # Black Mud Creek — Carlisle 1000
     "bmc1k":             "bmc1k",
     "bmc 1k":            "bmc1k",
@@ -500,6 +502,13 @@ IGNORED_JOBS = {
     "car crash",        # non-project entry — ignore
     "crane set-up",     # non-project entry — ignore
     "crane setup",      # variant
+    "crane",            # bare variant
+    "cl meeting",       # meeting — overhead
+    "dave's diesel repair", # non-project — ignore
+    "daves diesel repair",  # variant
+    "daytona",          # non-project — ignore
+    "junction",         # future project, not started yet — ignore until live
+    "junction99",       # variant
     "fall pro course",  # safety course — overhead
     "fall pro",         # variant
     "chandos",          # unknown — ignore for now
