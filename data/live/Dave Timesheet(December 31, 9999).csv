@@ -3,9 +3,9 @@
 ,,,,,,,,,,,
 ,Date:,Job #,Time,,Hours,,Job #,Time,,Hours,
 ,,,IN,OUT,Regular,OT,,IN,OUT,Regular,OT
-,"Monday November 9, 2026",,,,,,,,,,
-,"Tuesday November 10, 2026",,,,,,,,,,
-,"Wednesday November 11, 2026",,,,,,,,,,
+,"Monday November 9, 2026",monarch,7:00,5:30,8,1.5,,,,,
+,"Tuesday November 10, 2026",monarch,7:00,4:30,8,0.5,,,,,
+,"Wednesday November 11, 2026",monarch,7:00,,,,,,,,
 ,"Thursday, November 12, 2026",,,,,,,,,,
 ,"Friday, November 13, 2026",,,,,,,,,,
 ,"Saturday, November 14, 2026",,,,,,,,,,
@@ -27,8 +27,8 @@
 ,,,,,,,,,,,
 ,,,,,,,,,,,
 ,,,,,,,,,,,
-,Summary,Total Hours:,Regular:,0,OT:,0,Total Hours:,Regular:,0,OT:,0
+,Summary,Total Hours:,Regular:,16,OT:,2,Total Hours:,Regular:,0,OT:,0
 ,,,,,,,,,,,
 ,Name:,Regular Hours:,OT Hours:,,,,,,,,
-,David Corkery,0,0,,,,,,,,
+,David Corkery,16,2,,,,,,,,
 ,,0,0,,,,,,,,
